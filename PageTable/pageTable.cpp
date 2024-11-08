@@ -89,52 +89,57 @@ public:
     }
 
     // Handle page fault by replacing a page in memory, using the clock algorithm
-    void handlePageFault(int vpn)
+    void handlePageFault(int VPN)
     {
         if (!freeFrames.empty())
         {
             // Allocate new frame directly to the empty frame
             int newFrame = freeFrames.front();
             freeFrames.pop();
-            updatePageTable(vpn, newFrame, true, false, false, false, false, 0);
+            updatePageTable(VPN, newFrame, true, false, false, false, false, 0);
             return;
         }
         else
         {
-            // Clock algorithm
-            while (true)
-            {
-                int l1Index = getL1Index(clockHand);
-                int l2Index = getL2Index(clockHand);
-
-                if (pageTable.find(l1Index) != pageTable.end() &&
-                    pageTable[l1Index].find(l2Index) != pageTable[l1Index].end())
-                {
-
-                    if (pageTable[l1Index][l2Index].reference == 0)
-                    {
-                        // Store old frame number to replace
-                        int oldFrame = pageTable[l1Index][l2Index].frameNumber;
-
-                        // Remove old mapping from page table
-                        pageTable[l1Index][l2Index] = PageTableEntry();
-
-                        // Create new mapping
-                        updatePageTable(vpn, oldFrame, true, false, false, false, false, 0);
-                        break;
-                    }
-                    else
-                    {
-                        // Reset reference bit
-                        pageTable[l1Index][l2Index].reference = 0;
-                    }
-                }
-
-                // Update clock hand once per iteration
-                clockHand = (clockHand + 1) % pageSize;
-            }
+            evictPageThroughClockAlgo(VPN);
         }
     }
+
+    void evictPageThroughClockAlgo(int VPN)
+    {
+        while (true)
+        {
+            int l1Index = getL1Index(clockHand);
+            int l2Index = getL2Index(clockHand);
+
+            if (pageTable.find(l1Index) != pageTable.end() &&
+                pageTable[l1Index].find(l2Index) != pageTable[l1Index].end())
+            {
+
+                if (pageTable[l1Index][l2Index].reference == 0)
+                {
+                    // Store old frame number to replace
+                    int oldFrame = pageTable[l1Index][l2Index].frameNumber;
+
+                    // Remove old mapping from page table
+                    pageTable[l1Index][l2Index] = PageTableEntry();
+
+                    // Create new mapping
+                    updatePageTable(VPN, oldFrame, true, false, false, false, false, 0);
+                    break;
+                }
+                else
+                {
+                    // Reset reference bit
+                    pageTable[l1Index][l2Index].reference = 0;
+                }
+            }
+
+            // Update clock hand once per iteration
+            clockHand = (clockHand + 1) % pageSize;
+        }
+    }
+
 
     // int allocateNewFrame(int VPN) {
 
