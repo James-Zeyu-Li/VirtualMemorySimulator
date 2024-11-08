@@ -17,6 +17,7 @@ private:
     int getL2Index(int VPN) { return VPN & 0x3FF; }
     queue<int> freeFrames; // queue to keep track of free frames in physical memory
     int clockHand = 0;     // used for the clock algorithm
+    int totalFrames;       // total number of frames in physical memory
 
     // Check if the second level map exists, if not create one
     unordered_map<int, PageTableEntry> &checkL2(int l1Index)
@@ -32,7 +33,7 @@ public:
     PageTable() = default;
 
     // Initiate page table with a given size
-    PageTable(int totalFrames)
+    PageTable(int totalFrames) : totalFrames(totalFrames)
     {
         for (int i = 0; i < totalFrames; i++)
         {
@@ -97,59 +98,62 @@ public:
             int newFrame = freeFrames.front();
             freeFrames.pop();
             updatePageTable(VPN, newFrame, true, false, false, false, false, 0);
-            return;
         }
         else
         {
-            evictPageThroughClockAlgo(VPN);
+            replacePageUsingClockAlgo(VPN);
         }
     }
 
-    void evictPageThroughClockAlgo(int VPN)
+private:
+    void replacePageUsingClockAlgo(int VPN)
     {
-        while (true)
+        bool replacementPageFound = false;
+        // start from the current clockHand position
+        auto it1 = pageTable.begin();
+        advance(it1, clockHand); // move to the current clockHand position
+
+        while (!replacementPageFound)
         {
-            int l1Index = getL1Index(clockHand);
-            int l2Index = getL2Index(clockHand);
-
-            if (pageTable.find(l1Index) != pageTable.end() &&
-                pageTable[l1Index].find(l2Index) != pageTable[l1Index].end())
+            // loop through the first level map
+            for (; it1 != pageTable.end(); ++it1)
             {
+                auto &secondLevel = it1->second;
 
-                if (pageTable[l1Index][l2Index].reference == 0)
+                // loop through the second level map
+                for (auto it2 = secondLevel.begin(); it2 != secondLevel.end(); ++it2)
                 {
-                    // Store old frame number to replace
-                    int oldFrame = pageTable[l1Index][l2Index].frameNumber;
+                    PageTableEntry &entry = it2->second;
 
-                    // Remove old mapping from page table
-                    pageTable[l1Index][l2Index] = PageTableEntry();
+                    if (entry.valid)
+                    {
+                        if (entry.reference == 0)
+                        {
+                            // find the page to replace
+                            int oldFrame = entry.frameNumber;
+                            entry.reset();
 
-                    // Create new mapping
-                    updatePageTable(VPN, oldFrame, true, false, false, false, false, 0);
-                    break;
-                }
-                else
-                {
-                    // Reset reference bit
-                    pageTable[l1Index][l2Index].reference = 0;
+                            // use the old frame for the new page
+                            updatePageTable(VPN, oldFrame, true, false, false, false, false, 0);
+
+                            // update clockHand for next iteration
+                            clockHand = distance(pageTable.begin(), it1);
+                            return;
+                        }
+                        else
+                        {
+                            // no page found, decrement reference counter and move to next page
+                            entry.referenceDec();
+                        }
+                    }
                 }
             }
-
-            // Update clock hand once per iteration
-            clockHand = (clockHand + 1) % pageSize;
+            // if no page is found, reset the reference counter and start over
+            it1 = pageTable.begin();
         }
     }
 
-
-    // int allocateNewFrame(int VPN) {
-
-    // }
-
-    // PageTableEntry* getOrCreateSecondLevel (int l1Index)
-    // {
-
-    // }
-
+public:
     void resetPageTable()
     {
         pageTable.clear();
