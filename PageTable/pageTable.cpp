@@ -8,12 +8,22 @@ class PageTable
 {
 private:
     // 2 layer map to simulate 2 layered page table
-    unordered_map<int, unordered_map<int, PageTableEntry>> table;
+    unordered_map<int, unordered_map<int, PageTableEntry>> pageTable;
     static const int pageSize = 4096; // 4KB
     int pageFaults = 0;
     int pageHits = 0;
     int getL1Index(int VPN) { return VPN >> 10; }
     int getL2Index(int VPN) { return VPN & 0x3FF; }
+
+    // Check if the second level map exists, if not create one
+    unordered_map<int, PageTableEntry> &checkL2(int l1Index)
+    {
+        if (pageTable.find(l1Index) == pageTable.end())
+        {
+            pageTable[l1Index] = unordered_map<int, PageTableEntry>();
+        }
+        return pageTable[l1Index]; // return the second level map
+    }
 
 public:
     PageTable() = default;
@@ -24,7 +34,20 @@ public:
         int l1Index = getL1Index(VPN);
         int l2Index = getL2Index(VPN);
 
-        table[l1Index][l2Index] = PageTableEntry(frameNumber, valid, dirty, read, write, execute, reference);
+        pageTable[l1Index][l2Index] = PageTableEntry(frameNumber, valid, dirty, read, write, execute, reference);
+    }
+
+    void updatePageTable(int vpn, int pfn, bool valid, bool read, bool write, bool execute)
+    {
+        int l1Index = getL1Index(vpn);
+        int l2Index = getL2Index(vpn);
+
+        auto &entry = checkL2(l1Index)[l2Index];
+        entry.frameNumber = pfn;
+        entry.valid = valid;
+        entry.read = read;
+        entry.write = write;
+        entry.execute = execute;
     }
 
     // Lookup the page table for a given VPN and PFN
@@ -34,19 +57,22 @@ public:
         int l1Index = getL1Index(VPN);
         int l2Index = getL2Index(VPN);
 
-        if (table.find(l1Index) != table.end() &&
-            table[l1Index].find(l2Index) != table[l1Index].end() &&
-            table[l1Index][l2Index].valid)
+        if (pageTable.find(l1Index) != pageTable.end() &&
+            pageTable[l1Index].find(l2Index) != pageTable[l1Index].end() &&
+            pageTable[l1Index][l2Index].valid)
         {
             incrementPageHits();
-            return table[l1Index][l2Index].frameNumber;
+            pageTable[l1Index][l2Index].referenceInc(); // increment the reference counter when used
+            return pageTable[l1Index][l2Index].frameNumber;
         }
-        return -1;
+        else
+        {
+            // Page fault
+            // could call page fault handler here to handle the page fault
+            incrementPageFaults();
+            return -1;
+        }
     }
-
-    // Void updatePageTable(int vpn, int pfn, bool valid, bool read, bool write, bool execute){
-
-    // }
 
     // Void handlePageFault(int vpn)
     // {
@@ -58,16 +84,19 @@ public:
 
     // }
 
+    void resetPageTable()
+    {
+        pageTable.clear();
+        resetPageFaults();
+        resetPageHits();
+    }
+
+    int getPageFaults() { return pageFaults; }
+    int getPageHits() { return pageHits; }
+
 private:
     void incrementPageFaults() { pageFaults++; }
     void incrementPageHits() { pageHits++; }
     void resetPageFaults() { pageFaults = 0; }
     void resetPageHits() { pageHits = 0; }
-    unordered_map<int, PageTableEntry> getL1Entry(int l1Index)
-    {
-        if (table.find(l1Index) == table.end())
-        {
-            table[l1Index] = unordered_map<int, PageTableEntry>();
-        }
-    }
 };
