@@ -12,6 +12,7 @@ public:
     bool execute;
     uint8_t reference; // This is used for the clock algorithm, binary
 
+    // Constructor
     PageTableEntry(int frameNumber = -1,
                    bool valid = false,
                    bool dirty = false,
