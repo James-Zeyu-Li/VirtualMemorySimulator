@@ -9,30 +9,65 @@ class PageTable
 private:
     // 2 layer map to simulate 2 layered page table
     unordered_map<int, unordered_map<int, PageTableEntry>> table;
-
-    // Helper function for lookupPageTable, returns frame number if valid, -1 if not.
-    int getFrameNumber(int VPN, int PFN)
-    {
-        if (table.find(VPN) != table.end() &&
-            table[VPN].find(PFN) != table[VPN].end() &&
-            table[VPN][PFN].valid)
-        {
-            return table[VPN][PFN].frameNumber;
-        }
-        return -1;
-    }
+    static const int pageSize = 4096; // 4KB
+    int pageFaults = 0;
+    int pageHits = 0;
+    int getL1Index(int VPN) { return VPN >> 10; }
+    int getL2Index(int VPN) { return VPN & 0x3FF; }
 
 public:
     PageTable() = default;
 
-    int lookupPageTable(int VPN, int PFN)
+    // Initiate page table with a given size 4KB
+    void addPageTableEntry(int VPN, int PFN, int frameNumber, bool valid, bool dirty, bool read, bool write, bool execute, uint8_t reference)
     {
-        return getFrameNumber(VPN, PFN);
+        int l1Index = getL1Index(VPN);
+        int l2Index = getL2Index(VPN);
+
+        table[l1Index][l2Index] = PageTableEntry(frameNumber, valid, dirty, read, write, execute, reference);
     }
 
-
-    void setPageTableEntry(int vpn, int pfn, int frameNumber, bool valid)
+    // Lookup the page table for a given VPN and PFN
+    int lookupPageTable(int VPN)
     {
-        table[vpn][pfn] = PageTableEntry(frameNumber, valid);
+
+        int l1Index = getL1Index(VPN);
+        int l2Index = getL2Index(VPN);
+
+        if (table.find(l1Index) != table.end() &&
+            table[l1Index].find(l2Index) != table[l1Index].end() &&
+            table[l1Index][l2Index].valid)
+        {
+            incrementPageHits();
+            return table[l1Index][l2Index].frameNumber;
+        }
+        return -1;
+    }
+
+    // Void updatePageTable(int vpn, int pfn, bool valid, bool read, bool write, bool execute){
+
+    // }
+
+    // Void handlePageFault(int vpn)
+    // {
+
+    // }
+
+    // PageTableEntry* getOrCreateSecondLevel (int l1Index)
+    // {
+
+    // }
+
+private:
+    void incrementPageFaults() { pageFaults++; }
+    void incrementPageHits() { pageHits++; }
+    void resetPageFaults() { pageFaults = 0; }
+    void resetPageHits() { pageHits = 0; }
+    unordered_map<int, PageTableEntry> getL1Entry(int l1Index)
+    {
+        if (table.find(l1Index) == table.end())
+        {
+            table[l1Index] = unordered_map<int, PageTableEntry>();
+        }
     }
 };
