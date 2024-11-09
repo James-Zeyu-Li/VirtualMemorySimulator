@@ -32,22 +32,6 @@ public:
         return frame;
     }
 
-    // release a frame
-    void makeFrameFree(int frameNumber)
-    {
-        if (frameNumber < 0 || frameNumber >= totalFrames)
-        {
-            cerr << "Invalid frame number: " << frameNumber << endl;
-            return;
-        }
-        freeFrames.push(frameNumber);
-    }
-
-    // check if there are free frames
-    bool hasFreeFrames() const
-        return !freeFrames.empty();
-    }
-
     // get the total number of frames
     int getTotalFrames() const
     {

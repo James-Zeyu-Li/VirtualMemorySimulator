@@ -68,10 +68,10 @@ public:
         entry.reference = reference;
 
         // if the page is valid, update the active pages
-        if (activeVPNs.insert(VPN).second)  // Insert VPN to activeVPNs
+        if (activeVPNs.insert(VPN).second) // Insert VPN to activeVPNs
         {
             activePages.push_back(VPN);
-            if (activePages.size() == 1)  // set clockHand to the first element
+            if (activePages.size() == 1) // set clockHand to the first element
             {
                 clockHand = activePages.begin();
             }
@@ -90,7 +90,6 @@ public:
             pageTable[l1Index][l2Index].valid)
         {
             pageTable[l1Index][l2Index].reference = 4; // set to 4
-            return pageTable[l1Index][l2Index].frameNumber;
 
             for (auto &l1Entry : pageTable)
             {
@@ -105,6 +104,7 @@ public:
                         l2Entry.second.reference--;
                 }
             }
+            return pageTable[l1Index][l2Index].frameNumber;
         }
         else
         {
@@ -156,7 +156,8 @@ private:
             moveClockHandNext();
             scanCount++;
         }
-        throw runtime_error("No available frames after maximum scans");
+        cerr << "Exceeded maximum scans, no frames available." << endl;
+        return;
     }
 
     PageTableEntry *getPageEntryAtClockHand()
@@ -220,7 +221,7 @@ private:
 
     void writeBackToDisk(int frameNumber)
     {
-        skip;
+        cout << "Writing frame " << frameNumber << " back to disk." << endl;
     }
 
 public:
