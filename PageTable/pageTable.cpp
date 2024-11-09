@@ -6,6 +6,8 @@
 #include "physicalFrameManager.cpp"
 #include <list>
 #include <unordered_set>
+// #include <cmath>
+// #define LOG2(x) ((x) <= 1 ? 0 : 1 + LOG2((x) / 2))
 using namespace std;
 
 class PageTable
@@ -13,12 +15,17 @@ class PageTable
 private:
     // 2 layer map to simulate 2 layered page table
     unordered_map<int, unordered_map<int, PageTableEntry>> pageTable;
-    static const int addressSpaceSize = 4 * 1024 * 1024 * 1024; // 32 bit address space
-    static const int pageSize = 4096;                           // 4KB
-    int pageFaults = 0;
-    int pageHits = 0;
-    int getL1Index(int VPN) { return VPN >> 10; }
-    int getL2Index(int VPN) { return VPN & 0x3FF; }
+    static const uint64_t addressSpaceSize = 4ULL * 1024 * 1024 * 1024; // 32-bit address space
+    static const int pageSize = 4096;                                   // 4KB
+    static const int addressBits = 32;
+    static const int pageOffsetBits = 12; // log2(pageSize)
+    static const int vpnBits = addressBits - pageOffsetBits;
+
+    static const int l1Bits = vpnBits / 2;
+    static const int l2Bits = vpnBits - l1Bits;
+
+    int getL1Index(int VPN) { return VPN >> l2Bits; }
+    int getL2Index(int VPN) { return VPN & ((1 << l2Bits) - 1); }
 
     // Physical frame manager to manage the physical frames
     PhysicalFrameManager pfManager;
@@ -44,6 +51,7 @@ private:
         return VPN >= 0 && VPN < addressSpaceSize / pageSize;
     }
 
+    // Public methods
 public:
     PageTable() : pfManager(0)
     {
@@ -152,39 +160,44 @@ public:
         clockHand = activePages.begin();
     }
 
+    // private methods
 private:
     // Replace a page in memory using the clock algorithm
     void replacePageUsingClockAlgo(int VPN)
     {
-        int scanCount = 0;
-        const int maxScans = pfManager.getTotalFrames() * 2; // Max scans to avoid infinite loop
+        const int maxReferenceLevel = 3; // set to 3
 
-        // Scan the active pages for a page to replace
-        while (scanCount < maxScans)
+        // start from 0 to maxReferenceLevel
+        for (int targetReference = 0; targetReference <= maxReferenceLevel; ++targetReference)
         {
-            PageTableEntry *pageEntry = getPageEntryAtClockHand();
-            if (!pageEntry)
-            {
-                moveClockHandNext();
-                scanCount++;
-                continue;
-            }
+            int scanCount = 0;
+            const int maxScans = pfManager.getTotalFrames(); // one full scan
 
-            // If the page is valid and reference is 0, replace the page
-            if (pageEntry->valid)
+            // start scanning the active pages
+            while (scanCount < maxScans)
             {
-                if (pageEntry->reference == 0)
+                PageTableEntry *pageEntry = getPageEntryAtClockHand();
+                if (!pageEntry)
+                {
+                    moveClockHandNext();
+                    scanCount++;
+                    continue;
+                }
+
+                // If the page is valid and has the target reference, replace it
+                if (pageEntry->valid && pageEntry->reference == targetReference)
                 {
                     handlePageReplacement(VPN, *pageEntry);
-                    return;
+                    return; // page replaced
                 }
-                pageEntry->referenceDec();
-            }
 
-            moveClockHandNext();
-            scanCount++;
+                moveClockHandNext();
+                scanCount++;
+            }
         }
-        cerr << "Exceeded maximum scans, no frames available." << endl;
+
+        // If no page is replaced, throw an exception
+        cerr << "Exceeded max scans. No frames can be replaced." << endl;
         return;
     }
 

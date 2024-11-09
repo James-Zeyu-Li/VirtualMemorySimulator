@@ -32,6 +32,16 @@ public:
         return frame;
     }
 
+    void freeAFrame(int frame)
+    {
+        if (frame < 0 || frame >= totalFrames)
+        {
+            std::cerr << "Invalid frame number." << std::endl;
+            return;
+        }
+        freeFrames.push(frame);
+    }
+
     // get the total number of frames
     int getTotalFrames() const
     {
