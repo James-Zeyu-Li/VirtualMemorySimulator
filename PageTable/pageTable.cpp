@@ -50,41 +50,28 @@ public:
         clockHand = activePages.begin();
     };
 
-    // Initiate page table with a given size 4KB
-    void addPageTableEntry(int VPN, int PFN, int frameNumber, bool valid, bool dirty, bool read, bool write, bool execute, uint8_t reference)
+    void updatePageTable(int VPN, int frameNumber, bool valid, bool read, bool write, bool execute, bool dirty, uint8_t reference)
     {
         int l1Index = getL1Index(VPN);
         int l2Index = getL2Index(VPN);
 
-        pageTable[l1Index][l2Index] = PageTableEntry(frameNumber, valid, dirty, read, write, execute, reference);
-        if (activeVPNs.find(VPN) == activeVPNs.end())
-        {
-            activePages.push_back(VPN);
-            activeVPNs.insert(VPN);
-            if (activePages.size() == 1)
-            {
-                clockHand = activePages.begin();
-            }
-        }
-    }
-
-    void updatePageTable(int VPN, int pfn, bool valid, bool read, bool write, bool execute, bool dirty, uint8_t reference)
-    {
-        int l1Index = getL1Index(VPN);
-        int l2Index = getL2Index(VPN);
-
+        // Get the second level map
         auto &entry = checkL2(l1Index)[l2Index];
-        entry.frameNumber = pfn;
+
+        // Update the page table entry
+        entry.frameNumber = frameNumber;
         entry.valid = valid;
         entry.read = read;
         entry.write = write;
         entry.execute = execute;
         entry.dirty = dirty;
         entry.reference = reference;
-        if (activeVPNs.insert(VPN).second) // Insert VPN to activeVPNs if not already present
+
+        // if the page is valid, update the active pages
+        if (activeVPNs.insert(VPN).second)  // Insert VPN to activeVPNs
         {
             activePages.push_back(VPN);
-            if (activePages.size() == 1)
+            if (activePages.size() == 1)  // set clockHand to the first element
             {
                 clockHand = activePages.begin();
             }
@@ -102,15 +89,25 @@ public:
             pageTable[l1Index].find(l2Index) != pageTable[l1Index].end() &&
             pageTable[l1Index][l2Index].valid)
         {
-            incrementPageHits();
-            pageTable[l1Index][l2Index].referenceInc(); // increment the reference counter when used
+            pageTable[l1Index][l2Index].reference = 4; // set to 4
             return pageTable[l1Index][l2Index].frameNumber;
+
+            for (auto &l1Entry : pageTable)
+            {
+                for (auto &l2Entry : l1Entry.second)
+                {
+                    // Skip the current page
+                    if (l1Entry.first == l1Index && l2Entry.first == l2Index)
+                        continue;
+
+                    // decrement reference for all other pages if reference > 0
+                    if (l2Entry.second.reference > 0)
+                        l2Entry.second.reference--;
+                }
+            }
         }
         else
         {
-            // Page fault
-            // could call page fault handler here to handle the page fault
-            incrementPageFaults();
             return -1;
         }
     }
@@ -223,7 +220,7 @@ private:
 
     void writeBackToDisk(int frameNumber)
     {
-        continue;
+        skip;
     }
 
 public:
@@ -233,16 +230,5 @@ public:
         activePages.clear();
         activeVPNs.clear();
         clockHand = activePages.begin();
-        resetPageFaults();
-        resetPageHits();
     }
-
-    int getPageFaults() { return pageFaults; }
-    int getPageHits() { return pageHits; }
-
-private:
-    void incrementPageFaults() { pageFaults++; }
-    void incrementPageHits() { pageHits++; }
-    void resetPageFaults() { pageFaults = 0; }
-    void resetPageHits() { pageHits = 0; }
 };
