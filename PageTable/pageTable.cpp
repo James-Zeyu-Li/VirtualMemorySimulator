@@ -13,7 +13,8 @@ class PageTable
 private:
     // 2 layer map to simulate 2 layered page table
     unordered_map<int, unordered_map<int, PageTableEntry>> pageTable;
-    static const int pageSize = 4096; // 4KB
+    static const int addressSpaceSize = 4 * 1024 * 1024 * 1024; // 32 bit address space
+    static const int pageSize = 4096;                           // 4KB
     int pageFaults = 0;
     int pageHits = 0;
     int getL1Index(int VPN) { return VPN >> 10; }
@@ -28,7 +29,7 @@ private:
     // Check if the second level map exists, if not create one
     unordered_map<int, PageTableEntry> &checkL2(int l1Index)
     {
-        if (pageTable.find(l1Index) == pageTable.end())
+        if (pageTable.find(l1Index) == pageTable.end()) // if the first level map does not exist
         {
             pageTable[l1Index] = unordered_map<int, PageTableEntry>();
         }
@@ -37,6 +38,11 @@ private:
 
     list<int> activePages;         // Use list for efficient insertion/removal
     unordered_set<int> activeVPNs; // To avoid duplicate VPNs
+
+    bool isValidVPN(int VPN)
+    {
+        return VPN >= 0 && VPN < addressSpaceSize / pageSize;
+    }
 
 public:
     PageTable() : pfManager(0)
@@ -50,8 +56,14 @@ public:
         clockHand = activePages.begin();
     };
 
+    // Update the page table with the given VPN and PFN
     void updatePageTable(int VPN, int frameNumber, bool valid, bool read, bool write, bool execute, bool dirty, uint8_t reference)
     {
+        if (!isValidVPN(VPN))
+        {
+            cerr << "Invalid VPN." << VPN << "Out of range" << endl;
+            return;
+        }
         int l1Index = getL1Index(VPN);
         int l2Index = getL2Index(VPN);
 
@@ -81,6 +93,11 @@ public:
     // Lookup the page table for a given VPN and PFN
     int lookupPageTable(int VPN)
     {
+        if (!isValidVPN(VPN))
+        {
+            cerr << "Invalid VPN." << VPN << "Out of range" << endl;
+            return -1;
+        }
 
         int l1Index = getL1Index(VPN);
         int l2Index = getL2Index(VPN);
@@ -89,7 +106,7 @@ public:
             pageTable[l1Index].find(l2Index) != pageTable[l1Index].end() &&
             pageTable[l1Index][l2Index].valid)
         {
-            pageTable[l1Index][l2Index].reference = 4; // set to 4
+            pageTable[l1Index][l2Index].reference = 3; // set to 3
 
             for (auto &l1Entry : pageTable)
             {
@@ -126,13 +143,23 @@ public:
             replacePageUsingClockAlgo(VPN);
         }
     }
+    // Reset the page table
+    void resetPageTable()
+    {
+        pageTable.clear();
+        activePages.clear();
+        activeVPNs.clear();
+        clockHand = activePages.begin();
+    }
 
 private:
+    // Replace a page in memory using the clock algorithm
     void replacePageUsingClockAlgo(int VPN)
     {
         int scanCount = 0;
-        const int maxScans = pfManager.getTotalFrames() * 2;
+        const int maxScans = pfManager.getTotalFrames() * 2; // Max scans to avoid infinite loop
 
+        // Scan the active pages for a page to replace
         while (scanCount < maxScans)
         {
             PageTableEntry *pageEntry = getPageEntryAtClockHand();
@@ -143,6 +170,7 @@ private:
                 continue;
             }
 
+            // If the page is valid and reference is 0, replace the page
             if (pageEntry->valid)
             {
                 if (pageEntry->reference == 0)
@@ -160,6 +188,7 @@ private:
         return;
     }
 
+    // Get the page entry at the current clock hand position
     PageTableEntry *getPageEntryAtClockHand()
     {
         if (activePages.empty())
@@ -181,6 +210,7 @@ private:
         return &(it2->second);
     }
 
+    // Move the clock hand to the next position
     void moveClockHandNext()
     {
         if (activePages.empty())
@@ -192,6 +222,7 @@ private:
         }
     }
 
+    // Handle page replacement by replacing the old page with the new page
     void handlePageReplacement(int VPN, PageTableEntry &oldEntry)
     {
         int oldFrame = oldEntry.frameNumber;
@@ -219,17 +250,9 @@ private:
         updatePageTable(VPN, oldFrame, true, false, false, false, false, 0);
     }
 
+    // Write the page back to disk
     void writeBackToDisk(int frameNumber)
     {
         cout << "Writing frame " << frameNumber << " back to disk." << endl;
-    }
-
-public:
-    void resetPageTable()
-    {
-        pageTable.clear();
-        activePages.clear();
-        activeVPNs.clear();
-        clockHand = activePages.begin();
     }
 };
