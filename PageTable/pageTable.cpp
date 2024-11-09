@@ -16,7 +16,6 @@ private:
     int getL1Index(int VPN) { return VPN >> 10; }
     int getL2Index(int VPN) { return VPN & 0x3FF; }
     queue<int> freeFrames; // queue to keep track of free frames in physical memory
-    int clockHand = 0;     // used for the clock algorithm
     int totalFrames;       // total number of frames in physical memory
 
     // Check if the second level map exists, if not create one
@@ -106,51 +105,85 @@ public:
     }
 
 private:
+    pair<int, int> clockHand = {0, 0};
+
     void replacePageUsingClockAlgo(int VPN)
     {
-        bool replacementPageFound = false;
-        // start from the current clockHand position
-        auto it1 = pageTable.begin();
-        advance(it1, clockHand); // move to the current clockHand position
+        int scanCount = 0;
+        const int maxScans = totalFrames * 2;
 
-        while (!replacementPageFound)
+        while (scanCount < maxScans)
         {
-            // loop through the first level map
-            for (; it1 != pageTable.end(); ++it1)
+            // Get current page entry
+            auto pageEntry = getPageEntryAtClockHand();
+            if (!pageEntry)
             {
-                auto &secondLevel = it1->second;
-
-                // loop through the second level map
-                for (auto it2 = secondLevel.begin(); it2 != secondLevel.end(); ++it2)
-                {
-                    PageTableEntry &entry = it2->second;
-
-                    if (entry.valid)
-                    {
-                        if (entry.reference == 0)
-                        {
-                            // find the page to replace
-                            int oldFrame = entry.frameNumber;
-                            entry.reset();
-
-                            // use the old frame for the new page
-                            updatePageTable(VPN, oldFrame, true, false, false, false, false, 0);
-
-                            // update clockHand for next iteration
-                            clockHand = distance(pageTable.begin(), it1);
-                            return;
-                        }
-                        else
-                        {
-                            // no page found, decrement reference counter and move to next page
-                            entry.referenceDec();
-                        }
-                    }
-                }
+                moveClockHandNext();
+                continue;
             }
-            // if no page is found, reset the reference counter and start over
-            it1 = pageTable.begin();
+
+            // Check if page can be replaced
+            if (pageEntry->valid)
+            {
+                if (pageEntry->reference == 0)
+                {
+                    handlePageReplacement(VPN, *pageEntry);
+                    return;
+                }
+                pageEntry->referenceDec();
+            }
+
+            moveClockHandNext();
+            scanCount++;
         }
+        throw runtime_error("No available frames after maximum scans");
+    }
+
+    PageTableEntry *getPageEntryAtClockHand()
+    {
+        auto it1 = pageTable.find(clockHand.first);
+        if (it1 == pageTable.end())
+            return nullptr;
+
+        auto &secondLevel = it1->second;
+        auto it2 = secondLevel.find(clockHand.second);
+        if (it2 == secondLevel.end())
+            return nullptr;
+
+        return &(it2->second);
+    }
+
+    void moveClockHandNext()
+    {
+        clockHand.second++;
+        if (clockHand.second >= pageTable[clockHand.first].size())
+        {
+            clockHand.second = 0;
+            clockHand.first++;
+            if (clockHand.first >= pageTable.size())
+            {
+                clockHand = {0, 0};
+            }
+        }
+    }
+
+    void handlePageReplacement(int VPN, PageTableEntry &oldEntry)
+    {
+        int oldFrame = oldEntry.frameNumber;
+        if (oldEntry.dirty)
+        {
+            writeBackToDisk(oldFrame);
+        }
+        oldEntry.reset();
+        updatePageTable(VPN, oldFrame, true, false, false, false, false, 0);
+    }
+
+    void writeBackToDisk(int frameNumber)
+    {
+        // Write back to disk
+        // ...
+        // After writing back to disk, free the frame
+        freeFrames.push(frameNumber);
     }
 
 public:
