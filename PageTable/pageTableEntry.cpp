@@ -10,7 +10,7 @@ public:
     bool read;
     bool write;
     bool execute;
-    uint8_t reference; // This is used for the clock algorithm, binary
+    bool reference; // This is used for the clock algorithm, binary
 
     // Constructor
     PageTableEntry(uint32_t frameNumber = -1,
@@ -19,7 +19,7 @@ public:
                    bool read = false,
                    bool write = false,
                    bool execute = false,
-                   uint8_t reference = 0) : frameNumber(frameNumber), valid(valid), dirty(dirty),
+                   bool reference = 0) : frameNumber(frameNumber), valid(valid), dirty(dirty),
                                             read(read), write(write), execute(execute), reference(reference) {}
 
     void reset()
@@ -30,19 +30,19 @@ public:
         read = false;
         write = false;
         execute = false;
-        reference = 0;
+        reference = false;
     }
 
     // Increment the reference level, the max level is 3
     void referenceInc() {
-        if (reference < 3) {
-            reference++;
+        if (reference == false) {
+            reference = true;
         }
     }
 
     void referenceDec() {
-        if (reference > 0) {
-            reference--;
+        if (reference == true) {
+            reference = false;
         }
     }
 

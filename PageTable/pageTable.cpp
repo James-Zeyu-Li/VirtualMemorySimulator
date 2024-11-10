@@ -6,8 +6,6 @@
 #include "physicalFrameManager.cpp"
 #include <list>
 #include <unordered_set>
-// #include <cmath>
-// #define LOG2(x) ((x) <= 1 ? 0 : 1 + LOG2((x) / 2))
 using namespace std;
 
 class PageTable
@@ -52,7 +50,7 @@ private:
 
     // Public methods
 public:
-    PageTable() : pfManager(0)
+    PageTable() : pfManager(256) // Initiate page table with 256 frames
     {
         clockHand = activePages.begin();
     };
@@ -63,8 +61,44 @@ public:
         clockHand = activePages.begin();
     };
 
+    // Lookup the page table for a given VPN and PFN
+    int lookupPageTable(int VPN)
+    {
+        if (!isValidVPN(VPN))
+        {
+            cerr << "Invalid VPN." << VPN << "Out of range" << endl;
+            return -1;
+        }
+
+        int l1Index = getL1Index(VPN);
+        int l2Index = getL2Index(VPN);
+
+        if (pageTable.find(l1Index) != pageTable.end() &&
+            pageTable[l1Index].find(l2Index) != pageTable[l1Index].end() &&
+            pageTable[l1Index][l2Index].valid)
+        {
+            pageTable[l1Index][l2Index].reference = true;
+
+            // if the page is valid, update the active pages
+            if (activeVPNs.insert(VPN).second) // Insert VPN to activeVPNs
+            {
+                activePages.push_back(VPN);
+                if (activePages.size() == 1) // set clockHand to the first element
+                {
+                    clockHand = activePages.begin();
+                }
+            }
+
+            return pageTable[l1Index][l2Index].frameNumber;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
     // Update the page table with the given VPN and PFN
-    void updatePageTable(int VPN, int frameNumber, bool valid, bool dirty, bool read, bool write, bool execute, uint8_t reference)
+    void updatePageTable(int VPN, int frameNumber, bool valid, bool dirty, bool read, bool write, bool execute, bool reference)
     {
         if (!isValidVPN(VPN))
         {
@@ -87,7 +121,7 @@ public:
         entry.reference = reference;
 
         // if the page is valid, update the active pages
-        if (activeVPNs.insert(VPN).second) // Insert VPN to activeVPNs
+        if (valid && activeVPNs.insert(VPN).second)
         {
             activePages.push_back(VPN);
             if (activePages.size() == 1) // set clockHand to the first element
@@ -97,57 +131,31 @@ public:
         }
     }
 
-    // Lookup the page table for a given VPN and PFN
-    int lookupPageTable(int VPN)
+    // Handle page fault by replacing a page in memory, using the clock algorithm
+    bool handlePageFault(int VPN)
     {
+        // check if the VPN is valid
         if (!isValidVPN(VPN))
         {
             cerr << "Invalid VPN." << VPN << "Out of range" << endl;
-            return -1;
+            return false;
         }
 
-        int l1Index = getL1Index(VPN);
-        int l2Index = getL2Index(VPN);
-
-        if (pageTable.find(l1Index) != pageTable.end() &&
-            pageTable[l1Index].find(l2Index) != pageTable[l1Index].end() &&
-            pageTable[l1Index][l2Index].valid)
-        {
-            pageTable[l1Index][l2Index].reference = 3; // set to 3
-
-            for (auto &l1Entry : pageTable)
-            {
-                for (auto &l2Entry : l1Entry.second)
-                {
-                    // Skip the current page
-                    if (l1Entry.first == l1Index && l2Entry.first == l2Index)
-                        continue;
-
-                    // decrement reference for all other pages if reference > 0
-                    if (l2Entry.second.reference > 0)
-                        l2Entry.second.reference--;
-                }
-            }
-            return pageTable[l1Index][l2Index].frameNumber;
-        }
-        else
-        {
-            return -1;
-        }
-    }
-
-    // Handle page fault by replacing a page in memory, using the clock algorithm
-    void handlePageFault(int VPN)
-    {
         int newFrame = pfManager.allocateFrame();
         if (newFrame != -1)
         {
             // Add new VPN to activePages and activeVPNs
-            updatePageTable(VPN, newFrame, true, false, true, true, true, 0);
+            updatePageTable(VPN, newFrame, true, false, true, true, true, true);
+            return true;
         }
         else
         {
-            replacePageUsingClockAlgo(VPN);
+            if (!replacePageUsingClockAlgo(VPN))
+            {
+                cerr << "Failed to replace page for VPN: " << VPN << endl;
+                return false;
+            }
+            return true;
         }
     }
 
@@ -160,52 +168,108 @@ public:
         clockHand = activePages.begin();
     }
 
+    // Write the page back to disk
+    void writeBackToDisk(int frameNumber)
+    {
+        cout << "Writing frame " << frameNumber << " back to disk." << endl;
+    }
+
     // private methods
 private:
     // Replace a page in memory using the clock algorithm
-    void replacePageUsingClockAlgo(int VPN)
+    bool replacePageUsingClockAlgo(int newVPN)
     {
-        const int maxReferenceLevel = 3; // set to 3
+        const int maxScans = pfManager.getTotalFrames();
+        int scanCount = 0;
+        bool firstRound = true;
 
-        // start from 0 to maxReferenceLevel
-        for (int targetReference = 0; targetReference <= maxReferenceLevel; ++targetReference)
+        while (scanCount < maxScans || firstRound)
         {
-            int scanCount = 0;
-            const int maxScans = pfManager.getTotalFrames(); // one full scan
-
-            // start scanning the active pages
-            while (scanCount < maxScans)
+            PageTableEntry *pageEntry = getPageEntryAtClockHand();
+            if (pageEntry && pageEntry->valid)
             {
-                PageTableEntry *pageEntry = getPageEntryAtClockHand();
-                if (!pageEntry)
-                {
-                    moveClockHandNext();
-                    scanCount++;
-                    continue;
-                }
+                cout << "Checking VPN " << *clockHand << " - Reference: " << pageEntry->reference << endl;
 
-                // If the page is valid and has the target reference, replace it
-                if (pageEntry->valid && pageEntry->reference == targetReference)
+                if (!pageEntry->reference)
                 {
-                    handlePageReplacement(VPN, *pageEntry);
-                    return; // page replaced
+                    int oldVPN = *clockHand;
+                    cout << "Replacing VPN " << oldVPN << " with new VPN " << newVPN << endl;
+                    handlePageReplacement(newVPN, oldVPN, *pageEntry);
+                    return true;
                 }
-
-                moveClockHandNext();
-                scanCount++;
+                else
+                {
+                    cout << "Giving second chance to VPN " << *clockHand << endl;
+                    pageEntry->reference = false; // 重置引用位
+                }
             }
+            else
+            {
+                cout << "Skipping invalid or empty page entry at clock hand position." << endl;
+            }
+
+            moveClockHandNext();
+            scanCount++;
         }
 
-        // If no page is replaced, throw an exception
-        cerr << "Exceeded max scans. No frames can be replaced." << endl;
-        return;
+        cerr << "Error: No replaceable frame found after maximum scans." << endl;
+        return false;
+    }
+
+    // Handle page replacement by replacing the old page with the new page
+    void handlePageReplacement(int newVPN, int oldVPN, PageTableEntry &oldEntry)
+    {
+
+        if (!isValidVPN(newVPN) || !isValidVPN(oldVPN))
+        {
+            cerr << "Invalid VPN. newVPN: " << newVPN << ", oldVPN: " << oldVPN << " Out of range" << endl;
+            return;
+        }
+
+        int oldFrame = oldEntry.frameNumber;
+
+        // Handle dirty pages
+        if (oldEntry.dirty)
+        {
+            writeBackToDisk(oldFrame);
+        }
+
+        oldEntry.valid = false;
+        oldEntry.reset();
+
+        // Clean up old page table entry
+        int l1Index = getL1Index(oldVPN);
+        int l2Index = getL2Index(oldVPN);
+        pageTable[l1Index].erase(l2Index);
+        if (pageTable[l1Index].empty())
+        {
+            pageTable.erase(l1Index);
+        }
+
+        // Remove old VPN from tracking structures
+        activeVPNs.erase(oldVPN);
+        clockHand = activePages.erase(clockHand);
+        if (clockHand == activePages.end())
+        {
+            clockHand = activePages.begin();
+        }
+
+        // Add new VPN to tracking structures
+        activePages.insert(clockHand, newVPN);
+        activeVPNs.insert(newVPN);
+
+        // Update page table with new VPN
+        updatePageTable(newVPN, oldFrame, true, false, true, true, true, true);
     }
 
     // Get the page entry at the current clock hand position
     PageTableEntry *getPageEntryAtClockHand()
     {
         if (activePages.empty())
+        {
+            cerr << "Error: No active pages found." << endl;
             return nullptr;
+        }
 
         int currentVPN = *clockHand;
         int l1Index = getL1Index(currentVPN);
@@ -213,12 +277,18 @@ private:
 
         auto it1 = pageTable.find(l1Index);
         if (it1 == pageTable.end())
+        {
+            cerr << "Error: First level map not found." << endl;
             return nullptr;
+        }
 
         auto &secondLevel = it1->second;
         auto it2 = secondLevel.find(l2Index);
         if (it2 == secondLevel.end())
+        {
+            cerr << "Error: Second level map not found." << endl;
             return nullptr;
+        }
 
         return &(it2->second);
     }
@@ -227,7 +297,11 @@ private:
     void moveClockHandNext()
     {
         if (activePages.empty())
+        {
+            cerr << "The activePages is empty, clock hand can't be moved" << endl;
             return;
+        }
+
         ++clockHand;
         if (clockHand == activePages.end())
         {
@@ -235,37 +309,11 @@ private:
         }
     }
 
-    // Handle page replacement by replacing the old page with the new page
-    void handlePageReplacement(int VPN, PageTableEntry &oldEntry)
+    // Get the page entry at the current clock hand position
+    PageTableEntry *handleClockHand()
     {
-        int oldFrame = oldEntry.frameNumber;
-        int oldVPN = *clockHand;
-
-        if (oldEntry.dirty)
-        {
-            writeBackToDisk(oldFrame);
-        }
-        oldEntry.reset();
-
-        // Remove old VPN from activePages and activeVPNs
-        clockHand = activePages.erase(clockHand);
-        if (clockHand == activePages.end())
-        {
-            clockHand = activePages.begin();
-        }
-        activeVPNs.erase(oldVPN);
-
-        // Add new VPN to activePages and activeVPNs
-        activePages.insert(clockHand, VPN);
-        activeVPNs.insert(VPN);
-
-        // Update page table with new VPN
-        updatePageTable(VPN, oldFrame, true, false, true, true, true, 0);
-    }
-
-    // Write the page back to disk
-    void writeBackToDisk(int frameNumber)
-    {
-        cout << "Writing frame " << frameNumber << " back to disk." << endl;
+        PageTableEntry *pageEntry = getPageEntryAtClockHand();
+        moveClockHandNext();
+        return pageEntry;
     }
 };
