@@ -12,7 +12,7 @@ class PageTable
 {
 private:
     // 2 layer map to simulate 2 layered page table
-    unordered_map<int, unordered_map<int, PageTableEntry>> pageTable;
+    unordered_map<uint32_t, unordered_map<uint32_t, PageTableEntry>> pageTable;
     static const uint64_t addressSpaceSize = 4ULL * 1024 * 1024 * 1024; // 32-bit address space
     static const int pageSize = 4096;                                   // 4KB
     static const int addressBits = 32;
@@ -28,19 +28,19 @@ private:
     // Physical frame manager to manage the physical frames
     PhysicalFrameManager pfManager;
     // clock hand pair to keep track of the current position in the clock algorithm
-    list<int>::iterator clockHand; // Iterator for clock algorithm
+    list<uint32_t>::iterator clockHand; // Iterator for clock algorithm
 
     // Check if the second level map exists, if not create one
-    unordered_map<int, PageTableEntry> &checkL2(int l1Index)
+    unordered_map<uint32_t, PageTableEntry> &checkL2(uint32_t l1Index)
     {
         if (pageTable.find(l1Index) == pageTable.end()) // if the first level map does not exist
         {
-            pageTable[l1Index] = unordered_map<int, PageTableEntry>(); // create a new second level map
+            pageTable[l1Index] = unordered_map<uint32_t, PageTableEntry>(); // create a new second level map
         }
         return pageTable[l1Index]; // return the second level map
     }
 
-    list<int> activePages;         // Use list for efficient insertion/removal
+    list<uint32_t> activePages;         // Use list for efficient insertion/removal
     unordered_set<uint32_t> activeVPNs; // To avoid duplicate VPNs
 
     bool isValidVPN(uint32_t VPN)
@@ -56,13 +56,13 @@ public:
     };
 
     // Initiate page table with a given size
-    PageTable(int totalFrames) : pfManager(totalFrames)
+    PageTable(uint32_t totalFrames) : pfManager(totalFrames)
     {
         clockHand = activePages.begin();
     };
 
     // Lookup the page table for a given VPN and PFN
-    int lookupPageTable(uint32_t VPN)
+    int32_t lookupPageTable(uint32_t VPN)
     {
         if (!isValidVPN(VPN))
         {
@@ -70,8 +70,8 @@ public:
             return -1;
         }
 
-        int l1Index = getL1Index(VPN);
-        int l2Index = getL2Index(VPN);
+        uint32_t l1Index = getL1Index(VPN);
+        uint32_t l2Index = getL2Index(VPN);
 
         if (pageTable.find(l1Index) != pageTable.end() &&
             pageTable[l1Index].find(l2Index) != pageTable[l1Index].end() &&
@@ -105,8 +105,8 @@ public:
             cerr << "Invalid VPN." << VPN << "Out of range" << endl;
             return;
         }
-        int l1Index = getL1Index(VPN);
-        int l2Index = getL2Index(VPN);
+        uint32_t l1Index = getL1Index(VPN);
+        uint32_t l2Index = getL2Index(VPN);
 
         // Get the second level map
         auto &entry = checkL2(l1Index)[l2Index];
@@ -192,7 +192,7 @@ private:
 
                 if (!pageEntry->reference)
                 {
-                    int oldVPN = *clockHand;
+                    uint32_t oldVPN = *clockHand;
                     cout << "Replacing VPN " << oldVPN << " with new VPN " << newVPN << endl;
                     handlePageReplacement(newVPN, oldVPN, *pageEntry);
                     return true;
@@ -226,7 +226,7 @@ private:
             return;
         }
 
-        int oldFrame = oldEntry.frameNumber;
+        uint32_t oldFrame = oldEntry.frameNumber;
 
         // Handle dirty pages
         if (oldEntry.dirty)
@@ -238,8 +238,8 @@ private:
         oldEntry.reset();
 
         // Clean up old page table entry
-        int l1Index = getL1Index(oldVPN);
-        int l2Index = getL2Index(oldVPN);
+        uint32_t l1Index = getL1Index(oldVPN);
+        uint32_t l2Index = getL2Index(oldVPN);
         pageTable[l1Index].erase(l2Index);
         if (pageTable[l1Index].empty())
         {
@@ -272,8 +272,8 @@ private:
         }
 
         uint32_t currentVPN = *clockHand;
-        int l1Index = getL1Index(currentVPN);
-        int l2Index = getL2Index(currentVPN);
+        uint32_t l1Index = getL1Index(currentVPN);
+        uint32_t l2Index = getL2Index(currentVPN);
 
         auto it1 = pageTable.find(l1Index);
         if (it1 == pageTable.end())
