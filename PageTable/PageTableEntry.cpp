@@ -1,5 +1,5 @@
 
-#include "pageTableEntry.h"
+#include "PageTableEntry.h"
 
 // Constructor
 PageTableEntry::PageTableEntry(uint32_t frameNumber,
