@@ -6,8 +6,9 @@
 #include <list>
 #include <vector>
 #include <cstdint>
-#include "PageTable/PageTable.h"
+#include "PageTable/PageTable.cpp"
 #include "PageTable/TLB.h"
+#include "PageTable/TLBEntry.h"
 
 using namespace std;
 
@@ -40,6 +41,7 @@ private:
     uint32_t pageSize;
     Process getCurrentProcess(uint32_t pid);
     bool createProcess(uint32_t pid, uint32_t numPages);
+    uint32_t translateVirtualAddress(uint32_t virtualAddress);
 
 public:
     Simulator(uint32_t numFrames, uint32_t pageSize, uint32_t tlbSize, const vector<uint32_t>& processMemSizes);
@@ -73,8 +75,64 @@ Simulator::Simulator(uint32_t numFrames, uint32_t pageSize, uint32_t tlbSize, co
     currentProcessId = -1;
 }
 
-void Simulator::accessMemory(uint32_t virtualAddress){
-    // TODO: integrate translation code
+// Translation function implementation
+uint32_t Simulator::translateVirtualAddress(uint32_t virtualAddress) {
+    // Constants for address components based on page size
+    const int pageOffsetBits = 12; // 4KB page size
+    const uint32_t pageSize = 1 << pageOffsetBits;
+    const uint32_t pageOffsetMask = pageSize - 1;
+
+    // Calculate VPN (Virtual Page Number) and offset within the page
+    uint32_t vpn = virtualAddress >> pageOffsetBits;
+    uint32_t offset = virtualAddress & pageOffsetMask;
+
+    // 1. Check the TLB first for the VPN
+    int pfn = tlb.lookupTLB(vpn);
+    if (pfn != -1) {
+        // TLB hit - construct the physical address
+        std::cout << "TLB hit for VPN " << vpn << ", PFN: " << pfn << std::endl;
+        return (pfn << pageOffsetBits) | offset;
+    }
+
+    // 2. TLB miss - check the page table
+    Process& process = processTable[currentProcessId];
+    PageTable* pageTable = process.getPageTable();
+    pfn = pageTable->lookupPageTable(vpn);
+    if (pfn != -1) {
+        // Page table hit - update TLB and return physical address
+        std::cout << "Page table hit for VPN " << vpn << ", PFN: " << pfn << std::endl;
+        tlb.updateTLB(vpn, pfn, true, true, true); // Update TLB with permissions as needed
+        return (pfn << pageOffsetBits) | offset;
+    }
+
+    // 3. Page fault - Handle page fault
+    std::cout << "Page fault for VPN " << vpn << std::endl;
+    if (!pageTable->handlePageFault(vpn)) {
+        std::cerr << "Error: Unable to handle page fault for VPN " << vpn << std::endl;
+        return UINT32_MAX; // Return an error if page fault handling fails
+    }
+
+    // Retry after handling page fault
+    pfn = pageTable->lookupPageTable(vpn);
+    if (pfn != -1) {
+        tlb.updateTLB(vpn, pfn, true, true, true); // Update TLB after page fault resolution
+        return (pfn << pageOffsetBits) | offset;
+    }
+
+    // If we still can't resolve the address, return an error
+    std::cerr << "Error: Failed to translate virtual address " << virtualAddress << std::endl;
+    return UINT32_MAX;
+}
+
+// Simulator constructor and other methods...
+
+void Simulator::accessMemory(uint32_t virtualAddress) {
+    uint32_t physicalAddress = translateVirtualAddress(virtualAddress);
+    if (physicalAddress != UINT32_MAX) {
+        std::cout << "Translated Virtual Address " << std::hex << virtualAddress
+                  << " to Physical Address " << physicalAddress << std::endl;
+    } else {
+        std::cerr << "Error: Translation failed for Virtual Address " << std::hex << virtualAddress << std::endl;}
 }
 
 void Simulator::switchProcess(uint32_t pid){
