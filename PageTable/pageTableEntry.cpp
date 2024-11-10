@@ -2,14 +2,14 @@
 #include "pageTableEntry.h"
 
 // Constructor
-PageTableEntry::PageTableEntry(uint32_t frameNumber = static_cast<uint32_t>(-1),
+PageTableEntry::PageTableEntry(uint32_t frameNumber,
                                bool valid = false,
                                bool dirty = false,
                                bool read = false,
                                bool write = false,
                                bool execute = false,
-                               uint8_t reference = 0) : frameNumber(frameNumber), valid(valid), dirty(dirty),
-                                                        read(read), write(write), execute(execute), reference(reference) {}
+                               bool reference = false) : frameNumber(frameNumber), valid(valid), dirty(dirty),
+                                                         read(read), write(write), execute(execute), reference(reference) {}
 
 void PageTableEntry::reset()
 {
@@ -19,7 +19,7 @@ void PageTableEntry::reset()
     read = false;
     write = false;
     execute = false;
-    reference = 0;
+    reference = false;
 }
 
 // Increment the reference level, the
