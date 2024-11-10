@@ -2,6 +2,7 @@
 #define PAGETABLEENTRY_H
 
 #include <cstdint>
+#include <sstream>
 
 class PageTableEntry
 {
@@ -31,6 +32,18 @@ public:
 
     // Set reference bit to false
     void referenceDec();
+
+    // Return a string representation of the page entry
+    std::string toString() const
+    {
+        std::ostringstream oss;
+        oss << "{ Frame: " << frameNumber
+            << ", Valid: " << valid
+            << ", Dirty: " << dirty
+            << ", Reference: " << static_cast<int>(reference)
+            << " }";
+        return oss.str();
+    }
 };
 
 #endif // PAGETABLEENTRY_H
