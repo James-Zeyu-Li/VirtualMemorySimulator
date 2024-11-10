@@ -3,7 +3,7 @@
 #include <vector>
 #include <iostream>
 using namespace std;
-#include "physicalFrameManger.h"
+#include "PhysicalFrameManager.h"
 
 PhysicalFrameManager::PhysicalFrameManager(uint32_t totalFrames) : totalFrames(totalFrames)
 {
