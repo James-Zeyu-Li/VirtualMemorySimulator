@@ -6,8 +6,8 @@ using namespace std;
 
 class TLBEntry {
 public:
-    int vpn;  // Virtual Page Number
-    int pfn;  // Physical Frame Number
+    uint32_t vpn;  // Virtual Page Number
+    uint32_t pfn;  // Physical Frame Number
     bool valid;
     bool read;
     bool write;
@@ -17,19 +17,19 @@ public:
     // Constructor
     TLBEntry() : vpn(-1), pfn(-1), valid(false), read(false), write(false), execute(false), lastAccessTime(0) {}
 
-    TLBEntry(int vpn, int pfn, bool valid, bool read, bool write, bool execute, long lastAccessTime)
+    TLBEntry(uint32_t vpn, uint32_t pfn, bool valid, bool read, bool write, bool execute, long lastAccessTime)
         : vpn(vpn), pfn(pfn), valid(valid), read(read), write(write), execute(execute), lastAccessTime(lastAccessTime) {}
 };
 
 class TLB {
 public:
-    int size;  // TLB size
-    unordered_map<int, TLBEntry> entries;  // Unordered map to simulate the TLB
+    uint32_t size;  // TLB size
+    unordered_map<uint32_t, TLBEntry> entries;  // Unordered map to simulate the TLB
 
-    TLB(int size) : size(size) {}
+    TLB(uint32_t size) : size(size) {}
 
     // Lookup function to check if a VPN is in TLB
-    int lookupTLB(int vpn) {
+    int lookupTLB(uint32_t vpn) {
         auto expectEntry = entries.find(vpn);
         // checks if the VPN was found in the map and if the entry is valid.
         if (expectEntry != entries.end() && expectEntry->second.valid) {
@@ -41,7 +41,7 @@ public:
     }
 
     // Update TLB with a new entry or modify an existing one
-    void updateTLB(int vpn, int pfn, bool read, bool write, bool execute) {
+    void updateTLB(uint32_t vpn, uint32_t pfn, bool read, bool write, bool execute) {
         long currentTime = time(0);
         entries[vpn] = TLBEntry(vpn, pfn, true, read, write, execute, currentTime);
     }

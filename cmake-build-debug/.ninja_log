@@ -8,3 +8,5 @@
 6	563	1731261879958109359	CMakeFiles/VirtualMemorySimulator.dir/PageTable/pageTable.cpp.o	aaeab3d791b6787d
 6	675	1731261879957785069	CMakeFiles/VirtualMemorySimulator.dir/PageTable/test/testPage.cpp.o	2763621fb7611613
 675	2236	1731261880627028120	VirtualMemorySimulator	a9e54bcfb2730d5e
+8	499	1731263054762652763	CMakeFiles/VirtualMemorySimulator.dir/PageTable/TLB.cpp.o	33b98ee2f49a8ba9
+499	534	1731263055254000763	VirtualMemorySimulator	a9e54bcfb2730d5e
