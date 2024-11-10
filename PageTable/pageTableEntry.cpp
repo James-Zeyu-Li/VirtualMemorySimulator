@@ -4,7 +4,7 @@
 class PageTableEntry
 {
 public:
-    int frameNumber;
+    uint32_t frameNumber;
     bool valid;
     bool dirty;
     bool read;
@@ -13,7 +13,7 @@ public:
     uint8_t reference; // This is used for the clock algorithm, binary
 
     // Constructor
-    PageTableEntry(int frameNumber = -1,
+    PageTableEntry(uint32_t frameNumber = -1,
                    bool valid = false,
                    bool dirty = false,
                    bool read = false,
@@ -33,6 +33,7 @@ public:
         reference = 0;
     }
 
+    // Increment the reference level, the max level is 3
     void referenceInc() {
         if (reference < 3) {
             reference++;
