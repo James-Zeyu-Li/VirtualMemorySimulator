@@ -1,9 +1,10 @@
 // This is the implementation of the page table
 #include <unordered_map>
 #include <cstdint>
-#include "pageTableEntry.cpp"
+#include <iostream>
+#include "PageTableEntry.h"
 #include <queue>
-#include "physicalFrameManager.cpp"
+#include "PhysicalFrameManager.h"
 #include <list>
 #include <unordered_set>
 using namespace std;
@@ -77,7 +78,12 @@ public:
             pageTable[l1Index].find(l2Index) != pageTable[l1Index].end() &&
             pageTable[l1Index][l2Index].valid)
         {
-            pageTable[l1Index][l2Index].reference = true;
+            if (pageTable[l1Index][l2Index].reference < 3)
+            {
+                pageTable[l1Index][l2Index].referenceInc();
+                cout << "After incrementing reference, VPN " << VPN
+                     << " has reference " << (int)pageTable[l1Index][l2Index].reference << endl;
+            }
 
             // if the page is valid, update the active pages
             if (activeVPNs.insert(VPN).second) // Insert VPN to activeVPNs
@@ -98,7 +104,7 @@ public:
     }
 
     // Update the page table with the given VPN and PFN
-    void updatePageTable(uint32_t VPN, uint32_t frameNumber, bool valid, bool dirty, bool read, bool write, bool execute, bool reference)
+    void updatePageTable(uint32_t VPN, uint32_t frameNumber, bool valid, bool dirty, bool read, bool write, bool execute, uint8_t reference)
     {
         if (!isValidVPN(VPN))
         {
@@ -145,7 +151,7 @@ public:
         if (newFrame != -1)
         {
             // Add new VPN to activePages and activeVPNs
-            updatePageTable(VPN, newFrame, true, false, true, true, true, true);
+            updatePageTable(VPN, newFrame, true, false, true, true, true, 0);
             return true;
         }
         else
@@ -174,57 +180,101 @@ public:
         cout << "Writing frame " << frameNumber << " back to disk." << endl;
     }
 
+    // Remove the address for one entry
+    // delete the VPN from the pageTable and activePages
+    void removeAddressForOneEntry(uint32_t VPN)
+    {
+        uint32_t l1Index = getL1Index(VPN);
+        uint32_t l2Index = getL2Index(VPN);
+
+        // delete the VPN from the pageTable
+        pageTable[l1Index].erase(l2Index);
+        if (pageTable[l1Index].empty())
+        {
+            pageTable.erase(l1Index);
+        }
+
+        // delete the VPN from the activeVPNs
+        activeVPNs.erase(VPN);
+        removeFromActivePages(VPN);
+    }
+
     // private methods
 private:
     // Replace a page in memory using the clock algorithm
     bool replacePageUsingClockAlgo(uint32_t newVPN)
     {
-        const int maxScans = pfManager.getTotalFrames();
-        int scanCount = 0;
-        bool firstRound = true;
-
-        while (scanCount < maxScans || firstRound)
+        if (activePages.empty())
         {
-            PageTableEntry *pageEntry = getPageEntryAtClockHand();
-            if (pageEntry && pageEntry->valid)
-            {
-                cout << "Checking VPN " << *clockHand << " - Reference: " << pageEntry->reference << endl;
+            cerr << "Error: No active pages available for replacement." << endl;
+            return false;
+        }
 
-                if (!pageEntry->reference)
+        const int maxScans = pfManager.getTotalFrames();
+
+        while (true) // loop until a page is replaced
+        {
+            int scanCount = 0;
+            while (scanCount < maxScans)
+            {
+                PageTableEntry *pageEntry = getPageEntryAtClockHand();
+                if (pageEntry && pageEntry->valid)
                 {
-                    uint32_t oldVPN = *clockHand;
-                    cout << "Replacing VPN " << oldVPN << " with new VPN " << newVPN << endl;
-                    handlePageReplacement(newVPN, oldVPN, *pageEntry);
-                    return true;
+                    cout << "Checking VPN " << *clockHand << " - Reference: " << pageEntry->reference << endl;
+
+                    if (pageEntry->reference == 0)
+                    {
+                        int oldVPN = *clockHand;
+                        cout << "Replacing VPN " << oldVPN << " with new VPN " << newVPN << endl;
+                        handlePageReplacement(newVPN, oldVPN, *pageEntry);
+                        return true;
+                    }
                 }
                 else
                 {
-                    cout << "Giving second chance to VPN " << *clockHand << endl;
-                    pageEntry->reference = false; // 重置引用位
+                    cout << "Skipping invalid or empty page entry at clock hand position." << endl;
                 }
-            }
-            else
-            {
-                cout << "Skipping invalid or empty page entry at clock hand position." << endl;
+                moveClockHandNext();
+                scanCount++;
             }
 
-            moveClockHandNext();
-            scanCount++;
+            // if no page is replaced after maxScans, decrement the reference counter for all pages
+            decrementAllReferenceCounters();
         }
 
         cerr << "Error: No replaceable frame found after maximum scans." << endl;
         return false;
     }
 
+    void decrementAllReferenceCounters()
+    {
+        for (int VPN : activePages)
+        {
+            int l1Index = getL1Index(VPN);
+            int l2Index = getL2Index(VPN);
+
+            auto it1 = pageTable.find(l1Index);
+            if (it1 == pageTable.end())
+            {
+                cerr << "Error: First level map not found." << endl;
+                return;
+            }
+
+            auto &secondLevel = it1->second;
+            auto it2 = secondLevel.find(l2Index);
+            if (it2 == secondLevel.end())
+            {
+                cerr << "Error: Second level map not found." << endl;
+                return;
+            }
+
+            it2->second.referenceDec();
+        }
+    }
+
     // Handle page replacement by replacing the old page with the new page
     void handlePageReplacement(uint32_t newVPN, uint32_t oldVPN, PageTableEntry &oldEntry)
     {
-
-        if (!isValidVPN(newVPN) || !isValidVPN(oldVPN))
-        {
-            cerr << "Invalid VPN. newVPN: " << newVPN << ", oldVPN: " << oldVPN << " Out of range" << endl;
-            return;
-        }
 
         uint32_t oldFrame = oldEntry.frameNumber;
 
@@ -259,7 +309,7 @@ private:
         activeVPNs.insert(newVPN);
 
         // Update page table with new VPN
-        updatePageTable(newVPN, oldFrame, true, false, true, true, true, true);
+        updatePageTable(newVPN, oldFrame, true, false, true, true, true, 0);
     }
 
     // Get the page entry at the current clock hand position
@@ -315,5 +365,46 @@ private:
         PageTableEntry *pageEntry = getPageEntryAtClockHand();
         moveClockHandNext();
         return pageEntry;
+    }
+
+    // Remove the address for all entries
+    void removeFromActivePages(uint32_t VPN)
+    {
+        auto it = find(activePages.begin(), activePages.end(), VPN);
+        if (it != activePages.end())
+        {
+            // delete the VPN from the activePages
+            if (it == clockHand)
+            {
+                clockHand = activePages.erase(it);
+                if (clockHand == activePages.end())
+                {
+                    clockHand = activePages.begin();
+                }
+            }
+            else
+            {
+                activePages.erase(it);
+            }
+        }
+    }
+
+public:
+    // for testing purposes only
+    void printPageTable() const
+    {
+        for (const auto &l1Entry : pageTable)
+        {
+            for (const auto &l2Entry : l1Entry.second)
+            {
+                const auto &entry = l2Entry.second;
+                std::cout << "VPN: " << (l1Entry.first << l2Bits | l2Entry.first)
+                          << " -> Frame Number: " << entry.frameNumber
+                          << ", Valid: " << entry.valid
+                          << ", Dirty: " << entry.dirty
+                          << ", Reference: " << (int)entry.reference
+                          << std::endl;
+            }
+        }
     }
 };

@@ -12,16 +12,16 @@ public:
     bool read;            // Read permission
     bool write;           // Write permission
     bool execute;         // Execute permission
-    bool reference;       // Reference bit for clock algorithm (0 or 1)
+    uint8_t reference;    // Reference level for clock algorithm (0 to 3)
 
-    // Constructor with default parameters
+    // Constructor with default parameters in header file only
     PageTableEntry(uint32_t frameNumber = static_cast<uint32_t>(-1),
                    bool valid = false,
                    bool dirty = false,
                    bool read = false,
                    bool write = false,
                    bool execute = false,
-                   bool reference = false);
+                   uint8_t reference = 0);
 
     // Reset the page entry to default values
     void reset();

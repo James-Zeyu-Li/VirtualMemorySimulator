@@ -3,38 +3,40 @@
 
 // Constructor
 PageTableEntry::PageTableEntry(uint32_t frameNumber,
-                               bool valid = false,
-                               bool dirty = false,
-                               bool read = false,
-                               bool write = false,
-                               bool execute = false,
-                               bool reference = false) : frameNumber(frameNumber), valid(valid), dirty(dirty),
-                                                         read(read), write(write), execute(execute), reference(reference) {}
+                               bool valid,
+                               bool dirty,
+                               bool read,
+                               bool write,
+                               bool execute,
+                               uint8_t reference)
+    : frameNumber(frameNumber), valid(valid), dirty(dirty),
+      read(read), write(write), execute(execute), reference(reference) {}
 
 void PageTableEntry::reset()
 {
-    frameNumber = static_cast<uint32_t>(-1);
+    frameNumber = static_cast<uint32_t>(-1); // Using UINT32_MAX to represent invalid frame number
     valid = false;
     dirty = false;
     read = false;
     write = false;
     execute = false;
-    reference = false;
+    reference = 0;
 }
 
-// Increment the reference level, the
+// Increment the reference level, with max level 3
 void PageTableEntry::referenceInc()
 {
-    if (reference == false)
+    if (reference < 3)
     {
-        reference = true;
+        reference++;
     }
 }
 
+// Decrement the reference level, with min level 0
 void PageTableEntry::referenceDec()
 {
-    if (reference == true)
+    if (reference > 0)
     {
-        reference = false;
+        reference--;
     }
 }
