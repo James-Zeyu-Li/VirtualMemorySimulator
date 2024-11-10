@@ -25,3 +25,18 @@ Key Features
         - This will make the first look up go through the page table twice but the next evection will be finding the first false among all pages.
         - (Using time as an reference to change the reference bit is another good choice which is not implemented.)
 - This approach reduces unnecessary resets and enables efficient page replacement by ensuring only necessary changes to the reference bit, improving swap performance.
+
+
+### Future Work
+
+- 	Global Reference Bit Management:
+	- On each lookupPageTable call, the reference bit of the accessed page is set to 3, while all other pages have their reference bit decremented -1 (if above 0). 
+
+- 	Page Fault Handling and Frame Allocation:
+    - When a page fault occurs, the handlePageFault function attempts to allocate a new frame. 
+    - If no frames are available, the clock algorithm is triggered to free up memory by replacing an existing page.
+    - Check if any page has a reference bit of 0, if not decrement the reference bit for all entries and check again. 
+
+- When context switch instead of clear everything, save it to physical memory which can be located through PTBR which get the page table back for the process
+    - maybe only save only 1 or 2 process's page table 
+

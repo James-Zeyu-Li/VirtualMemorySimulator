@@ -7,15 +7,15 @@ using namespace std;
 class PhysicalFrameManager
 {
 private:
-    queue<int> freeFrames; // to store the free frames
-    int totalFrames;
+    queue<uint32_t> freeFrames; // to store the free frames
+    uint32_t totalFrames;
 
 public:
     // Constructor to initialize the total number of frames
     // used in page table to initialize
-    PhysicalFrameManager(int totalFrames) : totalFrames(totalFrames)
+    PhysicalFrameManager(uint32_t totalFrames) : totalFrames(totalFrames)
     {
-        for (int i = 0; i < totalFrames; ++i)
+        for (uint32_t i = 0; i < totalFrames; ++i)
         {
             freeFrames.push(i);
         }
@@ -23,19 +23,19 @@ public:
 
     // allocate a frame, if no free frames return -1,
     // used in pageTable page replacement
-    int allocateFrame()
+    uint32_t allocateFrame()
     {
         if (freeFrames.empty())
         {
             return -1;
         }
-        int frame = freeFrames.front();
+        uint32_t frame = freeFrames.front();
         freeFrames.pop();
         return frame;
     }
 
     // free a frame, if the frame is invalid, print error message
-    void freeAFrame(int frame)
+    void freeAFrame(uint32_t frame)
     {
         if (frame < 0 || frame >= totalFrames)
         {
