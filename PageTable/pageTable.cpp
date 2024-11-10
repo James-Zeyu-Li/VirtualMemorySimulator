@@ -24,12 +24,11 @@ private:
     static const int l1Bits = vpnBits / 2;
     static const int l2Bits = vpnBits - l1Bits;
 
-    int getL1Index(int VPN) { return VPN >> l2Bits; }
-    int getL2Index(int VPN) { return VPN & ((1 << l2Bits) - 1); }
+    int getL1Index(int VPN) { return VPN >> l2Bits; }             // shift right by l2Bits
+    int getL2Index(int VPN) { return VPN & ((1 << l2Bits) - 1); } // get the last l2Bits
 
     // Physical frame manager to manage the physical frames
     PhysicalFrameManager pfManager;
-
     // clock hand pair to keep track of the current position in the clock algorithm
     list<int>::iterator clockHand; // Iterator for clock algorithm
 
@@ -38,7 +37,7 @@ private:
     {
         if (pageTable.find(l1Index) == pageTable.end()) // if the first level map does not exist
         {
-            pageTable[l1Index] = unordered_map<int, PageTableEntry>();
+            pageTable[l1Index] = unordered_map<int, PageTableEntry>(); // create a new second level map
         }
         return pageTable[l1Index]; // return the second level map
     }
@@ -65,7 +64,7 @@ public:
     };
 
     // Update the page table with the given VPN and PFN
-    void updatePageTable(int VPN, int frameNumber, bool valid, bool read, bool write, bool execute, bool dirty, uint8_t reference)
+    void updatePageTable(int VPN, int frameNumber, bool valid, bool dirty, bool read, bool write, bool execute, uint8_t reference)
     {
         if (!isValidVPN(VPN))
         {
@@ -81,10 +80,10 @@ public:
         // Update the page table entry
         entry.frameNumber = frameNumber;
         entry.valid = valid;
+        entry.dirty = dirty;
         entry.read = read;
         entry.write = write;
         entry.execute = execute;
-        entry.dirty = dirty;
         entry.reference = reference;
 
         // if the page is valid, update the active pages
@@ -144,13 +143,14 @@ public:
         if (newFrame != -1)
         {
             // Add new VPN to activePages and activeVPNs
-            updatePageTable(VPN, newFrame, true, false, false, false, false, 0);
+            updatePageTable(VPN, newFrame, true, false, true, true, true, 0);
         }
         else
         {
             replacePageUsingClockAlgo(VPN);
         }
     }
+
     // Reset the page table
     void resetPageTable()
     {
@@ -260,7 +260,7 @@ private:
         activeVPNs.insert(VPN);
 
         // Update page table with new VPN
-        updatePageTable(VPN, oldFrame, true, false, false, false, false, 0);
+        updatePageTable(VPN, oldFrame, true, false, true, true, true, 0);
     }
 
     // Write the page back to disk
