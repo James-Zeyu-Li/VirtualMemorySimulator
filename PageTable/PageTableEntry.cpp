@@ -3,13 +3,13 @@
 
 // Constructor
 PageTableEntry::PageTableEntry(uint32_t frameNumber,
-                               bool valid = false,
-                               bool dirty = false,
-                               bool read = false,
-                               bool write = false,
-                               bool execute = false,
-                               bool reference = false) : frameNumber(frameNumber), valid(valid), dirty(dirty),
-                                                         read(read), write(write), execute(execute), reference(reference) {}
+                               bool valid,
+                               bool dirty,
+                               bool read,
+                               bool write,
+                               bool execute,
+                               bool reference) : frameNumber(frameNumber), valid(valid), dirty(dirty),
+                                                 read(read), write(write), execute(execute), reference(reference) {}
 
 void PageTableEntry::reset()
 {

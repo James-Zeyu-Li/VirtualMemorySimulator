@@ -8,4 +8,8 @@ add_executable(VirtualMemorySimulator
     PageTable/pageTable.cpp
     PageTable/pageTableEntry.cpp
     PageTable/physicalFrameManager.cpp
-        PageTable/TLB.cpp)
+        PageTable/TLB.cpp
+        PageTable/MemoryManager.h
+        PageTable/MemoryManager.cpp
+        PageTable/PhysicalFrameManager.h
+        PageTable/test/MemoryManagerTest.cpp)

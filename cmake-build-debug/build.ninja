@@ -79,6 +79,18 @@ build CMakeFiles/VirtualMemorySimulator.dir/PageTable/TLB.cpp.o: CXX_COMPILER__V
   OBJECT_DIR = CMakeFiles/VirtualMemorySimulator.dir
   OBJECT_FILE_DIR = CMakeFiles/VirtualMemorySimulator.dir/PageTable
 
+build CMakeFiles/VirtualMemorySimulator.dir/PageTable/MemoryManager.cpp.o: CXX_COMPILER__VirtualMemorySimulator_unscanned_Debug /Users/tianyu/Documents/NEU/2024$ Fall/CS5600/VirtualMemorySimulator/PageTable/MemoryManager.cpp || cmake_object_order_depends_target_VirtualMemorySimulator
+  DEP_FILE = CMakeFiles/VirtualMemorySimulator.dir/PageTable/MemoryManager.cpp.o.d
+  FLAGS = -g -std=gnu++14 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -mmacosx-version-min=14.0 -fcolor-diagnostics
+  OBJECT_DIR = CMakeFiles/VirtualMemorySimulator.dir
+  OBJECT_FILE_DIR = CMakeFiles/VirtualMemorySimulator.dir/PageTable
+
+build CMakeFiles/VirtualMemorySimulator.dir/PageTable/test/MemoryManagerTest.cpp.o: CXX_COMPILER__VirtualMemorySimulator_unscanned_Debug /Users/tianyu/Documents/NEU/2024$ Fall/CS5600/VirtualMemorySimulator/PageTable/test/MemoryManagerTest.cpp || cmake_object_order_depends_target_VirtualMemorySimulator
+  DEP_FILE = CMakeFiles/VirtualMemorySimulator.dir/PageTable/test/MemoryManagerTest.cpp.o.d
+  FLAGS = -g -std=gnu++14 -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -mmacosx-version-min=14.0 -fcolor-diagnostics
+  OBJECT_DIR = CMakeFiles/VirtualMemorySimulator.dir
+  OBJECT_FILE_DIR = CMakeFiles/VirtualMemorySimulator.dir/PageTable/test
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target VirtualMemorySimulator
@@ -87,7 +99,7 @@ build CMakeFiles/VirtualMemorySimulator.dir/PageTable/TLB.cpp.o: CXX_COMPILER__V
 #############################################
 # Link the executable VirtualMemorySimulator
 
-build VirtualMemorySimulator: CXX_EXECUTABLE_LINKER__VirtualMemorySimulator_Debug CMakeFiles/VirtualMemorySimulator.dir/PageTable/test/testPage.cpp.o CMakeFiles/VirtualMemorySimulator.dir/PageTable/pageTable.cpp.o CMakeFiles/VirtualMemorySimulator.dir/PageTable/pageTableEntry.cpp.o CMakeFiles/VirtualMemorySimulator.dir/PageTable/physicalFrameManager.cpp.o CMakeFiles/VirtualMemorySimulator.dir/PageTable/TLB.cpp.o
+build VirtualMemorySimulator: CXX_EXECUTABLE_LINKER__VirtualMemorySimulator_Debug CMakeFiles/VirtualMemorySimulator.dir/PageTable/test/testPage.cpp.o CMakeFiles/VirtualMemorySimulator.dir/PageTable/pageTable.cpp.o CMakeFiles/VirtualMemorySimulator.dir/PageTable/pageTableEntry.cpp.o CMakeFiles/VirtualMemorySimulator.dir/PageTable/physicalFrameManager.cpp.o CMakeFiles/VirtualMemorySimulator.dir/PageTable/TLB.cpp.o CMakeFiles/VirtualMemorySimulator.dir/PageTable/MemoryManager.cpp.o CMakeFiles/VirtualMemorySimulator.dir/PageTable/test/MemoryManagerTest.cpp.o
   FLAGS = -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.5.sdk -mmacosx-version-min=14.0
   OBJECT_DIR = CMakeFiles/VirtualMemorySimulator.dir
   POST_BUILD = :
