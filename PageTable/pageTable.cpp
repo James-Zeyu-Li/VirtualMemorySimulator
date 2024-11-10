@@ -22,8 +22,8 @@ private:
     static const int l1Bits = vpnBits / 2;
     static const int l2Bits = vpnBits - l1Bits;
 
-    int getL1Index(int VPN) { return VPN >> l2Bits; }             // shift right by l2Bits
-    int getL2Index(int VPN) { return VPN & ((1 << l2Bits) - 1); } // get the last l2Bits
+    int getL1Index(uint32_t VPN) { return VPN >> l2Bits; }             // shift right by l2Bits
+    int getL2Index(uint32_t VPN) { return VPN & ((1 << l2Bits) - 1); } // get the last l2Bits
 
     // Physical frame manager to manage the physical frames
     PhysicalFrameManager pfManager;
@@ -41,9 +41,9 @@ private:
     }
 
     list<int> activePages;         // Use list for efficient insertion/removal
-    unordered_set<int> activeVPNs; // To avoid duplicate VPNs
+    unordered_set<uint32_t> activeVPNs; // To avoid duplicate VPNs
 
-    bool isValidVPN(int VPN)
+    bool isValidVPN(uint32_t VPN)
     {
         return VPN >= 0 && VPN < addressSpaceSize / pageSize;
     }
@@ -62,7 +62,7 @@ public:
     };
 
     // Lookup the page table for a given VPN and PFN
-    int lookupPageTable(int VPN)
+    int lookupPageTable(uint32_t VPN)
     {
         if (!isValidVPN(VPN))
         {
@@ -98,7 +98,7 @@ public:
     }
 
     // Update the page table with the given VPN and PFN
-    void updatePageTable(int VPN, int frameNumber, bool valid, bool dirty, bool read, bool write, bool execute, bool reference)
+    void updatePageTable(uint32_t VPN, uint32_t frameNumber, bool valid, bool dirty, bool read, bool write, bool execute, bool reference)
     {
         if (!isValidVPN(VPN))
         {
@@ -132,7 +132,7 @@ public:
     }
 
     // Handle page fault by replacing a page in memory, using the clock algorithm
-    bool handlePageFault(int VPN)
+    bool handlePageFault(uint32_t VPN)
     {
         // check if the VPN is valid
         if (!isValidVPN(VPN))
@@ -169,7 +169,7 @@ public:
     }
 
     // Write the page back to disk
-    void writeBackToDisk(int frameNumber)
+    void writeBackToDisk(uint32_t frameNumber)
     {
         cout << "Writing frame " << frameNumber << " back to disk." << endl;
     }
@@ -177,7 +177,7 @@ public:
     // private methods
 private:
     // Replace a page in memory using the clock algorithm
-    bool replacePageUsingClockAlgo(int newVPN)
+    bool replacePageUsingClockAlgo(uint32_t newVPN)
     {
         const int maxScans = pfManager.getTotalFrames();
         int scanCount = 0;
@@ -217,7 +217,7 @@ private:
     }
 
     // Handle page replacement by replacing the old page with the new page
-    void handlePageReplacement(int newVPN, int oldVPN, PageTableEntry &oldEntry)
+    void handlePageReplacement(uint32_t newVPN, uint32_t oldVPN, PageTableEntry &oldEntry)
     {
 
         if (!isValidVPN(newVPN) || !isValidVPN(oldVPN))
@@ -271,7 +271,7 @@ private:
             return nullptr;
         }
 
-        int currentVPN = *clockHand;
+        uint32_t currentVPN = *clockHand;
         int l1Index = getL1Index(currentVPN);
         int l2Index = getL2Index(currentVPN);
 

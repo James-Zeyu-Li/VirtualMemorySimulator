@@ -1,0 +1,10 @@
+# ninja log v6
+1	34	1731224860567693895	CMakeFiles/VirtualMemorySimulator.dir/PageTable/pageTableEntry.cpp.o	edc4fcf91289d641
+1	271	1731224860567824062	CMakeFiles/VirtualMemorySimulator.dir/PageTable/physicalFrameManager.cpp.o	33cc8fa66783aafe
+414	449	1731224860980875152	VirtualMemorySimulator	bde7f79e3445e735
+0	318	1731224860567564062	CMakeFiles/VirtualMemorySimulator.dir/PageTable/pageTable.cpp.o	aaeab3d791b6787d
+0	414	1731224860567345811	CMakeFiles/VirtualMemorySimulator.dir/PageTable/test/testPage.cpp.o	2763621fb7611613
+7	509	1731261879958605983	CMakeFiles/VirtualMemorySimulator.dir/PageTable/TLB.cpp.o	33b98ee2f49a8ba9
+6	563	1731261879958109359	CMakeFiles/VirtualMemorySimulator.dir/PageTable/pageTable.cpp.o	aaeab3d791b6787d
+6	675	1731261879957785069	CMakeFiles/VirtualMemorySimulator.dir/PageTable/test/testPage.cpp.o	2763621fb7611613
+675	2236	1731261880627028120	VirtualMemorySimulator	a9e54bcfb2730d5e
