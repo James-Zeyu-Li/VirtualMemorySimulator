@@ -133,6 +133,7 @@ bool Simulator::handlePageFault(uint32_t vpn) {
     } else {
         // No free frames, attempt page replacement using the Clock Algorithm
         bool replaced = pageTable->replacePageUsingClockAlgo(vpn);
+
         if (replaced) {
             cout << "Page fault handled by page replacement for VPN " << vpn << endl;
             return true;
@@ -217,6 +218,16 @@ Simulator::Simulator(uint32_t addressBits, uint32_t pageSize, uint32_t numFrames
             frames.push_back(pfManager.allocateFrame());
         }
         Process process(i, addressBits, pageSize, numPages, frames);
+
+        //manually pre-allocate some frames for process
+        PageTable* pageTable = process.getPageTable();
+        uint32_t vpn = 0;
+        for (uint32_t frame : frames) {
+            pageTable->updatePageTable(vpn, frames.front(), true, false, true, true, true, 0);
+            frames.pop_front();
+            vpn++;
+        }
+
         processTable.at(i) = process;
     }
     cout << "Virtual memory simulator created with page size " << pageSize << ", physical memory " << getPhysicalMemory() << endl;
