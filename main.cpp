@@ -14,7 +14,7 @@ using namespace std;
 
 class Process {
 private:
-    uint32_t pid;
+    uint32_t id;
     PageTable pageTable;
     list<uint32_t> availableFrames; // A list of physical frames to use
     uint32_t maxFrames; // Max number of frames for this process
@@ -27,17 +27,18 @@ public:
     uint32_t getAllocationQuota();
     PageTable* getPageTable();
     void allocateMemory(list<uint32_t> allocatedFrames);
-    void freeMemory(uint32_t virtualAddress, uint32_t sizeInBytes);
+    void freeMemory(uint32_t frameNumber);
 };
 
 Process::Process(uint32_t pid, uint32_t numPages, list<uint32_t> frames) {
+    id = pid;
     maxFrames = numPages;
     availableFrames = frames;
     allocatedFrames = availableFrames.size();
 }
 
 uint32_t Process::getPid() {
-    return pid;
+    return id;
 }
 uint32_t Process::getMaxFrames() {
     return maxFrames;
@@ -57,6 +58,10 @@ void Process::allocateMemory(list<uint32_t> frames) {
         frames.pop_front();
     }
     allocatedFrames = availableFrames.size();
+}
+
+void Process::freeMemory(uint32_t frameNumber) {
+    allocatedFrames--;
 }
 
 class Simulator {
@@ -141,7 +146,7 @@ uint32_t Simulator::translateVirtualAddress(uint32_t virtualAddress) {
     int pfn = tlb.lookupTLB(vpn);
     if (pfn != -1) {
         // TLB hit - construct the physical address
-        std::cout << "TLB hit for VPN " << vpn << ", PFN: " << pfn << std::endl;
+        cout << "TLB hit for VPN " << vpn << ", PFN: " << pfn << endl;
         return (pfn << pageOffsetBits) | offset;
     }
 
@@ -151,15 +156,15 @@ uint32_t Simulator::translateVirtualAddress(uint32_t virtualAddress) {
     pfn = pageTable->lookupPageTable(vpn);
     if (pfn != -1) {
         // Page table hit - update TLB and return physical address
-        std::cout << "Page table hit for VPN " << vpn << ", PFN: " << pfn << std::endl;
+        cout << "Page table hit for VPN " << vpn << ", PFN: " << pfn << endl;
         tlb.updateTLB(vpn, pfn, true, true, true); // Update TLB with permissions as needed
         return (pfn << pageOffsetBits) | offset;
     }
 
     // 3. Page fault - Handle page fault
-    std::cout << "Page fault for VPN " << vpn << std::endl;
+    cout << "Page fault for VPN " << vpn << endl;
     if (!handlePageFault(vpn)) {
-        std::cerr << "Error: Unable to handle page fault for VPN " << vpn << std::endl;
+        cerr << "Error: Unable to handle page fault for VPN " << vpn << endl;
         return UINT32_MAX; // Return an error if page fault handling fails
     }
 
@@ -171,7 +176,7 @@ uint32_t Simulator::translateVirtualAddress(uint32_t virtualAddress) {
     }
 
     // If we still can't resolve the address, return an error
-    std::cerr << "Error: Failed to translate virtual address " << virtualAddress << std::endl;
+    cerr << "Error: Failed to translate virtual address " << virtualAddress << endl;
     return UINT32_MAX;
 }
 
@@ -201,20 +206,20 @@ Simulator::Simulator(uint32_t numFrames, uint32_t pageSize,
         Process process(i, numPages, frames);
         processTable[i] = process;
     }
-    cout << "Virtual memory simulator created with page size " << pageSize << ", physical memory " << getPhysicalMemory();
+    cout << "Virtual memory simulator created with page size " << pageSize << ", physical memory " << getPhysicalMemory() << endl;
 }
 
 void Simulator::accessMemory(uint32_t virtualAddress) {
     uint32_t physicalAddress = translateVirtualAddress(virtualAddress);
     if (physicalAddress != UINT32_MAX) {
-        std::cout << "Translated Virtual Address " << std::hex << virtualAddress
-                  << " to Physical Address " << physicalAddress << std::endl;
+        cout << "Translated Virtual Address " << hex << virtualAddress
+                  << " to Physical Address " << physicalAddress << endl;
     } else {
-        std::cerr << "Error: Translation failed for Virtual Address " << std::hex << virtualAddress << std::endl;}
+        cerr << "Error: Translation failed for Virtual Address " << hex << virtualAddress << endl;}
 }
 
 void Simulator::switchProcess(uint32_t pid){
-    cout << "Switch from process " << currentProcessId << " to " << pid;
+    cout << "Switch from process " << currentProcessId << " to " << pid << endl;
     currentProcessId = pid;
     tlb.flush();
     // TODO: better if we can check TLB status
@@ -225,12 +230,12 @@ void Simulator::allocateMemory(uint32_t sizeInBytes){
     Process process = getCurrentProcess();
     uint32_t quota = process.getAllocationQuota();
     if (requestedPages > quota) {
-        cout << "Requested memory exceeds maximum memory for the process: " << process.getMaxFrames();
+        cout << "Requested memory exceeds maximum memory for the process: " << process.getMaxFrames() << endl;
         return;
     }
     uint32_t frames = pfManager.getFreeFrames();
     if (requestedPages > frames) {
-        cout << "Requested memory exceeds available physical memory: " << frames << " frames";
+        cout << "Requested memory exceeds available physical memory: " << frames << " frames" << endl;
         return;
     }
     list<uint32_t> allocatedFrames;
@@ -238,11 +243,23 @@ void Simulator::allocateMemory(uint32_t sizeInBytes){
         allocatedFrames.push_back(pfManager.allocateFrame());
     }
     process.allocateMemory(allocatedFrames);
-    cout << "Allocated " << requestedPages << " pages for process " << process.getPid();
+    cout << "Allocated " << requestedPages << " pages for process " << process.getPid() << endl;
 }
 
 void Simulator::freeMemory(uint32_t virtualAddress){
-    // TODO: validate virtual address
+    Process process = getCurrentProcess();
+    uint32_t vpn = virtualAddress >> 12;
+    if (!process.getPageTable()->isValidRange(vpn)) {
+        cout << "Virtual address is out of range: " << virtualAddress << ", vpn: " << vpn << endl;
+        return;
+    }
+    int pfn = process.getPageTable()->removeAddressForOneEntry(vpn);
+    if (pfn == -1) {
+        cout << "Virtual address for memory free is not found in page table: " << pfn << endl;
+        return;
+    }
+    pfManager.freeAFrame(pfn);
+    process.freeMemory(pfn);
 }
 
 int main(int argc, char* argv[]) {
@@ -280,22 +297,19 @@ int main(int argc, char* argv[]) {
 
             cout << line << endl;
             if (command == "switch") {
-                cout << "pid: " << pid << endl;
-                // simulator.switchProcess(pid);
+                simulator.switchProcess(pid);
             }
             else if (command == "alloc") {
                 string hexSize;
                 iss >> hexSize;
                 uint32_t size = stoul(hexSize, nullptr, 16);
-                cout << "size: " << size << endl;
-                // simulator.allocateMemory(size);
+                simulator.allocateMemory(size);
             }
             else if (command.substr(0, 6) == "access") {
                 string hexAddr;
                 iss >> hexAddr;
                 uint32_t addr = stoul(hexAddr, nullptr, 16);
-                cout << "addr: " << addr << endl;
-                // simulator.accessMemory(addr);
+                simulator.accessMemory(addr);
             }
         }
     }
