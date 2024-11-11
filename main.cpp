@@ -30,6 +30,8 @@ public:
     PageTable* getPageTable();
     void allocateMemory(list<uint32_t> allocatedFrames);
     void freeMemory(uint32_t frameNumber);
+    uint32_t getAFrame();
+    void returnAFrame(uint32_t frame);
 };
 
 Process::Process(uint32_t pid, uint32_t virtualAddressLen, uint32_t pageSize_, uint32_t numPages, list<uint32_t> frames): id(pid), addressBits(virtualAddressLen), pageSize(pageSize_), maxFrames(numPages), availableFrames(frames), allocatedFrames(frames.size()), pageTable(new PageTable(virtualAddressLen, pageSize_)) {}
@@ -59,6 +61,19 @@ void Process::allocateMemory(list<uint32_t> frames) {
 
 void Process::freeMemory(uint32_t frameNumber) {
     allocatedFrames--;
+}
+
+uint32_t Process::getAFrame() {
+    if (availableFrames.size() < 1) {
+        return -1;
+    }
+    uint32_t frame = availableFrames.front();
+    availableFrames.pop_front();
+    return frame;
+}
+
+void Process::returnAFrame(uint32_t frame) {
+    availableFrames.push_back(frame);
 }
 
 class Simulator {
@@ -109,8 +124,7 @@ bool Simulator::handlePageFault(uint32_t vpn) {
     }
 
     // Try to allocate a new frame for the page
-    // TODO: Needs a new API
-    int newFrame = pfManager.allocateFrame();
+    int newFrame = process.getAFrame();
     if (newFrame != -1) {
         // Free frame available, update page table with new mapping
         pageTable->updatePageTable(vpn, newFrame, true, false, true, true, true, 0);
