@@ -80,6 +80,7 @@ public:
     void switchProcess(uint32_t pid);
     void allocateMemory(uint32_t sizeInBytes);
     void freeMemory(uint32_t virtualAddress);
+    bool handlePageFault(uint32_t vpn);
 };
 
 uint32_t Simulator::getPhysicalMemory(){
@@ -93,6 +94,38 @@ Process Simulator::getCurrentProcess() {
 uint32_t Simulator::getPagesFromBytes(uint32_t size) const {
     return (size + pageSize - 1) / pageSize;
 }
+
+bool Simulator::handlePageFault(uint32_t vpn) {
+    // Get the current process's page table
+    Process& process = processTable[currentProcessId];
+    PageTable* pageTable = process.getPageTable();
+
+    // Use PageTable's isValidRange function to check if the VPN is valid
+    if (!pageTable->isValidRange(vpn)) {
+        cerr << "Invalid VPN: " << vpn << ". Out of range." << endl;
+        return false;
+    }
+
+    // Try to allocate a new frame for the page
+    int newFrame = pfManager.allocateFrame();
+    if (newFrame != -1) {
+        // Free frame available, update page table with new mapping
+        pageTable->updatePageTable(vpn, newFrame, true, false, true, true, true, 0);
+        cout << "Page fault handled. Assigned new frame " << newFrame << " to VPN " << vpn << endl;
+        return true;
+    } else {
+        // No free frames, attempt page replacement using the Clock Algorithm
+        bool replaced = pageTable->replacePageUsingClockAlgo(vpn);
+        if (replaced) {
+            cout << "Page fault handled by page replacement for VPN " << vpn << endl;
+            return true;
+        } else {
+            cerr << "Error: Failed to handle page fault for VPN " << vpn << " - page replacement failed." << endl;
+            return false;
+        }
+    }
+}
+
 
 uint32_t Simulator::translateVirtualAddress(uint32_t virtualAddress) {
     // Constants for address components based on page size
@@ -125,7 +158,7 @@ uint32_t Simulator::translateVirtualAddress(uint32_t virtualAddress) {
 
     // 3. Page fault - Handle page fault
     std::cout << "Page fault for VPN " << vpn << std::endl;
-    if (!pageTable->handlePageFault(vpn)) {
+    if (!handlePageFault(vpn)) {
         std::cerr << "Error: Unable to handle page fault for VPN " << vpn << std::endl;
         return UINT32_MAX; // Return an error if page fault handling fails
     }

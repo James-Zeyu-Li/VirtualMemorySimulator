@@ -28,8 +28,6 @@ private:
     // Helper function to check and create a second-level map if necessary
     std::unordered_map<uint32_t, PageTableEntry> &checkL2(uint32_t l1Index);
 
-    // Check if a VPN is within a valid range
-    bool isValidRange(uint32_t VPN);
 
 public:
     // Constants
@@ -67,6 +65,8 @@ public:
 
     // For testing purposes only
     void printPageTable() const;
+
+    bool isValidRange(uint32_t VPN);
 };
 
 #endif // PAGETABLE_H
