@@ -4,7 +4,7 @@
 #include <list>
 #include <unordered_set>
 #include <cstdint>
-#include "PageTableEntry.h"
+#include "../PageTableEntry.h"
 
 // Forward declaration to avoid circular dependency
 class PageTable;

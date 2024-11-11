@@ -1,5 +1,5 @@
 #include "ClockAlgorithm.h"
-#include "PageTable.h"
+#include "../PageTable.h"
 #include <algorithm>
 #include <iostream>
 
@@ -24,11 +24,21 @@ void ClockAlgorithm::addPage(uint32_t VPN)
 void ClockAlgorithm::removePage(uint32_t VPN)
 {
     auto it = std::find(activePages.begin(), activePages.end(), VPN);
+
     if (it != activePages.end())
     {
+        std::cout << "Removing VPN " << VPN << " from ClockAlgorithm." << std::endl;
+
+        // 从 activeVPNs 中移除
+        activeVPNs.erase(VPN);
+
+        // 如果要删除的页面是 clockHand 指向的页面
         if (it == clockHand)
         {
+            // 先移动 clockHand 指向下一个元素
             clockHand = activePages.erase(it);
+
+            // 如果删除后列表为空，或者 clockHand 指向列表末尾，重置 clockHand
             if (clockHand == activePages.end() && !activePages.empty())
             {
                 clockHand = activePages.begin();
@@ -36,9 +46,19 @@ void ClockAlgorithm::removePage(uint32_t VPN)
         }
         else
         {
+            // 直接删除元素
             activePages.erase(it);
         }
-        activeVPNs.erase(VPN);
+
+        // 如果列表为空，重置 clockHand
+        if (activePages.empty())
+        {
+            clockHand = activePages.end();
+        }
+    }
+    else
+    {
+        std::cerr << "Warning: Attempted to remove VPN " << VPN << ", but it was not found in activePages." << std::endl;
     }
 }
 
