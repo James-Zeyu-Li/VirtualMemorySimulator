@@ -6,17 +6,24 @@
 #include <list>
 #include <unordered_set>
 #include "PageTableEntry.h"
-#include "PhysicalFrameManager.h"
 #include "helperFiles/ClockAlgorithm.h"
 
 class PageTable
 {
 private:
     // Two-level page table structure
-    std::unordered_map<uint32_t, std::unordered_map<uint32_t, PageTableEntry> > pageTable;
+    std::unordered_map<uint32_t, std::unordered_map<uint32_t, PageTableEntry>> pageTable;
 
-    // Frame manager to allocate and manage physical frames
-    PhysicalFrameManager pfManager;
+    uint64_t addressSpaceSize; // 4GB address space
+    uint32_t pageSize;
+    uint32_t &maxFrames;
+    uint32_t &allocatedFrames;
+    list<uint32_t> &availableFrames;
+    static const int addressBits = 32;
+    static const int pageOffsetBits = 12; // log2(pageSize)
+    static const int vpnBits = addressBits - pageOffsetBits;
+    static const int l1Bits = vpnBits / 2;
+    static const int l2Bits = vpnBits - l1Bits;
 
     // Clock algorithm manager
     ClockAlgorithm clockAlgo;
@@ -28,20 +35,10 @@ private:
     // Helper function to check and create a second-level map if necessary
     std::unordered_map<uint32_t, PageTableEntry> &checkL2(uint32_t l1Index);
 
-
 public:
-    // Constants
-    static const uint64_t addressSpaceSize = 4ULL * 1024 * 1024 * 1024; // 32-bit address space
-    static const int pageSize = 4096;                                   // 4KB
-    static const int addressBits = 32;
-    static const int pageOffsetBits = 12; // log2(pageSize)
-    static const int vpnBits = addressBits - pageOffsetBits;
-    static const int l1Bits = vpnBits / 2;
-    static const int l2Bits = vpnBits - l1Bits;
-
     // Constructors
-    PageTable();                     // Default constructor with 256 frames
-    PageTable(uint32_t totalFrames); // Constructor with custom frame count
+    // 这里改动了
+    PageTable(uint64_t addressSpaceSize, uint32_t pageSize, uint32_t &maxFrames, uint32_t &allocatedFrames, std::list<uint32_t> &availableFrames);
 
     // Lookup the page table for a given VPN, returning the frame number or -1 if not found
     int32_t lookupPageTable(uint32_t VPN);
@@ -62,9 +59,6 @@ public:
     PageTableEntry *getPageTableEntry(uint32_t VPN);
 
     void resetPageTable();
-
-    // For testing purposes only
-    // void printPageTable() const;
 
     bool isValidRange(uint32_t VPN);
 };

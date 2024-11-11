@@ -55,10 +55,6 @@ void ClockAlgorithm::removePage(uint32_t VPN)
             clockHand = activePages.end(); // prevent dereferencing an empty iterator
         }
     }
-    else
-    {
-        std::cerr << "Warning: Attempted to remove VPN " << VPN << ", but it was not found in activePages." << std::endl;
-    }
 }
 
 // scan the activePages list to find a page to replace, based on the reference bit of each page
@@ -110,16 +106,16 @@ bool ClockAlgorithm::selectPageToReplace(uint32_t &targetVPN, PageTable &pageTab
         if (entry->reference == 0)
         {
             // if the reference bit is 0, this page is a candidate for replacement
-            targetVPN = currentVPN;// set the targetVPN to the current VPN
-            moveClockHandNext(); // move the clock hand to the next position
-            return true;        // return true to indicate a page was selected for replacement
+            targetVPN = currentVPN; // set the targetVPN to the current VPN
+            moveClockHandNext();    // move the clock hand to the next position
+            return true;            // return true to indicate a page was selected for replacement
         }
 
         moveClockHandNext();
         scans++;
     }
 
-    return false; //should never reach here
+    return false; // should never reach here
 }
 
 // reset the clock algorithm by clearing the activePages list and activeVPNs set

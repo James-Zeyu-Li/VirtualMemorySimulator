@@ -5,7 +5,6 @@
 #include <unordered_set>
 #include "helperFiles/ClockAlgorithm.h"
 #include "PageTableEntry.h"
-#include "PhysicalFrameManager.h"
 #include "PageTable.h"
 
 using namespace std;
@@ -39,10 +38,17 @@ bool PageTable::isValidRange(uint32_t VPN)
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Default constructor with 256 frames
-PageTable::PageTable() : pfManager(256), clockAlgo() {} // Initialize with 256 frames, should be changed according to page
-
-// Constructor with custom frame count
-PageTable::PageTable(uint32_t totalFrames) : pfManager(totalFrames), clockAlgo() {}
+PageTable::PageTable(uint64_t addressSpaceSize, uint32_t pageSize,
+                     uint32_t &maxFrames, uint32_t &allocatedFrames,
+                     std::list<uint32_t> &availableFrames)
+    : addressSpaceSize(addressSpaceSize),
+      pageSize(pageSize),
+      maxFrames(maxFrames),
+      allocatedFrames(allocatedFrames),
+      availableFrames(availableFrames),
+      clockAlgo()
+{
+}
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Lookup the page table for a given VPN and return the frame number or -1 if not found
@@ -143,10 +149,6 @@ bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
                 cerr << "Error: Failed to remove victim VPN: " << targetVPN << endl;
                 return false;
             }
-
-            // invalidate the target page, reset the all bits
-            targetEntry->valid = false;
-            targetEntry->reset();
 
             // allocate the old frame for the new page
             updatePageTable(VPN, oldFrame, true, false, true, true, true, 0);
