@@ -13,7 +13,7 @@ class PageTable
 {
 private:
     // Two-level page table structure
-    std::unordered_map<uint32_t, std::unordered_map<uint32_t, PageTableEntry>> pageTable;
+    std::unordered_map<uint32_t, std::unordered_map<uint32_t, PageTableEntry> > pageTable;
 
     // Frame manager to allocate and manage physical frames
     PhysicalFrameManager pfManager;
