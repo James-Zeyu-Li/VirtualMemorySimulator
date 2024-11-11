@@ -52,7 +52,7 @@ public:
     void updatePageTable(uint32_t VPN, uint32_t frameNumber, bool valid, bool dirty, bool read, bool write, bool execute, uint8_t reference);
 
     // Replace a page in memory using ClockAlgorithm
-    bool replacePageUsingClockAlgo(uint32_t newVPN);
+    bool replacePageUsingClockAlgo(uint32_t VPN);
 
     // Write a page frame back to disk
     void writeBackToDisk(uint32_t frameNumber);
@@ -64,9 +64,6 @@ public:
     PageTableEntry *getPageTableEntry(uint32_t VPN);
 
     void resetPageTable();
-
-    // For testing purposes only
-    void printPageTable() const;
 };
 
 #endif // PAGETABLE_H
