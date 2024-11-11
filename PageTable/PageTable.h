@@ -17,8 +17,7 @@ private:
     unordered_map<uint32_t, std::unordered_map<uint32_t, PageTableEntry>> pageTable;
 
     uint64_t addressSpaceSize; // 32bit
-    uint32_t pageSize; // 4096
-    uint32_t &allocatedFrames;
+    uint32_t pageSize;         // 4096
 
     const int pageOffsetBits = static_cast<int>(log2(pageSize));
     const int vpnBits = addressSpaceSize - pageOffsetBits;
@@ -37,8 +36,7 @@ private:
 
 public:
     // Constructors
-    // 这里改动了
-    PageTable(uint64_t addressSpaceSize, uint32_t pageSize, uint32_t &allocatedFrames);
+    PageTable(uint64_t addressSpaceSize, uint32_t pageSize);
 
     // Lookup the page table for a given VPN, returning the frame number or -1 if not found
     int32_t lookupPageTable(uint32_t VPN);

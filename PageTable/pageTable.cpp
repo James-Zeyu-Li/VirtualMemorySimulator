@@ -37,12 +37,10 @@ bool PageTable::isValidRange(uint32_t VPN)
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// Default constructor with 256 frames
-PageTable::PageTable(uint64_t addressSpaceSize, uint32_t pageSize,
-                     uint32_t &maxFrames)
+// constructor
+PageTable::PageTable(uint64_t addressSpaceSize, uint32_t pageSize)
     : addressSpaceSize(addressSpaceSize),
       pageSize(pageSize),
-      allocatedFrames(allocatedFrames),
       clockAlgo()
 {
     if (addressSpaceSize % pageSize != 0)
@@ -152,10 +150,10 @@ bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
                 return false;
             }
 
-// ---- need method from main to allocate a new frame for the new page
+            // ---- need method from main to allocate a new frame for the new page
             // allocate the old frame for the new page
             updatePageTable(VPN, oldFrame, true, false, true, true, true, 0);
-//--------------------------------------------
+            //--------------------------------------------
             return true;
         }
         else
