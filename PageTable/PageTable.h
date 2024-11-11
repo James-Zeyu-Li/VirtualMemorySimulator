@@ -7,23 +7,26 @@
 #include <unordered_set>
 #include "PageTableEntry.h"
 #include "helperFiles/ClockAlgorithm.h"
+#include <cmath>
+using namespace std;
 
 class PageTable
 {
 private:
     // Two-level page table structure
-    std::unordered_map<uint32_t, std::unordered_map<uint32_t, PageTableEntry> > pageTable;
+    unordered_map<uint32_t, std::unordered_map<uint32_t, PageTableEntry>> pageTable;
 
     uint64_t addressSpaceSize; // 4GB address space
     uint32_t pageSize;
     uint32_t &maxFrames;
     uint32_t &allocatedFrames;
     list<uint32_t> &availableFrames;
-    static const int addressBits = 32;
-    static const int pageOffsetBits = 12; // log2(pageSize)
-    static const int vpnBits = addressBits - pageOffsetBits;
-    static const int l1Bits = vpnBits / 2;
-    static const int l2Bits = vpnBits - l1Bits;
+
+    const int addressBits = static_cast<int>(log2(addressSpaceSize));
+    const int pageOffsetBits = static_cast<int>(log2(pageSize));
+    const int vpnBits = addressBits - pageOffsetBits;
+    const int l1Bits = vpnBits / 2;
+    const int l2Bits = vpnBits - l1Bits;
 
     // Clock algorithm manager
     ClockAlgorithm clockAlgo;
@@ -33,7 +36,7 @@ private:
     uint32_t getL2Index(uint32_t VPN);
 
     // Helper function to check and create a second-level map if necessary
-    std::unordered_map<uint32_t, PageTableEntry> &checkL2(uint32_t l1Index);
+    unordered_map<uint32_t, PageTableEntry> &checkL2(uint32_t l1Index);
 
 public:
     // Constructors

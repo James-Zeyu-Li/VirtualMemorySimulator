@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <iostream>
 
+using namespace std;
+
 ClockAlgorithm::ClockAlgorithm()
 {
     clockHand = activePages.begin(); // initialize clockHand to the beginning of the list
