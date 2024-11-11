@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <iostream>
 #include "PageTableEntry.h"
-#include <queue>
 #include "PhysicalFrameManager.h"
 #include <list>
 #include <unordered_set>
@@ -13,7 +12,7 @@ class PageTable
 {
 private:
     // 2 layer map to simulate 2 layered page table
-    unordered_map<uint32_t, unordered_map<uint32_t, PageTableEntry>> pageTable;
+    unordered_map<uint32_t, unordered_map<uint32_t, PageTableEntry> > pageTable;
     static const uint64_t addressSpaceSize = 4ULL * 1024 * 1024 * 1024; // 32-bit address space
     static const int pageSize = 4096;                                   // 4KB
     static const int addressBits = 32;
