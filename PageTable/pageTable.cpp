@@ -39,15 +39,17 @@ bool PageTable::isValidRange(uint32_t VPN)
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Default constructor with 256 frames
 PageTable::PageTable(uint64_t addressSpaceSize, uint32_t pageSize,
-                     uint32_t &maxFrames, uint32_t &allocatedFrames,
-                     std::list<uint32_t> &availableFrames)
+                     uint32_t &maxFrames)
     : addressSpaceSize(addressSpaceSize),
       pageSize(pageSize),
-      maxFrames(maxFrames),
       allocatedFrames(allocatedFrames),
-      availableFrames(availableFrames),
       clockAlgo()
 {
+    if (addressSpaceSize % pageSize != 0)
+    {
+        cerr << "Error: Address space size must be a multiple of page size" << endl;
+        return;
+    }
 }
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -131,7 +133,7 @@ bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
     {
         PageTableEntry *targetEntry = getPageTableEntry(targetVPN);
 
-        // 检查目标页面是否有效
+        // if page is valid, replace it
         if (targetEntry && targetEntry->valid)
         {
             uint32_t oldFrame = targetEntry->frameNumber;
@@ -150,9 +152,10 @@ bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
                 return false;
             }
 
+// ---- need method from main to allocate a new frame for the new page
             // allocate the old frame for the new page
             updatePageTable(VPN, oldFrame, true, false, true, true, true, 0);
-
+//--------------------------------------------
             return true;
         }
         else
