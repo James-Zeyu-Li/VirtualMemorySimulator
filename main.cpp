@@ -7,7 +7,7 @@
 #include <vector>
 #include <cstdint>
 #include "PageTable/pageTable.cpp"
-#include "PageTable/TLB.h"
+#include "TLB/TLB.h"
 #include "PageTable/PhysicalFrameManager.h"
 
 using namespace std;
