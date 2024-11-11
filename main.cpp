@@ -15,13 +15,15 @@ using namespace std;
 class Process {
 private:
     uint32_t id;
-    PageTable pageTable;
+    uint32_t addressBits;
+    uint32_t pageSize;
+    PageTable* pageTable;
     list<uint32_t> availableFrames; // A list of physical frames to use
     uint32_t maxFrames; // Max number of frames for this process
     uint32_t allocatedFrames;  // Number of frames assigned to this process, should never exceed maxFrames
 
 public:
-    Process(uint32_t pid, uint32_t numPages, list<uint32_t> allocatedFrames);
+    Process(uint32_t pid, uint32_t addressBits, uint32_t pageSize, uint32_t numPages, list<uint32_t> allocatedFrames);
     uint32_t getPid();
     uint32_t getMaxFrames();
     uint32_t getAllocationQuota();
@@ -30,12 +32,7 @@ public:
     void freeMemory(uint32_t frameNumber);
 };
 
-Process::Process(uint32_t pid, uint32_t numPages, list<uint32_t> frames) {
-    id = pid;
-    maxFrames = numPages;
-    availableFrames = frames;
-    allocatedFrames = availableFrames.size();
-}
+Process::Process(uint32_t pid, uint32_t virtualAddressLen, uint32_t pageSize_, uint32_t numPages, list<uint32_t> frames): id(pid), addressBits(virtualAddressLen), pageSize(pageSize_), maxFrames(numPages), availableFrames(frames), allocatedFrames(frames.size()), pageTable(new PageTable(virtualAddressLen, pageSize_)) {}
 
 uint32_t Process::getPid() {
     return id;
@@ -49,7 +46,7 @@ uint32_t Process::getAllocationQuota() {
 }
 
 PageTable* Process::getPageTable() {
-    return &pageTable;
+    return pageTable;
 }
 
 void Process::allocateMemory(list<uint32_t> frames) {
@@ -80,7 +77,7 @@ private:
     uint32_t getPagesFromBytes(uint32_t size) const;
 
 public:
-    Simulator(uint32_t numFrames, uint32_t pageSize, uint32_t tlbSize, const vector<uint32_t>& processMemSizes);
+    Simulator(uint32_t addressBits, uint32_t pageSize, uint32_t numFrames, uint32_t tlbSize, const vector<uint32_t>& processMemSizes);
     void accessMemory(uint32_t virtualAddress);
     void switchProcess(uint32_t pid);
     void allocateMemory(uint32_t sizeInBytes);
@@ -102,7 +99,7 @@ uint32_t Simulator::getPagesFromBytes(uint32_t size) const {
 
 bool Simulator::handlePageFault(uint32_t vpn) {
     // Get the current process's page table
-    Process& process = processTable[currentProcessId];
+    Process process = processTable.at(currentProcessId);
     PageTable* pageTable = process.getPageTable();
 
     // Use PageTable's isValidRange function to check if the VPN is valid
@@ -112,6 +109,7 @@ bool Simulator::handlePageFault(uint32_t vpn) {
     }
 
     // Try to allocate a new frame for the page
+    // TODO: Needs a new API
     int newFrame = pfManager.allocateFrame();
     if (newFrame != -1) {
         // Free frame available, update page table with new mapping
@@ -151,7 +149,7 @@ uint32_t Simulator::translateVirtualAddress(uint32_t virtualAddress) {
     }
 
     // 2. TLB miss - check the page table
-    Process& process = processTable[currentProcessId];
+    Process process = processTable.at(currentProcessId);
     PageTable* pageTable = process.getPageTable();
     pfn = pageTable->lookupPageTable(vpn);
     if (pfn != -1) {
@@ -180,7 +178,7 @@ uint32_t Simulator::translateVirtualAddress(uint32_t virtualAddress) {
     return UINT32_MAX;
 }
 
-Simulator::Simulator(uint32_t numFrames, uint32_t pageSize,
+Simulator::Simulator(uint32_t addressBits, uint32_t pageSize, uint32_t numFrames,
                      uint32_t tlbSize, const vector<uint32_t>& processMemSizes) : tlb(tlbSize), pfManager(numFrames){
 
     currentProcessId = -1;
@@ -200,11 +198,12 @@ Simulator::Simulator(uint32_t numFrames, uint32_t pageSize,
             throw runtime_error("Not enough physical memory for process " + to_string(i));
         }
         list<uint32_t> frames;
-        for (uint32_t j = 0; j < 8; j++) {
+        int preAllocatedFrames = 8; // FIXME: Hard-coded 8 frames allocated for a new process
+        for (uint32_t j = 0; j < preAllocatedFrames; j++) {
             frames.push_back(pfManager.allocateFrame());
         }
-        Process process(i, numPages, frames);
-        processTable[i] = process;
+        Process process(i, addressBits, pageSize, numPages, frames);
+        processTable.at(i) = process;
     }
     cout << "Virtual memory simulator created with page size " << pageSize << ", physical memory " << getPhysicalMemory() << endl;
 }
@@ -260,26 +259,29 @@ void Simulator::freeMemory(uint32_t virtualAddress){
     }
     pfManager.freeAFrame(pfn);
     process.freeMemory(pfn);
+    tlb.deleteTLB(vpn);
 }
 
 int main(int argc, char* argv[]) {
     if (argc < 3) {
-        cerr << "Usage: " << argv[0] << "<process_memory_sizes> <instruction_file>\n";
+        cerr << "Usage: " << argv[0] << "<page_size> <virtual_address_len> <physical_memory> <tlb_size> <process_memory_sizes> <instruction_file>" << endl;
         return 1;
     }
 
-    const uint32_t PAGE_SIZE = 4096;
-    const uint32_t PHYSICAL_FRAMES = 1024;
-    const uint32_t TLB_SIZE = 16;
+    const uint32_t PAGE_SIZE = stoul(argv[1]);
+    const uint32_t VA_LEN = stoul(argv[2]);
+    const uint32_t PHYSICAL_MEM = stoul(argv[3]);
+    const uint32_t PHYSICAL_FRAMES = PHYSICAL_MEM / PAGE_SIZE;
+    const uint32_t TLB_SIZE = stoul(argv[4]);
+    // cout << PAGE_SIZE << VA_LEN << PHYSICAL_FRAMES << TLB_SIZE << processMemSizes[0] << endl;
 
     // Get process memory sizes from user
     vector<uint32_t> processMemSizes;
-    for (int i = 1; i < argc - 1; i++) {
+    for (int i = 5; i < argc - 1; i++) {
         processMemSizes.push_back(stoul(argv[i]));
     }
-
     try {
-        Simulator simulator(PHYSICAL_FRAMES, PAGE_SIZE, TLB_SIZE, processMemSizes);
+        Simulator simulator(PAGE_SIZE, VA_LEN, PHYSICAL_FRAMES, TLB_SIZE, processMemSizes);
 
         // Parse instruction file
         ifstream inFile(argv[argc - 1]);
