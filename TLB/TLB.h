@@ -18,6 +18,9 @@ public:
     // Update TLB with a new entry or modify an existing one
     void updateTLB(uint32_t vpn, uint32_t pfn, bool read, bool write, bool execute);
 
+    // Delete one entry from the TLB by VPN
+    void TLB::deleteTLB(uint32_t vpn); 
+
     // Flush the entire TLB
     void flush();
 

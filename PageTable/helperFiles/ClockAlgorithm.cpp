@@ -5,9 +5,10 @@
 
 ClockAlgorithm::ClockAlgorithm()
 {
-    clockHand = activePages.begin();
+    clockHand = activePages.begin(); // initialize clockHand to the beginning of the list
 }
 
+// According to the Clock Algorithm, add a new page to the activePages list.
 void ClockAlgorithm::addPage(uint32_t VPN)
 {
     if (activeVPNs.find(VPN) == activeVPNs.end())
@@ -21,24 +22,24 @@ void ClockAlgorithm::addPage(uint32_t VPN)
     }
 }
 
+// According to the Clock Algorithm, remove a page from the activePages list.
 void ClockAlgorithm::removePage(uint32_t VPN)
 {
+    // find the VPN in the activePages list, if it exists, return an iterator to it
     auto it = std::find(activePages.begin(), activePages.end(), VPN);
 
-    if (it != activePages.end())
+    if (it != activePages.end()) // if the VPN is found in the activePages list
     {
-        std::cout << "Removing VPN " << VPN << " from ClockAlgorithm." << std::endl;
-
-        // 从 activeVPNs 中移除
+        // remove the VPN from the activeVPNs set
         activeVPNs.erase(VPN);
 
-        // 如果要删除的页面是 clockHand 指向的页面
+        // if the VPN is the current clockHand, move the clockHand to the next element
         if (it == clockHand)
         {
-            // 先移动 clockHand 指向下一个元素
-            clockHand = activePages.erase(it);
+            // erase the element and update the clockHand
+            clockHand = activePages.erase(it); // erase will make clockHand point to the next element
 
-            // 如果删除后列表为空，或者 clockHand 指向列表末尾，重置 clockHand
+            // if the clockHand is at the end of the list, move it to the beginning
             if (clockHand == activePages.end() && !activePages.empty())
             {
                 clockHand = activePages.begin();
@@ -46,14 +47,12 @@ void ClockAlgorithm::removePage(uint32_t VPN)
         }
         else
         {
-            // 直接删除元素
             activePages.erase(it);
         }
 
-        // 如果列表为空，重置 clockHand
-        if (activePages.empty())
+        if (activePages.empty()) // if the activePages list is empty, reset the clockHand
         {
-            clockHand = activePages.end();
+            clockHand = activePages.end(); // prevent dereferencing an empty iterator
         }
     }
     else
@@ -62,6 +61,7 @@ void ClockAlgorithm::removePage(uint32_t VPN)
     }
 }
 
+// scan the activePages list to find a page to replace, based on the reference bit of each page
 bool ClockAlgorithm::selectPageToReplace(uint32_t &targetVPN, PageTable &pageTable)
 {
     if (activePages.empty())
@@ -70,33 +70,34 @@ bool ClockAlgorithm::selectPageToReplace(uint32_t &targetVPN, PageTable &pageTab
         return false;
     }
 
-    int maxScans = activePages.size();
+    int maxScans = activePages.size(); // maximum number of scans before resetting reference bits
     int scans = 0;
 
-    while (true) // 循环直到找到可替换的页面
+    while (true) // until a page to replace is found
     {
         if (scans >= maxScans)
         {
-            // 如果扫描了一圈没有找到任何引用为0的页面，则递减所有页面的引用计数
+            // after one complete scan, reset the reference bits for all active pages, and reset the scan count
             for (uint32_t vpn : activePages)
             {
                 PageTableEntry *entry = pageTable.getPageTableEntry(vpn);
                 if (entry && entry->reference > 0)
                 {
-                    entry->reference--; // 递减引用计数
+                    entry->referenceDec(); // decrement the reference bit
                 }
             }
-            scans = 0; // 重置扫描计数以重新扫描
+            scans = 0; // reset the scan count
         }
 
-        // 继续扫描直到找到引用为0的页面
+        // place the clock hand back at the beginning if it reaches the end of the list
         if (clockHand == activePages.end())
         {
             clockHand = activePages.begin();
         }
 
+        // get the VPN at the current clock hand position
         uint32_t currentVPN = *clockHand;
-        PageTableEntry *entry = pageTable.getPageTableEntry(currentVPN);
+        PageTableEntry *entry = pageTable.getPageTableEntry(currentVPN); // get the page table entry for the current VPN
 
         if (entry == nullptr)
         {
@@ -108,19 +109,20 @@ bool ClockAlgorithm::selectPageToReplace(uint32_t &targetVPN, PageTable &pageTab
 
         if (entry->reference == 0)
         {
-            // 找到可替换的页面
-            targetVPN = currentVPN;
-            moveClockHandNext();
-            return true;
+            // if the reference bit is 0, this page is a candidate for replacement
+            targetVPN = currentVPN;// set the targetVPN to the current VPN
+            moveClockHandNext(); // move the clock hand to the next position
+            return true;        // return true to indicate a page was selected for replacement
         }
 
         moveClockHandNext();
         scans++;
     }
 
-    return false; // 此处实际上不会被执行
+    return false; //should never reach here
 }
 
+// reset the clock algorithm by clearing the activePages list and activeVPNs set
 void ClockAlgorithm::reset()
 {
     activePages.clear();
@@ -128,6 +130,7 @@ void ClockAlgorithm::reset()
     clockHand = activePages.begin();
 }
 
+// move the clock hand to the next position in the activePages list
 void ClockAlgorithm::moveClockHandNext()
 {
     if (activePages.empty())

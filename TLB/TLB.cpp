@@ -1,4 +1,5 @@
 #include "TLB.h"
+#include "TLBEntry.h"
 #include <ctime>
 #include <climits>
 // how nany entries are in the TLB
@@ -18,11 +19,16 @@ int TLB::lookupTLB(uint32_t vpn) {
 
 // Update TLB with a new entry or modify an existing one
 void TLB::updateTLB(uint32_t vpn, uint32_t pfn, bool read, bool write, bool execute) {
-    long currentTime = time(0);
     if (entries.size() >= size) {
         evictIfNeeded();
     }
+    long currentTime = time(0);
     entries[vpn] = TLBEntry(vpn, pfn, true, read, write, execute, currentTime);
+}
+
+// Delete one entry from the TLB by VPN
+void TLB::deleteTLB(uint32_t vpn) {
+    entries.erase(vpn);
 }
 
 // Flush the entire TLB

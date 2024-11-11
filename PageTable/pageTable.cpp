@@ -37,11 +37,13 @@ bool PageTable::isValidRange(uint32_t VPN)
     return VPN < addressSpaceSize / pageSize;
 }
 
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Default constructor with 256 frames
-PageTable::PageTable() : pfManager(256), clockAlgo() {}
+PageTable::PageTable() : pfManager(256), clockAlgo() {} // Initialize with 256 frames, should be changed according to page
 
 // Constructor with custom frame count
 PageTable::PageTable(uint32_t totalFrames) : pfManager(totalFrames), clockAlgo() {}
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Lookup the page table for a given VPN and return the frame number or -1 if not found
 int32_t PageTable::lookupPageTable(uint32_t VPN)
@@ -52,27 +54,25 @@ int32_t PageTable::lookupPageTable(uint32_t VPN)
         return -1;
     }
 
-    uint32_t l1Index = getL1Index(VPN);
-    uint32_t l2Index = getL2Index(VPN);
+    uint32_t l1Index = getL1Index(VPN); // Get the first-level index
+    uint32_t l2Index = getL2Index(VPN); // Get the second-level index
 
-    auto it1 = pageTable.find(l1Index);
-    if (it1 != pageTable.end())
+    auto it1 = pageTable.find(l1Index); // Find the first-level map
+    if (it1 != pageTable.end())         // If the first-level map exists
     {
-        auto it2 = it1->second.find(l2Index);
-        if (it2 != it1->second.end() && it2->second.valid)
+        auto it2 = it1->second.find(l2Index);              // Find the second-level map
+        if (it2 != it1->second.end() && it2->second.valid) // If the second-level map exists and the page is valid
         {
             // Increment reference count if less than 3
             if (it2->second.reference < 3)
             {
-                it2->second.referenceInc();
-                cout << "After incrementing reference, VPN " << VPN
-                     << " has reference " << static_cast<int>(it2->second.reference) << endl;
+                it2->second.referenceInc(); // Increment the reference count
             }
 
             // Update active pages via ClockAlgorithm
             clockAlgo.addPage(VPN);
 
-            return it2->second.frameNumber;
+            return it2->second.frameNumber; // Return the frame number
         }
     }
 
@@ -92,7 +92,7 @@ void PageTable::updatePageTable(uint32_t VPN, uint32_t frameNumber, bool valid, 
     uint32_t l2Index = getL2Index(VPN);
 
     // Get the second-level map
-    auto &entry = checkL2(l1Index)[l2Index];
+    auto &entry = checkL2(l1Index)[l2Index]; // Get the page table entry, create if it does not exist, call the above function
 
     // Update the page table entry
     entry.frameNumber = frameNumber;
@@ -118,31 +118,25 @@ void PageTable::updatePageTable(uint32_t VPN, uint32_t frameNumber, bool valid, 
 // handle page fault with ClockAlgorithm, page replacement
 bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
 {
-    uint32_t targetVPN;
+    uint32_t targetVPN; // claim a target VPN
 
-    std::cout << "Attempting to replace page using ClockAlgorithm for VPN: " << VPN << std::endl;
-
-    // 使用 ClockAlgorithm 选择要替换的页面
-    while (clockAlgo.selectPageToReplace(targetVPN, *this))
+    // select a page to replace using the clock algorithm
+    while (clockAlgo.selectPageToReplace(targetVPN, *this)) // call the selectPageToReplace function from ClockAlgorithm, if a target is found
     {
-        std::cout << "Selected target VPN for replacement: " << targetVPN << std::endl;
-
         PageTableEntry *targetEntry = getPageTableEntry(targetVPN);
 
         // 检查目标页面是否有效
         if (targetEntry && targetEntry->valid)
         {
             uint32_t oldFrame = targetEntry->frameNumber;
-            std::cout << "Target page found with frame number: " << oldFrame << ", proceeding with replacement." << std::endl;
 
-            // 如果页面为脏，则写回
+            // if the target page is dirty, write it back to disk
             if (targetEntry->dirty)
             {
-                std::cout << "Target page is dirty. Writing back to disk." << std::endl;
                 writeBackToDisk(oldFrame);
             }
 
-            // 从页表中移除目标页面（在无效化之前）
+            // remove the old page from the page table before replacing it
             int removedFrame = removeAddressForOneEntry(targetVPN);
             if (removedFrame == -1)
             {
@@ -150,26 +144,25 @@ bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
                 return false;
             }
 
-            // 现在无效化并重置目标页面
+            // invalidate the target page, reset the all bits
             targetEntry->valid = false;
             targetEntry->reset();
 
-            // 将旧的帧分配给新的 VPN
-            std::cout << "Allocating frame " << oldFrame << " to new VPN " << VPN << std::endl;
+            // allocate the old frame for the new page
             updatePageTable(VPN, oldFrame, true, false, true, true, true, 0);
 
-            return true; // 替换成功
+            return true;
         }
         else
         {
-            // 记录并移除无效或不存在的页面
+            // if the target page is invalid, remove it from the page table and try again
             cerr << "Warning: Invalid or non-existent page selected by ClockAlgorithm: " << targetVPN << endl;
-            clockAlgo.removePage(targetVPN); // 确保从 ClockAlgorithm 中移除
+            clockAlgo.removePage(targetVPN); // remove the target page from the active pages
         }
     }
 
     cerr << "Failed to replace page for VPN: " << VPN << endl;
-    return false; // 替换失败
+    return false; // fail to replace page
 }
 
 // Write the page back to disk
@@ -184,7 +177,8 @@ int PageTable::removeAddressForOneEntry(uint32_t VPN)
     uint32_t l1Index = getL1Index(VPN);
     uint32_t l2Index = getL2Index(VPN);
 
-    // 检查 VPN 是否在页表中
+    // check if VPN is in the page table
+    // fist check if the first level index exists
     auto it1 = pageTable.find(l1Index);
     if (it1 == pageTable.end())
     {
@@ -192,6 +186,7 @@ int PageTable::removeAddressForOneEntry(uint32_t VPN)
         return -1;
     }
 
+    // then check if the second level index exists
     auto it2 = it1->second.find(l2Index);
     if (it2 == it1->second.end())
     {
@@ -199,22 +194,21 @@ int PageTable::removeAddressForOneEntry(uint32_t VPN)
         return -1;
     }
 
+    // get the frame number for the VPN
     PageTableEntry &entry = it2->second;
-    int pfn = entry.frameNumber;
-    std::cout << "Removing VPN: " << VPN << " with frame number: " << pfn << " from page table." << std::endl;
+    int pfn = entry.frameNumber; // get the frame number
 
-    // 从页表中删除 VPN
+    // delete the entry from the page table
     it1->second.erase(it2);
     if (it1->second.empty())
     {
         pageTable.erase(it1);
     }
 
-    // 同步 ClockAlgorithm
-    std::cout << "Removing VPN " << VPN << " from ClockAlgorithm." << std::endl;
+    // remove the VPN from the clock algorithm
     clockAlgo.removePage(VPN);
 
-    return pfn; // 返回已删除条目的 PFN
+    return pfn; // return the frame number
 }
 
 // Get the PageTableEntry for a given VPN
@@ -228,18 +222,21 @@ PageTableEntry *PageTable::getPageTableEntry(uint32_t VPN)
     uint32_t l1Index = getL1Index(VPN);
     uint32_t l2Index = getL2Index(VPN);
 
+    // check if the VPN is in the page table
     auto it1 = pageTable.find(l1Index);
     if (it1 == pageTable.end())
     {
         return nullptr;
     }
 
+    // check if the second level index exists
     auto it2 = it1->second.find(l2Index);
     if (it2 == it1->second.end())
     {
         return nullptr;
     }
 
+    // return the page table entry if it is valid
     if (it2->second.valid)
     {
         return &(it2->second);
@@ -252,22 +249,4 @@ void PageTable::resetPageTable()
 {
     pageTable.clear();
     clockAlgo.reset();
-}
-
-// For testing purposes only
-void PageTable::printPageTable() const
-{
-    for (const auto &l1Entry : pageTable)
-    {
-        for (const auto &l2Entry : l1Entry.second)
-        {
-            const auto &entry = l2Entry.second;
-            cout << "VPN: " << ((l1Entry.first << l2Bits) | l2Entry.first)
-                 << " -> Frame Number: " << entry.frameNumber
-                 << ", Valid: " << entry.valid
-                 << ", Dirty: " << entry.dirty
-                 << ", Reference: " << static_cast<int>(entry.reference)
-                 << endl;
-        }
-    }
 }
