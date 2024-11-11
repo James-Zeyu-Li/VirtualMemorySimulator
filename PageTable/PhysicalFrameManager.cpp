@@ -1,9 +1,7 @@
-// physicalFrame.cpp
 #include <queue>
-#include <vector>
-#include <iostream>
-using namespace std;
 #include "PhysicalFrameManager.h"
+
+using namespace std;
 
 PhysicalFrameManager::PhysicalFrameManager(uint32_t totalFrames) : totalFrames(totalFrames)
 {
@@ -41,4 +39,9 @@ void PhysicalFrameManager::freeAFrame(uint32_t frame)
 uint32_t PhysicalFrameManager::getTotalFrames() const
 {
     return totalFrames;
+}
+
+uint32_t PhysicalFrameManager::getFreeFrames() const
+{
+    return freeFrames.size();
 }

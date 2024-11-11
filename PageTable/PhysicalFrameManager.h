@@ -24,6 +24,9 @@ public:
 
     // Get the total number of frames
     uint32_t getTotalFrames() const;
+
+    // Get the total number of free frames
+    uint32_t getFreeFrames() const;
 };
 
 #endif // PHYSICALFRAMEMANAGER_H
