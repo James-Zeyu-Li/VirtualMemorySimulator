@@ -70,11 +70,14 @@ bool ClockAlgorithm::selectPageToReplace(uint32_t &targetVPN, PageTable &pageTab
 
     int maxScans = activePages.size(); // maximum number of scans before resetting reference bits
     int scans = 0;
+    cout << "Selecting page to replace. Total active pages: " << activePages.size() << endl;
 
     while (true) // until a page to replace is found
     {
         if (scans >= maxScans)
         {
+            cout << "Completed one full scan, resetting reference bits" << endl;
+
             // after one complete scan, reset the reference bits for all active pages, and reset the scan count
             for (uint32_t vpn : activePages)
             {
@@ -97,20 +100,23 @@ bool ClockAlgorithm::selectPageToReplace(uint32_t &targetVPN, PageTable &pageTab
         uint32_t currentVPN = *clockHand;
         PageTableEntry *entry = pageTable.getPageTableEntry(currentVPN); // get the page table entry for the current VPN
 
-        if (entry == nullptr)
+        //  --------------------------------------------
+        if (!entry || !pageTable.isValidRange(currentVPN))
         {
-            std::cerr << "Error: PageTableEntry not found for VPN: " << currentVPN << std::endl;
+            cerr << "Error: Invalid or out-of-range PageTableEntry for VPN: " << currentVPN << ". Removing from active pages." << std::endl;
+            removePage(currentVPN);
             moveClockHandNext();
             scans++;
             continue;
         }
+        cout << "Scanning VPN: " << currentVPN << ", Reference: " << entry->reference << endl;
 
         if (entry->reference == 0)
         {
-            // if the reference bit is 0, this page is a candidate for replacement
-            targetVPN = currentVPN; // set the targetVPN to the current VPN
-            moveClockHandNext();    // move the clock hand to the next position
-            return true;            // return true to indicate a page was selected for replacement
+            targetVPN = currentVPN;
+            cout << "Selected VPN to replace: " << targetVPN << endl;
+            moveClockHandNext(); // 将时钟指针移至下一个页面
+            return true;
         }
 
         moveClockHandNext();

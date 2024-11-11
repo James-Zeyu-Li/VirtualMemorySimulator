@@ -124,6 +124,14 @@ void PageTable::updatePageTable(uint32_t VPN, uint32_t frameNumber, bool valid, 
 // handle page fault with ClockAlgorithm, page replacement
 bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
 {
+    if (!isValidRange(VPN))
+    {
+        cerr << "Invalid VPN: " << VPN << " Out of range" << endl;
+        return false;
+    }
+
+    cout << "replacePageUsingClockAlgo called with VPN: " << VPN << endl;
+
     uint32_t targetVPN; // claim a target VPN
 
     // select a page to replace using the clock algorithm
@@ -136,6 +144,9 @@ bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
         {
             uint32_t oldFrame = targetEntry->frameNumber;
 
+            // for debugging purposes
+            cout << "Replacing page. Target VPN: " << targetVPN << ", Frame: " << oldFrame << endl;
+
             // if the target page is dirty, write it back to disk
             if (targetEntry->dirty)
             {
@@ -143,7 +154,8 @@ bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
             }
 
             // remove the old page from the page table before replacing it
-            int removedFrame = removeAddressForOneEntry(targetVPN);
+            // FIXME: removed and reallocated memory within pagetable, no interaction with main ------- 
+            int removedFrame = removeAddressForOneEntry(targetVPN); 
             if (removedFrame == -1)
             {
                 cerr << "Error: Failed to remove victim VPN: " << targetVPN << endl;
@@ -152,7 +164,18 @@ bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
 
             // ---- need method from main to allocate a new frame for the new page
             // allocate the old frame for the new page
+            cout << "Attempting to update page table with VPN: " << VPN << " and Frame: " << oldFrame << endl;
+
             updatePageTable(VPN, oldFrame, true, false, true, true, true, 0);
+            // --------------- 
+
+            PageTableEntry *newEntry = getPageTableEntry(VPN);
+            if (!newEntry || !newEntry->valid)
+            {
+                cerr << "Error: Failed to update page table with VPN: " << VPN << " and Frame: " << oldFrame << endl;
+                return false;
+            }
+
             //--------------------------------------------
             return true;
         }
