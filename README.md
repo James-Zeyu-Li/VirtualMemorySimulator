@@ -1,45 +1,73 @@
 # VirtualMemorySimulator
 
+This project implements a virtual memory simulator with a two-level page table.
 
-This project implements a two-level page table in C++ with a clock replacement algorithm for page eviction according to reference bit management.
+## Usage
 
-Page table test
+### Compile & Test
 
-`g++ -std=c++11 test/testPage.cpp pageTable.cpp pageTableEntry.cpp physicalFrameManager.cpp -o page_table_test`
+```bash
+# Test page table
+make test-page-table
 
+# Test simulator
+make run-simulator
+```
 
-### Key Features
+### Run simulator with custom params
 
-#### 1.	Two-Level Page Table Structure:
-- The page table is organized in two levels using nested unordered_maps. 
-- Each Virtual Page Number (VPN) is mapped to a PageTableEntry, 
+```bash
+# Say the compiled program is `vmsimulator`
+# Page size is in bytes, e.g. 4096
+# Virtual address length represents number of bits, e.g. 32
+# Physical memory is in bytes
+# TLB size represents maximum number of entries, e.g. 8
+# Process memory sizes are in bytes, same as used for generator.py
+# Instruction file should contain generated instructions by generator.py
+./vmsimulator <page_size> <virtual_address_len> <physical_memory> <tlb_size> <process_memory_sizes> <instruction_file>
+```
+
+## Assumptions
+
+1. Physical memory must be able to fulfill for any one of the processes, but not necessarily all of them.
+2. New process will be allocated **8** physical frames for initializing the **first** few pages.
+3. For now we don't differentiate memory access in terms of code, heap or stack.
+4. Swapping mechanism is not yet implemented.
+
+## Features
+
+### Configurable parameters
+
+All memory-related params are configurable:
+
+1. Page size
+2. Address space size
+3. Physical memory
+4. TLB size
+5. Max memory for every process
+
+### Two-Level page table
+
+- The page table is organized in two levels using nested unordered_maps.
+- Each Virtual Page Number (VPN) is mapped to a PageTableEntry,
 - PageTable Entry includes `frame number, validity, dirty flag, access permissions, and a reference counter`.
 
-#### 2.	Clock Page Replacement Algorithm:
-- 	The page table uses a clock replacement algorithm to manage page faults when memory is full according to the reference counter.
+### Clock page replacement algorithm
 
-- 	Global Reference Bit Management:
-	- On each lookupPageTable call, the reference bit of the accessed page is set to 3, while all other pages have their reference bit decremented -1 (if above 0). 
+- The page table uses a clock replacement algorithm to manage page faults when memory is full according to the reference counter.
+- Global Reference Bit Management:
 
-- 	Page Fault Handling and Frame Allocation:
-    - When a page fault occurs, the handlePageFault function attempts to allocate a new frame. 
-    - If no frames are available, the clock algorithm is triggered to free up memory by replacing an existing page.
-    - Check if any page has a reference bit of 0, if not decrement the reference bit for all entries and check again. 
+  - On each lookupPageTable call, the reference bit of the accessed page is set to 3, while all other pages have their reference bit decremented -1 (if above 0).
 
+- Page Fault Handling and Frame Allocation:
+  - When a page fault occurs, the handlePageFault function attempts to allocate a new frame.
+  - If no frames are available, the clock algorithm is triggered to free up memory by replacing an existing page.
+  - Check if any page has a reference bit of 0, if not decrement the reference bit for all entries and check again.
 
-#### *Previous implementation*
-```
-- Current implemented version is a boolean manipulation reference version, which provides a easier and faster swapping time.
-    -  The boolean will be set to true when created and when looked up. 
-    - Not going to be set to false until there is a pageFault and no free physical frame / physical memory full
-        - The clock hand iterate through all Frames (go through 2 rounds for the first page eviction), if all reference bit are True, which will be , it will turn all reference to false
-        - This will make the first look up go through the page table twice but the next evection will be finding the first false among all pages.
-        - (Using time as an reference to change the reference bit is another good choice which is not implemented.)
-- This approach reduces unnecessary resets and enables efficient page replacement by ensuring only necessary changes to the reference bit, improving swap performance.
-```
+### Initial page table warm-up
 
+For now every time a process is created, we will pre-assign **8** physical frames for it so that its page table can establish the first few pages. The goal is to reduce the initialization cost of page faults as a process starts to access its memory.
 
-#### Future Work
-- When context switch instead of clear everything, save it to physical memory which can be located through PTBR which get the page table back for the process
-    - maybe only save only 1 or 2 process's page table 
+A randomized algorithm might perform better since code/heap/stack are not distinguished currently, yet for simplicity we just pick the first **8** pages for warm-up.
 
+## Benchmark
