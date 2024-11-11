@@ -6,7 +6,7 @@
 #include <list>
 #include <vector>
 #include <cstdint>
-#include "PageTable/pageTable.cpp"
+#include "PageTable/PageTable.h"
 #include "TLB/TLB.h"
 #include "PageTable/PhysicalFrameManager.h"
 
