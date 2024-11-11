@@ -345,7 +345,6 @@ void testEdgeCases()
               << std::endl;
 }
 
-
 // Helper function for assertions with toString output
 void assertEqualString(const std::string &expected, const std::string &actual, const std::string &testName)
 {
@@ -454,17 +453,17 @@ void testPageTableReferenceCountInteractions()
 
 int main()
 {
-    // testInitializePageTable();
-    // testValidVPNAccess();
-    // testInvalidVPNAccess();
-    // testPageFaultHandling();
-    // testPhysicalFrameAllocation();
-    // testPageReplacement();
-    // testReferenceCounts();
-    // testDirtyPages();
-    // testResetFunctionality();
-    // testRemoveAddressForOneEntry();
-    // testEdgeCases();
+    testInitializePageTable();
+    testValidVPNAccess();
+    testInvalidVPNAccess();
+    testPageFaultHandling();
+    testPhysicalFrameAllocation();
+    testPageReplacement();
+    testReferenceCounts();
+    testDirtyPages();
+    testResetFunctionality();
+    testRemoveAddressForOneEntry();
+    testEdgeCases();
 
     testReferenceCountBehavior();
     testPageTableReferenceCountInteractions();
