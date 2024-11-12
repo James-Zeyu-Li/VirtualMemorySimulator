@@ -28,7 +28,7 @@ void ClockAlgorithm::addPage(uint32_t VPN)
 void ClockAlgorithm::removePage(uint32_t VPN)
 {
     // find the VPN in the activePages list, if it exists, return an iterator to it
-    auto it = std::find(activePages.begin(), activePages.end(), VPN);
+    auto it = find(activePages.begin(), activePages.end(), VPN);
 
     if (it != activePages.end()) // if the VPN is found in the activePages list
     {
@@ -36,7 +36,7 @@ void ClockAlgorithm::removePage(uint32_t VPN)
         if (it == clockHand)
         {
             moveClockHandNext();
-            if (clockHand == activePages.end()) clockHand = activePages.begin();
+             if (clockHand == activePages.end()) clockHand = activePages.begin();
         }
         // remove the VPN from the activeVPNs set
         activePages.erase(it);
@@ -54,7 +54,7 @@ bool ClockAlgorithm::selectPageToReplace(uint32_t &targetVPN, PageTable &pageTab
 {
     if (activePages.empty())
     {
-        std::cerr << "Error: No active pages available for replacement." << std::endl;
+        cerr << "Error: No active pages available for replacement." << endl;
         return false;
     }
 
@@ -93,13 +93,12 @@ bool ClockAlgorithm::selectPageToReplace(uint32_t &targetVPN, PageTable &pageTab
         //  --------------------------------------------
         if (!entry || !pageTable.isValidRange(currentVPN))
         {
-            cerr << "Error: Invalid or out-of-range PageTableEntry for VPN: " << currentVPN << ". Removing from active pages." << std::endl;
+            cerr << "Error: Invalid or out-of-range PageTableEntry for VPN: " << currentVPN << ". Removing from active pages." << endl;
             removePage(currentVPN);
             moveClockHandNext();
             scans++;
             continue;
         }
-        cout << "Scanning VPN: " << currentVPN << ", Reference: " << entry->reference << endl;
 
         if (entry->reference == 0)
         {

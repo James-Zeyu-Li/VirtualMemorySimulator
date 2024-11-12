@@ -14,7 +14,7 @@ class PageTable
 {
 private:
     // Two-level page table structure
-    unordered_map<uint32_t, std::unordered_map<uint32_t, PageTableEntry>> pageTable;
+    unordered_map<uint32_t, unordered_map<uint32_t, PageTableEntry>> pageTable;
 
     uint64_t addressSpaceSize; // 32bit
     uint32_t pageSize;         // 4096

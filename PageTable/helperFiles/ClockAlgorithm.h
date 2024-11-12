@@ -6,15 +6,17 @@
 #include <cstdint>
 #include "../PageTableEntry.h"
 
+using namespace std;
+
 // Forward declaration to avoid circular dependency
 class PageTable;
 
 class ClockAlgorithm
 {
 private:
-    std::list<uint32_t> activePages;         // Tracks active VPNs in a circular list
-    std::list<uint32_t>::iterator clockHand; // Iterator pointing to current clock position
-    std::unordered_set<uint32_t> activeVPNs; // To avoid duplicate VPNs
+    list<uint32_t> activePages;         // Tracks active VPNs in a circular list
+    list<uint32_t>::iterator clockHand; // Iterator pointing to current clock position
+    unordered_set<uint32_t> activeVPNs; // To avoid duplicate VPNs
 
 public:
     ClockAlgorithm();

@@ -137,16 +137,11 @@ void PageTable::updatePageTable(uint32_t VPN, uint32_t frameNumber, bool valid, 
 // handle page fault with ClockAlgorithm, page replacement
 bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
 {
-
-    cout << "Checking VPN: " << VPN << ", Max Valid VPN: " << (addressSpaceSize / pageSize - 1) << endl;
-
     if (!isValidRange(VPN))
     {
         cerr << "Invalid VPN: " << VPN << " Out of range" << endl;
         return false;
     }
-
-    cout << "replacePageUsingClockAlgo called with VPN: " << VPN << endl;
 
     uint32_t targetVPN; // claim a target VPN
 
@@ -159,9 +154,6 @@ bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
         if (targetEntry && targetEntry->valid)
         {
             uint32_t oldFrame = targetEntry->frameNumber;
-
-            // for debugging purposes
-            cout << "Replacing page. Target VPN: " << targetVPN << ", Frame: " << oldFrame << endl;
 
             // if the target page is dirty, write it back to disk
             if (targetEntry->dirty)
@@ -179,9 +171,6 @@ bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
             }
 
             // ---- need method from main to allocate a new frame for the new page
-            // allocate the old frame for the new page
-            cout << "Attempting to update page table with VPN: " << VPN << " and Frame: " << oldFrame << endl;
-
             int newFrame = oldFrame; 
             updatePageTable(VPN, oldFrame, true, false, true, true, true, 0);
             // ---------------
@@ -225,7 +214,7 @@ int PageTable::removeAddressForOneEntry(uint32_t VPN)
     auto it1 = pageTable.find(l1Index);
     if (it1 == pageTable.end())
     {
-        std::cerr << "Error: L1 index " << l1Index << " not found in the page table for VPN: " << VPN << std::endl;
+        cerr << "Error: L1 index " << l1Index << " not found in the page table for VPN: " << VPN << endl;
         return -1;
     }
 
@@ -233,7 +222,7 @@ int PageTable::removeAddressForOneEntry(uint32_t VPN)
     auto it2 = it1->second.find(l2Index);
     if (it2 == it1->second.end())
     {
-        std::cerr << "Error: L2 index " << l2Index << " not found in the page table for VPN: " << VPN << std::endl;
+        cerr << "Error: L2 index " << l2Index << " not found in the page table for VPN: " << VPN << endl;
         return -1;
     }
 
