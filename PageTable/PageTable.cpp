@@ -169,6 +169,7 @@ bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
             // allocate the old frame for the new page
             cout << "Attempting to update page table with VPN: " << VPN << " and Frame: " << oldFrame << endl;
 
+            int newFrame = oldFrame; 
             updatePageTable(VPN, oldFrame, true, false, true, true, true, 0);
             // ---------------
 
@@ -224,8 +225,8 @@ int PageTable::removeAddressForOneEntry(uint32_t VPN)
     }
 
     // get the frame number for the VPN
-    PageTableEntry &entry = it2->second;
-    int pfn = entry.frameNumber; // get the frame number
+    int pfn = it2->second.frameNumber;
+
 
     // delete the entry from the page table
     it1->second.erase(it2);
