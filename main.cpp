@@ -298,7 +298,6 @@ int main(int argc, char* argv[]) {
     const uint32_t PHYSICAL_MEM = stoul(argv[3]);
     const uint32_t PHYSICAL_FRAMES = PHYSICAL_MEM / PAGE_SIZE;
     const uint32_t TLB_SIZE = stoul(argv[4]);
-    // cout << PAGE_SIZE << VA_LEN << PHYSICAL_FRAMES << TLB_SIZE << processMemSizes[0] << endl;
 
     // Get process memory sizes from user
     vector<uint32_t> processMemSizes;
@@ -306,7 +305,7 @@ int main(int argc, char* argv[]) {
         processMemSizes.push_back(stoul(argv[i]));
     }
     try {
-        Simulator simulator(PAGE_SIZE, VA_LEN, PHYSICAL_FRAMES, TLB_SIZE, processMemSizes);
+        Simulator simulator(VA_LEN, PAGE_SIZE, PHYSICAL_FRAMES, TLB_SIZE, processMemSizes);
 
         // Parse instruction file
         ifstream inFile(argv[argc - 1]);
