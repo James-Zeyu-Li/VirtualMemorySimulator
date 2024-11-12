@@ -92,7 +92,7 @@ private:
     uint32_t getPagesFromBytes(uint32_t size) const;
 
 public:
-    Simulator(uint32_t addressBits, uint32_t pageSize, uint32_t numFrames, uint32_t tlbSize, const vector<uint32_t>& processMemSizes);
+    Simulator(uint32_t addressBits, uint32_t pageSize_, uint32_t numFrames, uint32_t tlbSize, const vector<uint32_t>& processMemSizes);
     void accessMemory(uint32_t virtualAddress);
     void switchProcess(uint32_t pid);
     void allocateMemory(uint32_t sizeInBytes);
@@ -193,12 +193,12 @@ uint32_t Simulator::translateVirtualAddress(uint32_t virtualAddress) {
     return UINT32_MAX;
 }
 
-Simulator::Simulator(uint32_t addressBits, uint32_t pageSize, uint32_t numFrames,
+Simulator::Simulator(uint32_t addressBits, uint32_t pageSize_, uint32_t numFrames,
                      uint32_t tlbSize, const vector<uint32_t>& processMemSizes) : tlb(tlbSize), pfManager(numFrames){
 
     currentProcessId = -1;
     physicalFrames = numFrames;
-    pageSize = pageSize;
+    pageSize = pageSize_;
     tlbSize = tlbSize;
     tlb = TLB(tlbSize);
     pfManager = PhysicalFrameManager(numFrames);
@@ -242,7 +242,7 @@ void Simulator::accessMemory(uint32_t virtualAddress) {
 }
 
 void Simulator::switchProcess(uint32_t pid){
-    cout << "Switch from process " << currentProcessId << " to " << pid << endl;
+    cout << "Switch current process to " << pid << endl;
     currentProcessId = pid;
     tlb.flush();
     // TODO: better if we can check TLB status
