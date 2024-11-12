@@ -26,6 +26,7 @@ unordered_map<uint32_t, PageTableEntry> &PageTable::checkL2(uint32_t l1Index)
     if (pageTable.find(l1Index) == pageTable.end()) // If the first level map does not exist
     {
         pageTable[l1Index] = unordered_map<uint32_t, PageTableEntry>(); // Create a new second-level map
+        level1EntriesAllocated++; // Increment L1 counter when a new L1 entry is allocated
     }
     return pageTable[l1Index]; // Return the second-level map
 }
@@ -97,8 +98,23 @@ void PageTable::updatePageTable(uint32_t VPN, uint32_t frameNumber, bool valid, 
     uint32_t l1Index = getL1Index(VPN);
     uint32_t l2Index = getL2Index(VPN);
 
-    // Get the second-level map
-    auto &entry = checkL2(l1Index)[l2Index]; // Get the page table entry, create if it does not exist, call the above function
+    // Check if we're adding a new first-level entry
+    bool isNewL1Entry = (pageTable.find(l1Index) == pageTable.end());
+    auto &l2Table = checkL2(l1Index); // This will create a new second-level map if necessary
+
+    // If a new L1 entry was created, increment the L1 counter
+    if (isNewL1Entry) {
+        level1EntriesAllocated++;
+    }
+
+    // Check if we're adding a new second-level entry
+    bool isNewL2Entry = (l2Table.find(l2Index) == l2Table.end());
+    if (isNewL2Entry) {
+        level2EntriesAllocated++;
+    }
+
+    // Get the second-level map entry
+    auto &entry = l2Table[l2Index];
 
     // Update the page table entry
     entry.frameNumber = frameNumber;
@@ -110,12 +126,9 @@ void PageTable::updatePageTable(uint32_t VPN, uint32_t frameNumber, bool valid, 
     entry.reference = reference;
 
     // If the page is valid, update the active pages via ClockAlgorithm
-    if (valid)
-    {
+    if (valid) {
         clockAlgo.addPage(VPN);
-    }
-    else
-    {
+    } else {
         // If the page is invalid, remove it from the active pages
         clockAlgo.removePage(VPN);
     }
@@ -279,4 +292,36 @@ void PageTable::resetPageTable()
 {
     pageTable.clear();
     clockAlgo.reset();
+}
+
+// Returns the number of allocated entries in total
+uint32_t PageTable::getAllocatedEntries() const {
+    return level1EntriesAllocated + level2EntriesAllocated;
+}
+
+// Returns the memory usage for the two-level page table
+uint32_t PageTable::getTotalMemoryUsage() const {
+    uint32_t sizeL1Entry = sizeof(unordered_map<uint32_t, PageTableEntry>);
+    uint32_t sizeL2Entry = sizeof(PageTableEntry);
+
+    return (level1EntriesAllocated * sizeL1Entry) + (level2EntriesAllocated * sizeL2Entry);
+}
+
+// Returns the memory usage for a hypothetical single-level page table
+uint32_t PageTable::getAvailableSpaceSingleLevel(uint32_t addressSpaceSize, uint32_t pageSize) const {
+    uint32_t numPages = addressSpaceSize / pageSize;
+    uint32_t sizeSingleLevelEntry = sizeof(PageTableEntry);
+
+    return (numPages * sizeSingleLevelEntry) - getTotalMemoryUsage();
+}
+
+void PageTable::displayStatistics() const {
+    cout << "Two-Level Page Table Statistics:" << endl;
+    cout << "  Total L1 Entries Allocated: " << level1EntriesAllocated << endl;
+    cout << "  Total L2 Entries Allocated: " << level2EntriesAllocated << endl;
+    cout << "  Total Allocated Entries: " << getAllocatedEntries() << endl;
+    cout << "  Total Memory Usage (Two-Level): " << getTotalMemoryUsage() << " bytes" << endl;
+    cout << "  Available Space Saved (Compared to Single-Level): "
+         << getAvailableSpaceSingleLevel(addressSpaceSize, pageSize) << " bytes" << endl;
+    cout << endl;
 }

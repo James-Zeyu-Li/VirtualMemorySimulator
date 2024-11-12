@@ -50,7 +50,7 @@ public:
     // Functions to calculate hit rates
     double getTLBHitRate() const;
     double getPageTableHitRate() const;
-
+    PageTable* getPageTable() const;
     // Display statistics for the process
     void displayStatistics() const;
 };
@@ -103,6 +103,10 @@ double Process::getTLBHitRate() const {
 
 double Process::getPageTableHitRate() const {
     return tlbMisses > 0 ? static_cast<double>(pageTableHits) / tlbMisses : 0.0;
+}
+
+PageTable* Process::getPageTable() const {
+    return pageTable;
 }
 
 void Process::displayStatistics() const {
@@ -398,7 +402,11 @@ int main(int argc, char* argv[]) {
         cout << "\n--- Process Statistics ---" << endl;
         for (const auto& [pid, process] : simulator.getProcessTable()) {
             process.displayStatistics();
+            if (process.getPageTable()) {
+                process.getPageTable()->displayStatistics();
+            }
         }
+
     }
     catch (const exception& e) {
         cerr << "Error: " << e.what() << endl;

@@ -19,6 +19,10 @@ private:
     uint64_t addressSpaceSize; // 32bit
     uint32_t pageSize;         // 4096
 
+    // Counters to track allocated entries
+    uint32_t level1EntriesAllocated = 0; // Count of L1 entries allocated
+    uint32_t level2EntriesAllocated = 0; // Count of L2 entries allocated
+
     const int pageOffsetBits = static_cast<int>(log2(pageSize));
     const int vpnBits = addressSpaceSize - pageOffsetBits;
     const int l1Bits = vpnBits / 2;
@@ -59,6 +63,12 @@ public:
     void resetPageTable();
 
     bool isValidRange(uint32_t VPN);
+
+    // Functions to calculate memory usage
+    uint32_t getAllocatedEntries() const;
+    uint32_t getTotalMemoryUsage() const;
+    uint32_t getAvailableSpaceSingleLevel(uint32_t addressSpaceSize, uint32_t pageSize) const;
+    void displayStatistics() const;
 };
 
 #endif // PAGETABLE_H
