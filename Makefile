@@ -10,9 +10,9 @@ test-page-table: ## Compile and run test cases for page table
 	./page_table_test
 
 compile-simulator: ## Compile the main program of simulator
-	g++ -std=c++11 main.cpp PageTable/PageTable.cpp PageTable/PageTableEntry.cpp PageTable/PhysicalFrameManager.cpp PageTable/helperFiles/ClockAlgorithm.cpp TLB/TLB.cpp TLB/TLBEntry.cpp -I PageTable -I PageTable/helperFiles -I TLB -o simulator
+	g++ -std=c++11 main.cpp PageTable/PageTable.cpp PageTable/PageTableEntry.cpp PageTable/PhysicalFrameManager.cpp PageTable/helperFiles/ClockAlgorithm.cpp TLB/TLB.cpp TLB/TLBEntry.cpp -I PageTable -I PageTable/helperFiles -I TLB -o vmsimulator
 
 run-simulator: ## Generate instruction file and run simulator for testing
 	@$(MAKE) compile-simulator
 	python generator.py 100 0.3:1024 0.8:4096 > instructions.txt
-	vmsimulator 4096 32 16384 8 1024 4096 instructions.txt
+	./vmsimulator 4096 32 16384 8 1024 4096 instructions.txt
