@@ -12,7 +12,6 @@ add_executable(VirtualMemorySimulator
         PageTable/PhysicalFrameManager.cpp
         PageTable/helperFiles/ClockAlgorithm.cpp
         TLB/TLB.cpp
-        TLB/TLBEntry.cpp
 )
 
 
