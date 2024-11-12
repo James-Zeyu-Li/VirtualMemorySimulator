@@ -39,8 +39,9 @@ bool PageTable::isValidRange(uint32_t VPN)
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // constructor
-PageTable::PageTable(uint64_t addressBits, uint32_t pageSize)
-    : addressSpaceSize(1ULL << addressBits),
+PageTable::PageTable(uint32_t addressBits, uint32_t pageSize)
+    :addressBits(addressBits), 
+    addressSpaceSize(1ULL << addressBits),
       pageSize(pageSize),
       clockAlgo()
 {

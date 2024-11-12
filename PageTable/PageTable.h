@@ -16,7 +16,8 @@ private:
     // Two-level page table structure
     unordered_map<uint32_t, unordered_map<uint32_t, PageTableEntry>> pageTable;
 
-    uint64_t addressSpaceSize; // 32bit
+    uint32_t addressBits; // 32bit
+    uint64_t addressSpaceSize; // length of the address space
     uint32_t pageSize;         // 4096
 
     // Counters to track allocated entries
@@ -24,7 +25,7 @@ private:
     uint32_t level2EntriesAllocated = 0; // Count of L2 entries allocated
 
     const int pageOffsetBits = static_cast<int>(log2(pageSize));
-    const int vpnBits = addressSpaceSize - pageOffsetBits;
+    const int vpnBits = addressBits - pageOffsetBits;
     const int l1Bits = vpnBits / 2;
     const int l2Bits = vpnBits - l1Bits;
 
@@ -40,7 +41,7 @@ private:
 
 public:
     // Constructors
-    PageTable(uint64_t addressSpaceSize, uint32_t pageSize);
+    PageTable(uint32_t addressBits, uint32_t pageSize);
 
     // Lookup the page table for a given VPN, returning the frame number or -1 if not found
     int32_t lookupPageTable(uint32_t VPN);
