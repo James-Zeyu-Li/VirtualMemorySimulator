@@ -1,8 +1,10 @@
 #include "TLB.h"
 #include "TLBEntry.h"
-#include <ctime>
 #include <climits>
-// how nany entries are in the TLB
+#include <iostream>
+#include <chrono>
+
+// Constructor for TLB, initializing with the given size
 TLB::TLB(uint32_t size) : size(size) {}
 
 // Lookup function to check if a VPN is in TLB
@@ -11,19 +13,22 @@ int TLB::lookupTLB(uint32_t vpn) {
     // Checks if the VPN was found in the map and if the entry is valid.
     if (expectEntry != entries.end() && expectEntry->second.valid) {
         // Update access time
-        expectEntry->second.lastAccessTime = time(0);
+        expectEntry->second.lastAccessTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
         return expectEntry->second.pfn;
     }
-    return -1;  // TLB miss
+    return -1;  // Return -1 if the entry is not found or invalid
 }
 
 // Update TLB with a new entry or modify an existing one
 void TLB::updateTLB(uint32_t vpn, uint32_t pfn, bool read, bool write, bool execute) {
-    if (entries.size() >= size) {
+    // Check if TLB needs to evict an entry
+    if (entries.size() >= size){
         evictIfNeeded();
     }
-    long currentTime = time(0);
-    entries[vpn] = TLBEntry(vpn, pfn, true, read, write, execute, currentTime);
+
+    // Update the entry in the TLB with current time in milliseconds
+    entries[vpn] = TLBEntry(vpn, pfn, true, read, write, execute, 
+                            std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count());
 }
 
 // Delete one entry from the TLB by VPN
@@ -36,17 +41,19 @@ void TLB::flush() {
     entries.clear();
 }
 
-// Evict an entry if TLB is full
+
+// Eviction logic if needed based on most recent access (LRU)
 void TLB::evictIfNeeded() {
-    long oldestAccessTime = LONG_MAX;  // Start with a very large value to ensure we find the least recent
+    long oldestAccessTime = LONG_MIN;  // Start with the smallest value to find the least recent
     uint32_t vpnToEvict = UINT32_MAX;  // This will hold the VPN of the entry to evict
 
     // Iterate through all entries to find the one with the oldest access time (LRU)
-    for (const auto& entry : entries) {
-        // Compare the access time of each entry with the current oldest one
-        if (entry.second.lastAccessTime < oldestAccessTime) {
-            vpnToEvict = entry.first;  // Update the VPN of the entry to evict
-            oldestAccessTime = entry.second.lastAccessTime;  // Update the oldest access time
+    for (auto it = entries.begin(); it != entries.end(); ++it) {
+        const TLBEntry& entry = it->second;
+        // If the current entry has an older access time, update the oldest access time and VPN to evict
+        if (entry.lastAccessTime < oldestAccessTime) {
+            vpnToEvict = it->first;
+            oldestAccessTime = entry.lastAccessTime;
         }
     }
 
