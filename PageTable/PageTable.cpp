@@ -38,12 +38,12 @@ bool PageTable::isValidRange(uint32_t VPN)
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // constructor
-PageTable::PageTable(uint64_t addressSpaceSize, uint32_t pageSize)
-    : addressSpaceSize(addressSpaceSize),
+PageTable::PageTable(uint64_t addressBits, uint32_t pageSize)
+    : addressSpaceSize(1ULL << addressBits),
       pageSize(pageSize),
       clockAlgo()
 {
-    if (1ULL << addressSpaceSize % pageSize != 0)
+    if (addressSpaceSize % pageSize != 0)
     {
         cerr << "Error: Address space size must be a multiple of page size" << endl;
         return;
