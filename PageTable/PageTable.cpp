@@ -40,7 +40,7 @@ bool PageTable::isValidRange(uint32_t VPN)
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // constructor
 PageTable::PageTable(uint32_t addressBits, uint32_t pageSize)
-    :addressBits(addressBits), 
+    :addressBits(addressBits),
     addressSpaceSize(1ULL << addressBits),
       pageSize(pageSize),
       clockAlgo()
@@ -172,7 +172,7 @@ bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
             }
 
             // ---- need method from main to allocate a new frame for the new page
-            int newFrame = oldFrame; 
+            int newFrame = oldFrame;
             updatePageTable(VPN, oldFrame, true, false, true, true, true, 0);
             // ---------------
 
@@ -298,11 +298,10 @@ uint32_t PageTable::getTotalMemoryUsage() const {
 }
 
 // Returns the memory usage for a hypothetical single-level page table
-uint32_t PageTable::getAvailableSpaceSingleLevel(uint32_t addressSpaceSize, uint32_t pageSize) const {
+uint32_t PageTable::getAvailableSpaceSingleLevel(uint64_t addressSpaceSize, uint32_t pageSize) const {
     uint32_t numPages = addressSpaceSize / pageSize;
     uint32_t sizeSingleLevelEntry = sizeof(PageTableEntry);
-
-    return (numPages * sizeSingleLevelEntry) - getTotalMemoryUsage();
+    return (numPages * sizeSingleLevelEntry);
 }
 
 void PageTable::displayStatistics() const {
@@ -311,7 +310,7 @@ void PageTable::displayStatistics() const {
     cout << "  Total L2 Entries Allocated: " << level2EntriesAllocated << endl;
     cout << "  Total Allocated Entries: " << getAllocatedEntries() << endl;
     cout << "  Total Memory Usage (Two-Level): " << getTotalMemoryUsage() << " bytes" << endl;
-    cout << "  Available Space Saved (Compared to Single-Level): "
-         << getAvailableSpaceSingleLevel(addressSpaceSize, pageSize) << " bytes" << endl;
+    cout << "  For comparison, a single-level page table requires " << addressSpaceSize / pageSize
+         << " entries and " << getAvailableSpaceSingleLevel(addressSpaceSize, pageSize) << " bytes" << endl;
     cout << endl;
 }

@@ -68,7 +68,7 @@ public:
     // Functions to calculate memory usage
     uint32_t getAllocatedEntries() const;
     uint32_t getTotalMemoryUsage() const;
-    uint32_t getAvailableSpaceSingleLevel(uint32_t addressSpaceSize, uint32_t pageSize) const;
+    uint32_t getAvailableSpaceSingleLevel(uint64_t addressSpaceSize, uint32_t pageSize) const;
     void displayStatistics() const;
 };
 
