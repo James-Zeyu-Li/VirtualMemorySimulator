@@ -43,7 +43,7 @@ PageTable::PageTable(uint64_t addressSpaceSize, uint32_t pageSize)
       pageSize(pageSize),
       clockAlgo()
 {
-    if (2 ^ addressSpaceSize % pageSize != 0)
+    if (2^addressSpaceSize % pageSize != 0)
     {
         cerr << "Error: Address space size must be a multiple of page size" << endl;
         return;
