@@ -10,7 +10,7 @@ test-page-table: ## Compile and run test cases for page table
 	./page_table_test
 
 compile-simulator: ## Compile the main program of simulator
-	g++ -std=c++11 main.cpp -o vmsimulator
+	g++ -std=c++11 main.cpp PageTable/PageTable.cpp PageTable/PageTableEntry.cpp PageTable/PhysicalFrameManager.cpp PageTable/helperFiles/ClockAlgorithm.cpp TLB/TLB.cpp TLB/TLBEntry.cpp -I PageTable -I PageTable/helperFiles -I TLB -o simulator
 
 run-simulator: ## Generate instruction file and run simulator for testing
 	@$(MAKE) compile-simulator
