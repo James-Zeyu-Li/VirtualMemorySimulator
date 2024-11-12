@@ -1,4 +1,4 @@
-# VirtualMemorySimulator
+# Virtual Memory Simulator
 
 This project implements a virtual memory simulator with a two-level page table.
 
@@ -68,7 +68,7 @@ All memory-related params are configurable:
 
 - Each TLBEntry is organized by unordered_maps in TLB with a limitation of TLB size.
 - Each Virtual Page Number (VPN) is mapped to a TLBEntry, which is also used as a parameter to look up, update, and delete a TLB Entry.
-- When TLB is full, the simulator would evict the Least Recent used (LRU) Entry according to the access time. 
+- When TLB is full, the simulator would evict the Least Recent used (LRU) Entry according to the access time.
 - TLBEntry includes `Virtual Page Number(VPN), Page Frame Number (PFN), validity and access permissions`.
 - If there is a TLB miss, the simulator will look up page table and then update the VPN and PFN in the TLB Entry.
 
@@ -80,54 +80,72 @@ A randomized algorithm might perform better since code/heap/stack are not distin
 
 ## Benchmark
 
-### 1. Advantages of Design
+To test our simulator, we run the instructions generated with various input parameters:
 
-The primary advantage of a two-level page table over a single-level page table is memory savings. In a single-level page table, the page table must allocate memory for every possible page in the virtual address space, even if many of these pages are not used. This design works but leads to high memory consumption, especially in systems with sparse memory usage.
+```bash
+# For simplicity, we set page size as 4KB, physical memory as 128MB, and TLB size as 8 entries.
+# Also to get average results, we generate 1000 instructions for every test.
 
-**Why Two-Level Page Tables Are More Memory Efficient:**
+# Test case 1: process 1(0.2, 8192), process 2(0.8, 4096)
 
-•	**Sparse Memory Usage:** In real-world applications, processes rarely use every page in their virtual address space. A two-level page table only allocates memory for entries when they are needed. This dynamic allocation greatly reduces the memory footprint.
+--- Process Statistics ---
+Process 0 Statistics:
+  Memory Access Attempts: 431
+  TLB Hit Rate: 96.2877%
+  Page Table Hit Rate: 50%
 
-•	**Reduced Memory Allocation**: With a two-level page table, memory is only allocated for used pages. Thus, if a process only needs a small portion of its address space, the two-level page table saves memory by avoiding unnecessary allocation.
+Two-Level Page Table Statistics:
+  Total L1 Entries Allocated: 6
+  Total L2 Entries Allocated: 16
+  Total Allocated Entries: 22
+  Total Memory Usage (Two-Level): 432 bytes
+  For comparison, a single-level page table requires 1048576 entries and 12582912 bytes
 
-### 2. Performance (Hit Rates)
+Process 1 Statistics:
+  Memory Access Attempts: 481
+  TLB Hit Rate: 97.921%
+  Page Table Hit Rate: 70%
 
-The two-level page table structure contributes indirectly to performance, particularly through better management of TLB (Translation Lookaside Buffer) and page table entries.
+Two-Level Page Table Statistics:
+  Total L1 Entries Allocated: 6
+  Total L2 Entries Allocated: 11
+  Total Allocated Entries: 17
+  Total Memory Usage (Two-Level): 372 bytes
+  For comparison, a single-level page table requires 1048576 entries and 12582912 bytes
 
-**Key Observations:**
+# Test case 2: process 1(0.2, 4MB), process 2(0.8, 10MB)
 
-•	**High TLB Hit Rate:** TLB hit rates for both processes are consistently high, ranging from 91.95% to 97.95% across different runs.
+--- Process Statistics ---
+Process 0 Statistics:
+  Memory Access Attempts: 512
+  TLB Hit Rate: 81.0547%
+  Page Table Hit Rate: 4.12371%
 
-High TLB hit rates indicate that the two-level page table, with its organized structure, allows efficient caching of recently used translations in the TLB.
+Two-Level Page Table Statistics:
+  Total L1 Entries Allocated: 22
+  Total L2 Entries Allocated: 101
+  Total Allocated Entries: 123
+  Total Memory Usage (Two-Level): 2092 bytes
+  For comparison, a single-level page table requires 1048576 entries and 12582912 bytes
 
-A high TLB hit rate improves performance by reducing the need for costly memory accesses to the page table, as virtual-to-physical translations are often resolved within the TLB.
+Process 1 Statistics:
+  Memory Access Attempts: 391
+  TLB Hit Rate: 92.8389%
+  Page Table Hit Rate: 35.7143%
 
-•	**Moderate to High Page Table Hit Rate:** The page table hit rates are also fairly good, ranging from 58.33% to 83.33%.
+Two-Level Page Table Statistics:
+  Total L1 Entries Allocated: 10
+  Total L2 Entries Allocated: 26
+  Total Allocated Entries: 36
+  Total Memory Usage (Two-Level): 712 bytes
+  For comparison, a single-level page table requires 1048576 entries and 12582912 bytes
 
-This suggests that even when a TLB miss occurs, the page is often found in the two-level page table without triggering a page fault. This is particularly beneficial in managing memory for larger address spaces.
+```
 
-The two-level design minimizes page faults by making page table entries more accessible, thus reducing the likelihood of disk accesses.
+We analyzed the results in two aspects: space and time.
 
-### 3. Memory Access Analysis
+For space usage, we calculated the number of entries and bytes occupied by our 2-level page table and a single-level page table. Apparently, a multi-level page table saves much more memory than a flat one since only accessed memory will take up real pages. In addition, bigger memory usage of a process will consume more memory for its page table.
 
-The statistics show that for each process, hundreds of memory accesses are handled effectively with high hit rates. This implies that the two-level page table helps efficiently manage and cache active pages, enhancing memory access speed.
+For time-related efficiency, we calculated hit rate for both TLB and page table. Depending on the locality, our TLB achieves very high cache hit rate and so does the page table. However, with processes that use more memory, the page table hit rate decreases, which results from a more coarse address space for its page access.
 
-**Why Two-Level Page Tables Contribute to Higher Hit Rates:**
-
-•	The hierarchical structure of a two-level page table improves spatial locality by clustering active pages in smaller tables, making frequently accessed entries quicker to retrieve.
- 
-•	The multi-level design organizes pages hierarchically, ensuring that more pages can be mapped with fewer page table entries, which works well with the TLB’s caching mechanism.
-
-### 4. Summary
-
-Based on the memory efficiency and performance improvements observed, the two-level page table design offers several advantages over a single-level page table:
-
-•	**Memory Savings:** The two-level design allocates memory only for pages that are actually used, which saves significant memory in sparse address spaces. This is particularly valuable in large address spaces, where memory savings can reach several megabytes.
-
-•	**Higher TLB and Page Table Hit Rates:** The two-level page table structure supports high hit rates, both at the TLB level and within the page table itself. High hit rates reduce the number of slow memory accesses and page faults, leading to faster overall performance.
-
-•	**Scalability:** The two-level page table is better suited for systems with large virtual address spaces, as it prevents the excessive memory usage seen in single-level tables.
-
-**Benchmark Conclusion**
-
-The two-level page table design provides clear advantages in terms of memory efficiency and hit rate performance. With real-world applications where address spaces are often sparsely populated, this design offers significant memory savings and ensures faster memory accesses due to its structured layout, making it an optimal choice for modern systems with large virtual memory requirements.
+For future work, we plan to count memory access time by simulating different cycles for TLB hit, page table query and page fault, so that we'll have a more clear picture of how much our TLB and page table contribute to the paging memory speed-up.
