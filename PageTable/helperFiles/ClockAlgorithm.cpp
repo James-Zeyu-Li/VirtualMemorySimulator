@@ -32,26 +32,17 @@ void ClockAlgorithm::removePage(uint32_t VPN)
 
     if (it != activePages.end()) // if the VPN is found in the activePages list
     {
-        // remove the VPN from the activeVPNs set
-        activeVPNs.erase(VPN);
-
         // if the VPN is the current clockHand, move the clockHand to the next element
         if (it == clockHand)
         {
-            // erase the element and update the clockHand
-            clockHand = activePages.erase(it); // erase will make clockHand point to the next element
-
             // if the clockHand is at the end of the list, move it to the beginning
-            if (clockHand == activePages.end() && !activePages.empty())
-            {
-                clockHand = activePages.begin();
+            if (it == clockHand) {
+                moveClockHandNext();
             }
-        }
-        else
-        {
+            // remove the VPN from the activeVPNs set
+            activeVPNs.erase(VPN);
             activePages.erase(it);
         }
-
         if (activePages.empty()) // if the activePages list is empty, reset the clockHand
         {
             clockHand = activePages.end(); // prevent dereferencing an empty iterator
