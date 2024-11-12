@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <cmath>
 #include <map>
 #include <list>
 #include <vector>
@@ -123,14 +124,15 @@ private:
     uint32_t physicalFrames;
     uint32_t pageSize;
     uint32_t tlbSize;
+    uint32_t offsetBits;
     uint32_t getPhysicalMemory();
-    Process getCurrentProcess();
+    Process& getCurrentProcess();
     bool createProcess(uint32_t pid, uint32_t numPages);
     uint32_t translateVirtualAddress(uint32_t virtualAddress);
     uint32_t getPagesFromBytes(uint32_t size) const;
 
 public:
-    Simulator(uint32_t addressBits, uint32_t pageSize_, uint32_t numFrames, uint32_t tlbSize, const vector<uint32_t>& processMemSizes);
+    Simulator(uint32_t addressBits, uint32_t pageSize, uint32_t numFrames, uint32_t tlbSize, const vector<uint32_t>& processMemSizes);
     void accessMemory(uint32_t virtualAddress);
     void switchProcess(uint32_t pid);
     void allocateMemory(uint32_t sizeInBytes);
@@ -147,7 +149,7 @@ uint32_t Simulator::getPhysicalMemory(){
     return pageSize * physicalFrames;
 }
 
-Process Simulator::getCurrentProcess() {
+Process& Simulator::getCurrentProcess() {
     return processTable.at(currentProcessId);
 }
 
@@ -194,8 +196,7 @@ uint32_t Simulator::translateVirtualAddress(uint32_t virtualAddress) {
     process.incrementMemoryAccess();
 
     // Constants for address components based on page size
-    const int pageOffsetBits = 12; // 4KB page size
-    const uint32_t pageSize = 1 << pageOffsetBits;
+    const int pageOffsetBits = offsetBits;
     const uint32_t pageOffsetMask = pageSize - 1;
 
     // Calculate VPN (Virtual Page Number) and offset within the page
@@ -248,15 +249,8 @@ uint32_t Simulator::translateVirtualAddress(uint32_t virtualAddress) {
     return UINT32_MAX;
 }
 
-Simulator::Simulator(uint32_t addressBits, uint32_t pageSize_, uint32_t numFrames,
-                     uint32_t tlbSize, const vector<uint32_t>& processMemSizes) : tlb(tlbSize), pfManager(numFrames){
-
-    currentProcessId = -1;
-    physicalFrames = numFrames;
-    pageSize = pageSize_;
-    tlbSize = tlbSize;
-    tlb = TLB(tlbSize);
-    pfManager = PhysicalFrameManager(numFrames);
+Simulator::Simulator(uint32_t addressBits, uint32_t pageSize, uint32_t numFrames,
+                     uint32_t tlbSize, const vector<uint32_t>& processMemSizes) : processTable(), pfManager(PhysicalFrameManager(numFrames)), tlb(TLB(tlbSize)), currentProcessId(-1), physicalFrames(numFrames), pageSize(pageSize), tlbSize(tlbSize), offsetBits(int(log(pageSize)/log(2))) {
 
     // Create processes
     for (uint32_t i = 0; i < processMemSizes.size(); i++) {
@@ -268,7 +262,7 @@ Simulator::Simulator(uint32_t addressBits, uint32_t pageSize_, uint32_t numFrame
             throw runtime_error("Not enough physical memory for process " + to_string(i));
         }
         list<uint32_t> frames;
-        int preAllocatedFrames = 8; // FIXME: Hard-coded 8 frames allocated for a new process
+        int preAllocatedFrames = 8; // TODO: Make it configurable
         for (uint32_t j = 0; j < preAllocatedFrames; j++) {
             frames.push_back(pfManager.allocateFrame());
         }
@@ -282,22 +276,24 @@ Simulator::Simulator(uint32_t addressBits, uint32_t pageSize_, uint32_t numFrame
             pageTable->updatePageTable(vpn, frame, true, false, true, true, true, 0);
             vpn++;
         }
-        processTable.insert({i, process});
+        processTable.insert({i, std::move(process)});
     }
     cout << "Virtual memory simulator created with page size " << pageSize << ", physical memory " << getPhysicalMemory() << endl;
+    cout << "==========" << endl;
 }
 
 void Simulator::accessMemory(uint32_t virtualAddress) {
     uint32_t physicalAddress = translateVirtualAddress(virtualAddress);
     if (physicalAddress != UINT32_MAX) {
-        cout << "Translated Virtual Address " << hex << virtualAddress
-                  << " to Physical Address " << physicalAddress << endl;
+        cout << "Translated Virtual Address " << std::hex << virtualAddress
+                << " to Physical Address " << physicalAddress << std::dec << endl;
     } else {
-        cerr << "Error: Translation failed for Virtual Address " << hex << virtualAddress << endl;}
+        cerr << "Error: Translation failed for Virtual Address " << std::hex << virtualAddress << std::dec << endl;
+    }
 }
 
 void Simulator::switchProcess(uint32_t pid){
-    cout << "Switch current process to " << pid << endl;
+    cout << "Switched current process to " << pid << endl;
     currentProcessId = pid;
     tlb.flush();
     // TODO: better if we can check TLB status
@@ -326,8 +322,7 @@ void Simulator::allocateMemory(uint32_t sizeInBytes){
 
 void Simulator::freeMemory(uint32_t virtualAddress){
     Process process = getCurrentProcess();
-    // TODO: Hard-coded
-    uint32_t vpn = virtualAddress >> 12;
+    uint32_t vpn = virtualAddress >> offsetBits;
     if (!process.getPageTable()->isValidRange(vpn)) {
         cout << "Virtual address is out of range: " << virtualAddress << ", vpn: " << vpn << endl;
         return;
@@ -376,7 +371,7 @@ int main(int argc, char* argv[]) {
 
             iss >> pid >> command;
 
-            cout << line << endl;
+            cout << "Execute instruction: " << line << endl;
             if (command == "switch") {
                 simulator.switchProcess(pid);
             }
@@ -392,6 +387,7 @@ int main(int argc, char* argv[]) {
                 uint32_t addr = stoul(hexAddr, nullptr, 16);
                 simulator.accessMemory(addr);
             }
+            cout << "----------" << endl;
         }
 
         // Display statistics for each process after simulation
