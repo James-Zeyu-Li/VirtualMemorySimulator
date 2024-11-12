@@ -22,6 +22,13 @@ private:
     uint32_t maxFrames; // Max number of frames for this process
     uint32_t allocatedFrames;  // Number of frames assigned to this process, should never exceed maxFrames
 
+    // Counters for tracking individual process statistics
+    uint32_t tlbHits = 0;
+    uint32_t tlbMisses = 0;
+    uint32_t pageTableHits = 0;
+    uint32_t pageTableMisses = 0;
+    uint32_t memoryAccessAttempts = 0;
+
 public:
     Process(uint32_t pid, uint32_t addressBits, uint32_t pageSize, uint32_t numPages, list<uint32_t> allocatedFrames);
     uint32_t getPid();
@@ -32,6 +39,20 @@ public:
     void freeMemory(uint32_t frameNumber);
     uint32_t getAFrame();
     void returnAFrame(uint32_t frame);
+
+    // Functions to increment counters
+    void incrementTLBHit() { tlbHits++; }
+    void incrementTLBMiss() { tlbMisses++; }
+    void incrementPageTableHit() { pageTableHits++; }
+    void incrementPageTableMiss() { pageTableMisses++; }
+    void incrementMemoryAccess() { memoryAccessAttempts++; }
+
+    // Functions to calculate hit rates
+    double getTLBHitRate() const;
+    double getPageTableHitRate() const;
+
+    // Display statistics for the process
+    void displayStatistics() const;
 };
 
 Process::Process(uint32_t pid, uint32_t virtualAddressLen, uint32_t pageSize_, uint32_t numPages, list<uint32_t> frames): id(pid), addressBits(virtualAddressLen), pageSize(pageSize_), maxFrames(numPages), availableFrames(frames), allocatedFrames(frames.size()), pageTable(new PageTable(virtualAddressLen, pageSize_)) {}
@@ -76,6 +97,22 @@ void Process::returnAFrame(uint32_t frame) {
     availableFrames.push_back(frame);
 }
 
+double Process::getTLBHitRate() const {
+    return memoryAccessAttempts > 0 ? static_cast<double>(tlbHits) / memoryAccessAttempts : 0.0;
+}
+
+double Process::getPageTableHitRate() const {
+    return tlbMisses > 0 ? static_cast<double>(pageTableHits) / tlbMisses : 0.0;
+}
+
+void Process::displayStatistics() const {
+    cout << "Process " << id << " Statistics:" << endl;
+    cout << "  Memory Access Attempts: " << memoryAccessAttempts << endl;
+    cout << "  TLB Hit Rate: " << getTLBHitRate() * 100 << "%" << endl;
+    cout << "  Page Table Hit Rate: " << getPageTableHitRate() * 100 << "%" << endl;
+    cout << endl;
+}
+
 class Simulator {
 private:
     map<uint32_t, Process> processTable;
@@ -98,7 +135,12 @@ public:
     void allocateMemory(uint32_t sizeInBytes);
     void freeMemory(uint32_t virtualAddress);
     bool handlePageFault(uint32_t vpn);
+    const map<uint32_t, Process>& getProcessTable();
 };
+
+const map<uint32_t, Process>& Simulator::getProcessTable() {
+    return processTable;
+}
 
 uint32_t Simulator::getPhysicalMemory(){
     return pageSize * physicalFrames;
@@ -146,6 +188,10 @@ bool Simulator::handlePageFault(uint32_t vpn) {
 
 
 uint32_t Simulator::translateVirtualAddress(uint32_t virtualAddress) {
+    // Get the current process
+    Process& process = processTable.at(currentProcessId);
+    process.incrementMemoryAccess();
+
     // Constants for address components based on page size
     const int pageOffsetBits = 12; // 4KB page size
     const uint32_t pageSize = 1 << pageOffsetBits;
@@ -159,20 +205,28 @@ uint32_t Simulator::translateVirtualAddress(uint32_t virtualAddress) {
     int pfn = tlb.lookupTLB(vpn);
     if (pfn != -1) {
         // TLB hit - construct the physical address
+        process.incrementTLBHit();
         cout << "TLB hit for VPN " << vpn << ", PFN: " << pfn << endl;
         return (pfn << pageOffsetBits) | offset;
+    } else {
+        // TLB miss - increment TLB miss counter for this process
+        process.incrementTLBMiss();
     }
 
     // 2. TLB miss - check the page table
-    Process process = processTable.at(currentProcessId);
     PageTable* pageTable = process.getPageTable();
     pfn = pageTable->lookupPageTable(vpn);
     if (pfn != -1) {
         // Page table hit - update TLB and return physical address
+        process.incrementPageTableHit();
         cout << "Page table hit for VPN " << vpn << ", PFN: " << pfn << endl;
         tlb.updateTLB(vpn, pfn, true, true, true); // Update TLB with permissions as needed
         return (pfn << pageOffsetBits) | offset;
+    } else {
+        // Page table miss - increment page table miss counter for this process
+        process.incrementPageTableMiss();
     }
+
 
     // 3. Page fault - Handle page fault
     cout << "Page fault for VPN " << vpn << endl;
@@ -337,6 +391,12 @@ int main(int argc, char* argv[]) {
                 uint32_t addr = stoul(hexAddr, nullptr, 16);
                 simulator.accessMemory(addr);
             }
+        }
+
+        // Display statistics for each process after simulation
+        cout << "\n--- Process Statistics ---" << endl;
+        for (const auto& [pid, process] : simulator.getProcessTable()) {
+            process.displayStatistics();
         }
     }
     catch (const exception& e) {

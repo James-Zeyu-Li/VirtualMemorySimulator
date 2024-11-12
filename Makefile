@@ -6,11 +6,11 @@ help: ## Prints help for targets with comments
 	@cat $(MAKEFILE_LIST) | grep -E '^[a-zA-Z_-]+:.*?## .*$$' | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 test-page-table: ## Compile and run test cases for page table
-	g++ -std=c++11 test/testPage.cpp pageTable.cpp pageTableEntry.cpp physicalFrameManager.cpp -o page_table_test
+	g++ -std=c++17 test/testPage.cpp pageTable.cpp pageTableEntry.cpp physicalFrameManager.cpp -o page_table_test
 	./page_table_test
 
 compile-simulator: ## Compile the main program of simulator
-	g++ -std=c++11 main.cpp PageTable/PageTable.cpp PageTable/PageTableEntry.cpp PageTable/PhysicalFrameManager.cpp PageTable/helperFiles/ClockAlgorithm.cpp TLB/TLB.cpp TLB/TLBEntry.cpp -I PageTable -I PageTable/helperFiles -I TLB -o vmsimulator
+	g++ -std=c++17 main.cpp PageTable/PageTable.cpp PageTable/PageTableEntry.cpp PageTable/PhysicalFrameManager.cpp PageTable/helperFiles/ClockAlgorithm.cpp TLB/TLB.cpp TLB/TLBEntry.cpp -I PageTable -I PageTable/helperFiles -I TLB -o vmsimulator
 
 run-simulator: ## Generate instruction file and run simulator for testing
 	@$(MAKE) compile-simulator
