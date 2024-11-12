@@ -1,0 +1,3776 @@
+g++ -std=c++17 main.cpp PageTable/PageTable.cpp PageTable/PageTableEntry.cpp PageTable/PhysicalFrameManager.cpp PageTable/helperFiles/ClockAlgorithm.cpp TLB/TLB.cpp TLB/TLBEntry.cpp -I PageTable -I PageTable/helperFiles -I TLB -o vmsimulator
+python3 generator.py 1000 0.3:8192 0.8:4096 > instructions.txt
+./vmsimulator 4096 32 $((128 * 1024 * 1024)) 8 8192 4096 instructions.txt
+Virtual memory simulator created with page size 4096, physical memory 134217728
+==========
+Execute instruction: 0  switch  
+Switched current process to 0
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_heap     0x400000
+Page fault for VPN 1024
+Selecting page to replace. Total active pages: 8
+Selected VPN to replace: 0
+Page fault handled by page replacement for VPN 1024
+Translated Virtual Address 400000 to Physical Address 0
+----------
+Execute instruction: 0  access_heap     0x400f36
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400f36 to Physical Address f36
+----------
+Execute instruction: 0  access_heap     0x400f35
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400f35 to Physical Address f35
+----------
+Execute instruction: 0  access_stak     0xffffffff
+Page fault for VPN 1048575
+Selecting page to replace. Total active pages: 8
+Selected VPN to replace: 1
+Page fault handled by page replacement for VPN 1048575
+Translated Virtual Address ffffffff to Physical Address 1fff
+----------
+Execute instruction: 0  access_heap     0x400fff
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400fff to Physical Address fff
+----------
+Execute instruction: 0  access_code     0x1
+Page fault for VPN 0
+Selecting page to replace. Total active pages: 8
+Selected VPN to replace: 2
+Page fault handled by page replacement for VPN 0
+Translated Virtual Address 1 to Physical Address 2001
+----------
+Execute instruction: 0  access_heap     0x4005c8
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4005c8 to Physical Address 5c8
+----------
+Execute instruction: 0  access_stak     0xffffffff
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffffff to Physical Address 1fff
+----------
+Execute instruction: 0  access_code     0x2
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 2 to Physical Address 2002
+----------
+Execute instruction: 0  access_code     0x3
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 3 to Physical Address 2003
+----------
+Execute instruction: 0  access_code     0x4
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 4 to Physical Address 2004
+----------
+Execute instruction: 0  access_code     0x5
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 5 to Physical Address 2005
+----------
+Execute instruction: 0  access_heap     0x400b5e
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400b5e to Physical Address b5e
+----------
+Execute instruction: 0  access_heap     0x400b5e
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400b5e to Physical Address b5e
+----------
+Execute instruction: 0  access_code     0x6
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 6 to Physical Address 2006
+----------
+Execute instruction: 0  access_code     0x7
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 7 to Physical Address 2007
+----------
+Execute instruction: 0  access_stak     0xffffff9d
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff9d to Physical Address 1f9d
+----------
+Execute instruction: 0  access_stak     0xffffff9d
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff9d to Physical Address 1f9d
+----------
+Execute instruction: 0  access_heap     0x400fff
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400fff to Physical Address fff
+----------
+Execute instruction: 0  access_stak     0xffffff9d
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff9d to Physical Address 1f9d
+----------
+Execute instruction: 0  access_code     0x8
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 8 to Physical Address 2008
+----------
+Execute instruction: 0  access_heap     0x400fff
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400fff to Physical Address fff
+----------
+Execute instruction: 0  access_stak     0xffffff89
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff89 to Physical Address 1f89
+----------
+Execute instruction: 0  free            0x1000
+----------
+Execute instruction: 0  access_code     0x9
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 9 to Physical Address 2009
+----------
+Execute instruction: 0  access_code     0xa
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address a to Physical Address 200a
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_code     0xb
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address b to Physical Address 200b
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_heap     0x400001
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400001 to Physical Address 1
+----------
+Execute instruction: 0  access_heap     0x4013e8
+Page fault for VPN 1025
+Selecting page to replace. Total active pages: 8
+Selected VPN to replace: 3
+Page fault handled by page replacement for VPN 1025
+Translated Virtual Address 4013e8 to Physical Address 33e8
+----------
+Execute instruction: 0  access_heap     0x4015e3
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4015e3 to Physical Address 35e3
+----------
+Execute instruction: 0  access_code     0xc
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address c to Physical Address 200c
+----------
+Execute instruction: 0  access_heap     0x400804
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400804 to Physical Address 804
+----------
+Execute instruction: 0  access_code     0xd
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address d to Physical Address 200d
+----------
+Execute instruction: 0  access_code     0xe
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address e to Physical Address 200e
+----------
+Execute instruction: 0  access_code     0xf
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address f to Physical Address 200f
+----------
+Execute instruction: 0  access_code     0x10
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 10 to Physical Address 2010
+----------
+Execute instruction: 0  access_code     0x11
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 11 to Physical Address 2011
+----------
+Execute instruction: 0  access_stak     0xffffff1d
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff1d to Physical Address 1f1d
+----------
+Execute instruction: 0  access_heap     0x400804
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400804 to Physical Address 804
+----------
+Execute instruction: 0  access_heap     0x400803
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400803 to Physical Address 803
+----------
+Execute instruction: 0  access_code     0x12
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 12 to Physical Address 2012
+----------
+Execute instruction: 0  access_code     0x13
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 13 to Physical Address 2013
+----------
+Execute instruction: 0  access_stak     0xffffff55
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff55 to Physical Address 1f55
+----------
+Execute instruction: 0  access_stak     0xffffff55
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff55 to Physical Address 1f55
+----------
+Execute instruction: 0  access_stak     0xffffff55
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff55 to Physical Address 1f55
+----------
+Execute instruction: 0  access_code     0x14
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 14 to Physical Address 2014
+----------
+Execute instruction: 0  access_code     0x15
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 15 to Physical Address 2015
+----------
+Execute instruction: 0  access_heap     0x400803
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400803 to Physical Address 803
+----------
+Execute instruction: 0  access_stak     0xffffff55
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff55 to Physical Address 1f55
+----------
+Execute instruction: 0  access_stak     0xffffff05
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff05 to Physical Address 1f05
+----------
+Execute instruction: 0  access_code     0x16
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 16 to Physical Address 2016
+----------
+Execute instruction: 0  access_code     0x17
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 17 to Physical Address 2017
+----------
+Execute instruction: 0  access_heap     0x401dc0
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401dc0 to Physical Address 3dc0
+----------
+Execute instruction: 0  access_heap     0x401a2b
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401a2b to Physical Address 3a2b
+----------
+Execute instruction: 0  access_heap     0x401f99
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401f99 to Physical Address 3f99
+----------
+Execute instruction: 0  access_stak     0xffffff83
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff83 to Physical Address 1f83
+----------
+Execute instruction: 0  access_heap     0x400886
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400886 to Physical Address 886
+----------
+Execute instruction: 0  access_heap     0x4017c2
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4017c2 to Physical Address 37c2
+----------
+Execute instruction: 0  access_stak     0xffffff83
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff83 to Physical Address 1f83
+----------
+Execute instruction: 0  access_stak     0xffffff83
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff83 to Physical Address 1f83
+----------
+Execute instruction: 0  access_code     0x18
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 18 to Physical Address 2018
+----------
+Execute instruction: 0  access_stak     0xffffff61
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff61 to Physical Address 1f61
+----------
+Execute instruction: 0  access_heap     0x4012e3
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4012e3 to Physical Address 32e3
+----------
+Execute instruction: 0  access_heap     0x4016b2
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4016b2 to Physical Address 36b2
+----------
+Execute instruction: 0  access_code     0x19
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 19 to Physical Address 2019
+----------
+Execute instruction: 0  access_code     0x1a
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 1a to Physical Address 201a
+----------
+Execute instruction: 0  access_heap     0x4016b2
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4016b2 to Physical Address 36b2
+----------
+Execute instruction: 0  access_heap     0x400fd7
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400fd7 to Physical Address fd7
+----------
+Execute instruction: 0  access_code     0x1b
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 1b to Physical Address 201b
+----------
+Execute instruction: 0  access_code     0x1c
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 1c to Physical Address 201c
+----------
+Execute instruction: 0  access_stak     0xfffffeef
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeef to Physical Address 1eef
+----------
+Execute instruction: 0  access_heap     0x4011e8
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4011e8 to Physical Address 31e8
+----------
+Execute instruction: 0  access_code     0x1d
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 1d to Physical Address 201d
+----------
+Execute instruction: 0  access_heap     0x4001e6
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4001e6 to Physical Address 1e6
+----------
+Execute instruction: 0  access_heap     0x400d49
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400d49 to Physical Address d49
+----------
+Execute instruction: 1  switch  
+Switched current process to 1
+----------
+Execute instruction: 1  access_code     0x1
+Page table hit for VPN 0, PFN: 8
+Translated Virtual Address 1 to Physical Address 8001
+----------
+Execute instruction: 1  access_code     0x2
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 2 to Physical Address 8002
+----------
+Execute instruction: 1  access_stak     0xffffffff
+Page fault for VPN 1048575
+Selecting page to replace. Total active pages: 8
+Selected VPN to replace: 1
+Page fault handled by page replacement for VPN 1048575
+Translated Virtual Address ffffffff to Physical Address 9fff
+----------
+Execute instruction: 0  switch  
+Switched current process to 0
+----------
+Execute instruction: 0  access_heap     0x40012f
+Page table hit for VPN 1024, PFN: 0
+Translated Virtual Address 40012f to Physical Address 12f
+----------
+Execute instruction: 0  access_stak     0xfffffeef
+Page table hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeef to Physical Address 1eef
+----------
+Execute instruction: 0  access_code     0x1e
+Page table hit for VPN 0, PFN: 2
+Translated Virtual Address 1e to Physical Address 201e
+----------
+Execute instruction: 0  access_heap     0x40012e
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 40012e to Physical Address 12e
+----------
+Execute instruction: 0  access_code     0x1f
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 1f to Physical Address 201f
+----------
+Execute instruction: 0  access_heap     0x40012f
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 40012f to Physical Address 12f
+----------
+Execute instruction: 0  access_heap     0x40190f
+Page table hit for VPN 1025, PFN: 3
+Translated Virtual Address 40190f to Physical Address 390f
+----------
+Execute instruction: 0  access_stak     0xfffffefe
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffefe to Physical Address 1efe
+----------
+Execute instruction: 0  access_stak     0xfffffec5
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffec5 to Physical Address 1ec5
+----------
+Execute instruction: 0  access_heap     0x400ac1
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400ac1 to Physical Address ac1
+----------
+Execute instruction: 0  access_code     0x20
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 20 to Physical Address 2020
+----------
+Execute instruction: 0  access_stak     0xfffffe9c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe9c to Physical Address 1e9c
+----------
+Execute instruction: 0  access_stak     0xfffffe4a
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe4a to Physical Address 1e4a
+----------
+Execute instruction: 0  access_stak     0xfffffe49
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe49 to Physical Address 1e49
+----------
+Execute instruction: 0  access_stak     0xfffffe48
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe48 to Physical Address 1e48
+----------
+Execute instruction: 0  access_stak     0xfffffe47
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe47 to Physical Address 1e47
+----------
+Execute instruction: 0  access_stak     0xfffffe46
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe46 to Physical Address 1e46
+----------
+Execute instruction: 0  access_stak     0xfffffe45
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe45 to Physical Address 1e45
+----------
+Execute instruction: 0  access_heap     0x4016a9
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4016a9 to Physical Address 36a9
+----------
+Execute instruction: 0  access_heap     0x4016a8
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4016a8 to Physical Address 36a8
+----------
+Execute instruction: 0  access_stak     0xfffffd45
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd45 to Physical Address 1d45
+----------
+Execute instruction: 0  access_heap     0x400e08
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400e08 to Physical Address e08
+----------
+Execute instruction: 0  access_stak     0xfffffd45
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd45 to Physical Address 1d45
+----------
+Execute instruction: 0  access_stak     0xfffffd45
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd45 to Physical Address 1d45
+----------
+Execute instruction: 0  access_stak     0xfffffdb0
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdb0 to Physical Address 1db0
+----------
+Execute instruction: 0  access_stak     0xfffffdb0
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdb0 to Physical Address 1db0
+----------
+Execute instruction: 0  access_stak     0xfffffe45
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe45 to Physical Address 1e45
+----------
+Execute instruction: 0  access_heap     0x400e08
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400e08 to Physical Address e08
+----------
+Execute instruction: 0  access_code     0x21
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 21 to Physical Address 2021
+----------
+Execute instruction: 0  access_heap     0x400e07
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400e07 to Physical Address e07
+----------
+Execute instruction: 0  access_heap     0x401b24
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401b24 to Physical Address 3b24
+----------
+Execute instruction: 0  access_heap     0x40048f
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 40048f to Physical Address 48f
+----------
+Execute instruction: 0  access_stak     0xfffffe4c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe4c to Physical Address 1e4c
+----------
+Execute instruction: 0  access_heap     0x4007e2
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4007e2 to Physical Address 7e2
+----------
+Execute instruction: 0  access_stak     0xfffffe4c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe4c to Physical Address 1e4c
+----------
+Execute instruction: 0  access_heap     0x400df7
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400df7 to Physical Address df7
+----------
+Execute instruction: 0  access_code     0x22
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 22 to Physical Address 2022
+----------
+Execute instruction: 0  access_stak     0xfffffe4c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe4c to Physical Address 1e4c
+----------
+Execute instruction: 0  access_code     0x23
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 23 to Physical Address 2023
+----------
+Execute instruction: 0  access_stak     0xfffffe4c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe4c to Physical Address 1e4c
+----------
+Execute instruction: 0  access_heap     0x400df8
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400df8 to Physical Address df8
+----------
+Execute instruction: 0  access_heap     0x401353
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401353 to Physical Address 3353
+----------
+Execute instruction: 0  access_stak     0xfffffebc
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffebc to Physical Address 1ebc
+----------
+Execute instruction: 0  access_code     0x24
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 24 to Physical Address 2024
+----------
+Execute instruction: 0  access_heap     0x401dd2
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401dd2 to Physical Address 3dd2
+----------
+Execute instruction: 0  access_heap     0x401dd1
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401dd1 to Physical Address 3dd1
+----------
+Execute instruction: 0  access_code     0x25
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 25 to Physical Address 2025
+----------
+Execute instruction: 0  access_code     0x26
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 26 to Physical Address 2026
+----------
+Execute instruction: 0  access_heap     0x401509
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401509 to Physical Address 3509
+----------
+Execute instruction: 0  access_stak     0xfffffebc
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffebc to Physical Address 1ebc
+----------
+Execute instruction: 0  access_heap     0x401508
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401508 to Physical Address 3508
+----------
+Execute instruction: 0  access_stak     0xffffff30
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff30 to Physical Address 1f30
+----------
+Execute instruction: 0  access_code     0x27
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 27 to Physical Address 2027
+----------
+Execute instruction: 0  access_code     0x28
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 28 to Physical Address 2028
+----------
+Execute instruction: 0  access_heap     0x401508
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401508 to Physical Address 3508
+----------
+Execute instruction: 0  access_heap     0x401508
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401508 to Physical Address 3508
+----------
+Execute instruction: 0  access_stak     0xffffff2f
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff2f to Physical Address 1f2f
+----------
+Execute instruction: 0  access_stak     0xffffff2e
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff2e to Physical Address 1f2e
+----------
+Execute instruction: 0  access_stak     0xffffff2d
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff2d to Physical Address 1f2d
+----------
+Execute instruction: 0  access_stak     0xffffff2c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff2c to Physical Address 1f2c
+----------
+Execute instruction: 0  access_stak     0xffffff2b
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff2b to Physical Address 1f2b
+----------
+Execute instruction: 0  access_stak     0xfffffe2b
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe2b to Physical Address 1e2b
+----------
+Execute instruction: 0  access_heap     0x400b4d
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400b4d to Physical Address b4d
+----------
+Execute instruction: 0  access_stak     0xfffffe2b
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe2b to Physical Address 1e2b
+----------
+Execute instruction: 0  access_code     0x3a196c
+Page fault for VPN 929
+Selecting page to replace. Total active pages: 8
+Selected VPN to replace: 4
+Page fault handled by page replacement for VPN 929
+Translated Virtual Address 3a196c to Physical Address 496c
+----------
+Execute instruction: 0  access_code     0x3a196d
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a196d to Physical Address 496d
+----------
+Execute instruction: 0  access_code     0x3a196e
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a196e to Physical Address 496e
+----------
+Execute instruction: 0  access_stak     0xfffffe60
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe60 to Physical Address 1e60
+----------
+Execute instruction: 0  access_stak     0xfffffdf4
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdf4 to Physical Address 1df4
+----------
+Execute instruction: 0  access_code     0x3a196f
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a196f to Physical Address 496f
+----------
+Execute instruction: 0  access_code     0x3a1970
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1970 to Physical Address 4970
+----------
+Execute instruction: 0  access_code     0x3a1971
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1971 to Physical Address 4971
+----------
+Execute instruction: 0  access_code     0x3a1972
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1972 to Physical Address 4972
+----------
+Execute instruction: 0  access_heap     0x400c2a
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400c2a to Physical Address c2a
+----------
+Execute instruction: 0  access_heap     0x400c2a
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400c2a to Physical Address c2a
+----------
+Execute instruction: 0  access_heap     0x400c2a
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400c2a to Physical Address c2a
+----------
+Execute instruction: 0  access_code     0x3a1973
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1973 to Physical Address 4973
+----------
+Execute instruction: 0  access_code     0x3a1974
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1974 to Physical Address 4974
+----------
+Execute instruction: 0  access_code     0x3a1975
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1975 to Physical Address 4975
+----------
+Execute instruction: 0  access_stak     0xfffffe74
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe74 to Physical Address 1e74
+----------
+Execute instruction: 0  access_code     0x3a1976
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1976 to Physical Address 4976
+----------
+Execute instruction: 0  access_stak     0xfffffe74
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe74 to Physical Address 1e74
+----------
+Execute instruction: 0  access_code     0x3a1977
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1977 to Physical Address 4977
+----------
+Execute instruction: 0  access_heap     0x401835
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401835 to Physical Address 3835
+----------
+Execute instruction: 0  access_code     0x3a1978
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1978 to Physical Address 4978
+----------
+Execute instruction: 0  access_stak     0xfffffe9e
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe9e to Physical Address 1e9e
+----------
+Execute instruction: 0  access_stak     0xfffffef9
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffef9 to Physical Address 1ef9
+----------
+Execute instruction: 0  access_stak     0xfffffef9
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffef9 to Physical Address 1ef9
+----------
+Execute instruction: 0  access_code     0x3a1979
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1979 to Physical Address 4979
+----------
+Execute instruction: 0  access_heap     0x401836
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401836 to Physical Address 3836
+----------
+Execute instruction: 0  access_stak     0xfffffef9
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffef9 to Physical Address 1ef9
+----------
+Execute instruction: 0  access_code     0x3a197a
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a197a to Physical Address 497a
+----------
+Execute instruction: 0  access_heap     0x401b2d
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401b2d to Physical Address 3b2d
+----------
+Execute instruction: 0  access_heap     0x401108
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401108 to Physical Address 3108
+----------
+Execute instruction: 0  access_stak     0xffffff39
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff39 to Physical Address 1f39
+----------
+Execute instruction: 0  access_heap     0x401108
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401108 to Physical Address 3108
+----------
+Execute instruction: 0  access_stak     0xffffff39
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff39 to Physical Address 1f39
+----------
+Execute instruction: 0  access_stak     0xfffffeff
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeff to Physical Address 1eff
+----------
+Execute instruction: 0  access_code     0x3a197b
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a197b to Physical Address 497b
+----------
+Execute instruction: 0  access_stak     0xfffffe96
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe96 to Physical Address 1e96
+----------
+Execute instruction: 0  access_heap     0x401107
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401107 to Physical Address 3107
+----------
+Execute instruction: 0  access_heap     0x4018dd
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4018dd to Physical Address 38dd
+----------
+Execute instruction: 0  access_heap     0x40158f
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 40158f to Physical Address 358f
+----------
+Execute instruction: 0  free            0x1000
+----------
+Execute instruction: 0  access_stak     0xfffffe96
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe96 to Physical Address 1e96
+----------
+Execute instruction: 0  access_stak     0xfffffe96
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe96 to Physical Address 1e96
+----------
+Execute instruction: 1  switch  
+Switched current process to 1
+----------
+Execute instruction: 1  access_code     0x3
+Page table hit for VPN 0, PFN: 8
+Translated Virtual Address 3 to Physical Address 8003
+----------
+Execute instruction: 1  alloc           0x1000
+Allocated 1 pages for process 1
+----------
+Execute instruction: 1  access_code     0x4
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 4 to Physical Address 8004
+----------
+Execute instruction: 1  access_code     0x5
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 5 to Physical Address 8005
+----------
+Execute instruction: 1  access_code     0x6
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 6 to Physical Address 8006
+----------
+Execute instruction: 1  access_heap     0x4006ed
+Page fault for VPN 1024
+Selecting page to replace. Total active pages: 8
+Selected VPN to replace: 2
+Page fault handled by page replacement for VPN 1024
+Translated Virtual Address 4006ed to Physical Address a6ed
+----------
+Execute instruction: 1  access_heap     0x4006ec
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 4006ec to Physical Address a6ec
+----------
+Execute instruction: 1  access_code     0x7
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 7 to Physical Address 8007
+----------
+Execute instruction: 1  access_heap     0x4006ed
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 4006ed to Physical Address a6ed
+----------
+Execute instruction: 1  access_stak     0xffffffff
+Page table hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffffff to Physical Address 9fff
+----------
+Execute instruction: 1  access_code     0x8
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 8 to Physical Address 8008
+----------
+Execute instruction: 1  access_stak     0xffffffff
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffffff to Physical Address 9fff
+----------
+Execute instruction: 1  access_stak     0xffffffff
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffffff to Physical Address 9fff
+----------
+Execute instruction: 1  access_code     0x9
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 9 to Physical Address 8009
+----------
+Execute instruction: 1  access_heap     0x400836
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400836 to Physical Address a836
+----------
+Execute instruction: 1  access_heap     0x400835
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400835 to Physical Address a835
+----------
+Execute instruction: 1  access_heap     0x400836
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400836 to Physical Address a836
+----------
+Execute instruction: 1  access_stak     0xffffffff
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffffff to Physical Address 9fff
+----------
+Execute instruction: 1  access_heap     0x400837
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400837 to Physical Address a837
+----------
+Execute instruction: 1  access_stak     0xffffffb4
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffffb4 to Physical Address 9fb4
+----------
+Execute instruction: 1  access_stak     0xffffff72
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffff72 to Physical Address 9f72
+----------
+Execute instruction: 1  access_heap     0x400836
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400836 to Physical Address a836
+----------
+Execute instruction: 1  access_code     0xa
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address a to Physical Address 800a
+----------
+Execute instruction: 1  access_heap     0x400835
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400835 to Physical Address a835
+----------
+Execute instruction: 1  access_code     0xb
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address b to Physical Address 800b
+----------
+Execute instruction: 1  access_stak     0xffffff72
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffff72 to Physical Address 9f72
+----------
+Execute instruction: 1  access_code     0xc
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address c to Physical Address 800c
+----------
+Execute instruction: 1  access_code     0xd
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address d to Physical Address 800d
+----------
+Execute instruction: 1  access_stak     0xffffff72
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffff72 to Physical Address 9f72
+----------
+Execute instruction: 1  free            0x1000
+----------
+Execute instruction: 1  access_stak     0xffffff72
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffff72 to Physical Address 9f72
+----------
+Execute instruction: 1  alloc           0x1000
+Allocated 1 pages for process 1
+----------
+Execute instruction: 1  access_heap     0x400001
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400001 to Physical Address a001
+----------
+Execute instruction: 1  access_stak     0xffffff72
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffff72 to Physical Address 9f72
+----------
+Execute instruction: 1  access_heap     0x400000
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400000 to Physical Address a000
+----------
+Execute instruction: 1  access_stak     0xffffff58
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffff58 to Physical Address 9f58
+----------
+Execute instruction: 1  access_code     0xe
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address e to Physical Address 800e
+----------
+Execute instruction: 1  access_stak     0xffffff58
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffff58 to Physical Address 9f58
+----------
+Execute instruction: 1  access_stak     0xffffff96
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffff96 to Physical Address 9f96
+----------
+Execute instruction: 1  access_code     0xf
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address f to Physical Address 800f
+----------
+Execute instruction: 1  access_code     0x10
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 10 to Physical Address 8010
+----------
+Execute instruction: 1  access_heap     0x400000
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400000 to Physical Address a000
+----------
+Execute instruction: 0  switch  
+Switched current process to 0
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_code     0x3a197c
+Page table hit for VPN 929, PFN: 4
+Translated Virtual Address 3a197c to Physical Address 497c
+----------
+Execute instruction: 0  access_heap     0x401db6
+Page table hit for VPN 1025, PFN: 3
+Translated Virtual Address 401db6 to Physical Address 3db6
+----------
+Execute instruction: 0  free            0x1000
+----------
+Execute instruction: 0  access_stak     0xfffffe21
+Page table hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe21 to Physical Address 1e21
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_stak     0xfffffe21
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe21 to Physical Address 1e21
+----------
+Execute instruction: 0  access_code     0x3a197d
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a197d to Physical Address 497d
+----------
+Execute instruction: 0  free            0x2000
+----------
+Execute instruction: 0  access_stak     0xfffffe78
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe78 to Physical Address 1e78
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  free            0x1000
+----------
+Execute instruction: 0  access_stak     0xfffffe70
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe70 to Physical Address 1e70
+----------
+Execute instruction: 0  access_code     0x3a197e
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a197e to Physical Address 497e
+----------
+Execute instruction: 0  access_stak     0xfffffe70
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe70 to Physical Address 1e70
+----------
+Execute instruction: 0  access_code     0x3a197f
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a197f to Physical Address 497f
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_code     0x3a1980
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1980 to Physical Address 4980
+----------
+Execute instruction: 0  access_code     0x3a1981
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1981 to Physical Address 4981
+----------
+Execute instruction: 0  access_code     0x3a1982
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1982 to Physical Address 4982
+----------
+Execute instruction: 0  access_stak     0xfffffe70
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe70 to Physical Address 1e70
+----------
+Execute instruction: 0  access_code     0x3a1983
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1983 to Physical Address 4983
+----------
+Execute instruction: 0  access_heap     0x400fff
+Page table hit for VPN 1024, PFN: 0
+Translated Virtual Address 400fff to Physical Address fff
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_code     0x3a1984
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1984 to Physical Address 4984
+----------
+Execute instruction: 0  access_heap     0x4010ee
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4010ee to Physical Address 30ee
+----------
+Execute instruction: 0  access_stak     0xfffffe9f
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe9f to Physical Address 1e9f
+----------
+Execute instruction: 0  access_heap     0x4010ee
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4010ee to Physical Address 30ee
+----------
+Execute instruction: 0  access_heap     0x4002f8
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4002f8 to Physical Address 2f8
+----------
+Execute instruction: 0  access_stak     0xfffffe27
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe27 to Physical Address 1e27
+----------
+Execute instruction: 0  access_code     0x3a1985
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1985 to Physical Address 4985
+----------
+Execute instruction: 0  access_heap     0x401c45
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401c45 to Physical Address 3c45
+----------
+Execute instruction: 0  access_stak     0xfffffe27
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe27 to Physical Address 1e27
+----------
+Execute instruction: 0  access_stak     0xfffffe27
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe27 to Physical Address 1e27
+----------
+Execute instruction: 0  access_code     0x3a1986
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1986 to Physical Address 4986
+----------
+Execute instruction: 0  access_heap     0x400a59
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400a59 to Physical Address a59
+----------
+Execute instruction: 0  access_stak     0xfffffe27
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe27 to Physical Address 1e27
+----------
+Execute instruction: 0  access_heap     0x400a5a
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400a5a to Physical Address a5a
+----------
+Execute instruction: 0  access_heap     0x4004d8
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4004d8 to Physical Address 4d8
+----------
+Execute instruction: 0  access_stak     0xfffffe27
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe27 to Physical Address 1e27
+----------
+Execute instruction: 0  access_code     0x3a1987
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1987 to Physical Address 4987
+----------
+Execute instruction: 0  access_heap     0x400348
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400348 to Physical Address 348
+----------
+Execute instruction: 0  access_stak     0xfffffe27
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe27 to Physical Address 1e27
+----------
+Execute instruction: 0  access_heap     0x401d8b
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401d8b to Physical Address 3d8b
+----------
+Execute instruction: 0  access_heap     0x400da5
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400da5 to Physical Address da5
+----------
+Execute instruction: 0  access_code     0x3a1988
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1988 to Physical Address 4988
+----------
+Execute instruction: 0  access_heap     0x400b76
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400b76 to Physical Address b76
+----------
+Execute instruction: 0  access_code     0x3a1989
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1989 to Physical Address 4989
+----------
+Execute instruction: 0  access_heap     0x401350
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401350 to Physical Address 3350
+----------
+Execute instruction: 0  access_code     0x3a198a
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a198a to Physical Address 498a
+----------
+Execute instruction: 0  access_heap     0x400ff3
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400ff3 to Physical Address ff3
+----------
+Execute instruction: 0  access_heap     0x40144a
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 40144a to Physical Address 344a
+----------
+Execute instruction: 0  access_stak     0xfffffe88
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe88 to Physical Address 1e88
+----------
+Execute instruction: 0  access_stak     0xfffffec4
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffec4 to Physical Address 1ec4
+----------
+Execute instruction: 0  access_code     0x3a198b
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a198b to Physical Address 498b
+----------
+Execute instruction: 0  access_stak     0xffffff39
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff39 to Physical Address 1f39
+----------
+Execute instruction: 0  access_heap     0x400f4c
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400f4c to Physical Address f4c
+----------
+Execute instruction: 0  access_code     0x3a198c
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a198c to Physical Address 498c
+----------
+Execute instruction: 0  access_stak     0xffffff39
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff39 to Physical Address 1f39
+----------
+Execute instruction: 0  access_code     0x3a198d
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a198d to Physical Address 498d
+----------
+Execute instruction: 0  access_code     0x3a198e
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a198e to Physical Address 498e
+----------
+Execute instruction: 0  access_code     0x3a198f
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a198f to Physical Address 498f
+----------
+Execute instruction: 0  access_heap     0x400f4c
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400f4c to Physical Address f4c
+----------
+Execute instruction: 0  access_code     0x3a1990
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1990 to Physical Address 4990
+----------
+Execute instruction: 0  access_heap     0x400f4c
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400f4c to Physical Address f4c
+----------
+Execute instruction: 0  access_stak     0xffffff1b
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff1b to Physical Address 1f1b
+----------
+Execute instruction: 0  access_heap     0x4006a2
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4006a2 to Physical Address 6a2
+----------
+Execute instruction: 0  access_stak     0xffffff1b
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff1b to Physical Address 1f1b
+----------
+Execute instruction: 0  access_code     0x3a1991
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1991 to Physical Address 4991
+----------
+Execute instruction: 0  access_heap     0x4008f8
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4008f8 to Physical Address 8f8
+----------
+Execute instruction: 0  access_stak     0xffffff8a
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff8a to Physical Address 1f8a
+----------
+Execute instruction: 0  access_heap     0x4002cc
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4002cc to Physical Address 2cc
+----------
+Execute instruction: 0  access_heap     0x401492
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401492 to Physical Address 3492
+----------
+Execute instruction: 0  access_stak     0xffffff31
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff31 to Physical Address 1f31
+----------
+Execute instruction: 0  free            0x1000
+----------
+Execute instruction: 0  access_code     0x3a1992
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1992 to Physical Address 4992
+----------
+Execute instruction: 0  access_heap     0x400fff
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400fff to Physical Address fff
+----------
+Execute instruction: 0  access_code     0x3a1993
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1993 to Physical Address 4993
+----------
+Execute instruction: 0  access_code     0x3a1994
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1994 to Physical Address 4994
+----------
+Execute instruction: 0  access_heap     0x4003de
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4003de to Physical Address 3de
+----------
+Execute instruction: 0  access_stak     0xffffff31
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff31 to Physical Address 1f31
+----------
+Execute instruction: 0  access_stak     0xffffff31
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff31 to Physical Address 1f31
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_code     0x3a1995
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1995 to Physical Address 4995
+----------
+Execute instruction: 0  access_stak     0xffffff31
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff31 to Physical Address 1f31
+----------
+Execute instruction: 0  access_heap     0x4003dd
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4003dd to Physical Address 3dd
+----------
+Execute instruction: 0  access_heap     0x40086d
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 40086d to Physical Address 86d
+----------
+Execute instruction: 0  access_stak     0xffffffb1
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffffb1 to Physical Address 1fb1
+----------
+Execute instruction: 0  access_heap     0x40067f
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 40067f to Physical Address 67f
+----------
+Execute instruction: 0  access_stak     0xffffffb1
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffffb1 to Physical Address 1fb1
+----------
+Execute instruction: 0  access_stak     0xffffff74
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff74 to Physical Address 1f74
+----------
+Execute instruction: 0  access_code     0x3a1996
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1996 to Physical Address 4996
+----------
+Execute instruction: 0  access_heap     0x401c3f
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401c3f to Physical Address 3c3f
+----------
+Execute instruction: 0  access_code     0x3a1997
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1997 to Physical Address 4997
+----------
+Execute instruction: 0  access_heap     0x401c3f
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401c3f to Physical Address 3c3f
+----------
+Execute instruction: 0  access_heap     0x40045f
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 40045f to Physical Address 45f
+----------
+Execute instruction: 0  access_code     0x3a1998
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1998 to Physical Address 4998
+----------
+Execute instruction: 0  access_stak     0xffffffa8
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffffa8 to Physical Address 1fa8
+----------
+Execute instruction: 0  access_stak     0xffffffa8
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffffa8 to Physical Address 1fa8
+----------
+Execute instruction: 0  access_heap     0x401bf6
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401bf6 to Physical Address 3bf6
+----------
+Execute instruction: 0  access_stak     0xffffffa8
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffffa8 to Physical Address 1fa8
+----------
+Execute instruction: 0  access_code     0x3a1999
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a1999 to Physical Address 4999
+----------
+Execute instruction: 0  access_heap     0x401e6c
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401e6c to Physical Address 3e6c
+----------
+Execute instruction: 0  access_heap     0x400bf2
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400bf2 to Physical Address bf2
+----------
+Execute instruction: 0  access_stak     0xffffffa8
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffffa8 to Physical Address 1fa8
+----------
+Execute instruction: 0  access_stak     0xffffffe2
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffffe2 to Physical Address 1fe2
+----------
+Execute instruction: 0  free            0x2000
+----------
+Execute instruction: 0  access_code     0x3a199a
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a199a to Physical Address 499a
+----------
+Execute instruction: 0  access_code     0x3a199b
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a199b to Physical Address 499b
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_code     0x3a199c
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a199c to Physical Address 499c
+----------
+Execute instruction: 0  access_heap     0x400001
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400001 to Physical Address 1
+----------
+Execute instruction: 0  access_code     0x3a199d
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a199d to Physical Address 499d
+----------
+Execute instruction: 0  access_stak     0xffffffff
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffffff to Physical Address 1fff
+----------
+Execute instruction: 0  access_heap     0x400002
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400002 to Physical Address 2
+----------
+Execute instruction: 0  access_code     0x3a199e
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a199e to Physical Address 499e
+----------
+Execute instruction: 0  access_code     0x3a199f
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a199f to Physical Address 499f
+----------
+Execute instruction: 0  access_heap     0x400002
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400002 to Physical Address 2
+----------
+Execute instruction: 0  access_stak     0xffffffff
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffffff to Physical Address 1fff
+----------
+Execute instruction: 0  access_stak     0xffffffff
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffffff to Physical Address 1fff
+----------
+Execute instruction: 0  access_heap     0x400fff
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400fff to Physical Address fff
+----------
+Execute instruction: 0  access_heap     0x400fff
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400fff to Physical Address fff
+----------
+Execute instruction: 0  access_stak     0xffffffff
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffffff to Physical Address 1fff
+----------
+Execute instruction: 0  access_code     0x3a19a0
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a19a0 to Physical Address 49a0
+----------
+Execute instruction: 0  access_heap     0x400fff
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400fff to Physical Address fff
+----------
+Execute instruction: 0  access_stak     0xffffffff
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffffff to Physical Address 1fff
+----------
+Execute instruction: 0  access_heap     0x400ffe
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400ffe to Physical Address ffe
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_stak     0xffffffe9
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffffe9 to Physical Address 1fe9
+----------
+Execute instruction: 0  access_heap     0x400d51
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400d51 to Physical Address d51
+----------
+Execute instruction: 0  access_stak     0xffffff8c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff8c to Physical Address 1f8c
+----------
+Execute instruction: 0  access_stak     0xffffff8c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff8c to Physical Address 1f8c
+----------
+Execute instruction: 0  access_heap     0x4013dc
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4013dc to Physical Address 33dc
+----------
+Execute instruction: 0  access_heap     0x400111
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400111 to Physical Address 111
+----------
+Execute instruction: 0  access_code     0x3a19a1
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a19a1 to Physical Address 49a1
+----------
+Execute instruction: 0  access_heap     0x4012d0
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4012d0 to Physical Address 32d0
+----------
+Execute instruction: 0  access_heap     0x4001bf
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4001bf to Physical Address 1bf
+----------
+Execute instruction: 0  access_stak     0xffffff8c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff8c to Physical Address 1f8c
+----------
+Execute instruction: 0  access_heap     0x400f2b
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400f2b to Physical Address f2b
+----------
+Execute instruction: 0  access_code     0x3a19a2
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a19a2 to Physical Address 49a2
+----------
+Execute instruction: 0  access_stak     0xffffff4c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff4c to Physical Address 1f4c
+----------
+Execute instruction: 0  access_stak     0xffffff1e
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff1e to Physical Address 1f1e
+----------
+Execute instruction: 0  access_heap     0x400f2a
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400f2a to Physical Address f2a
+----------
+Execute instruction: 0  access_code     0x3a19a3
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a19a3 to Physical Address 49a3
+----------
+Execute instruction: 0  access_stak     0xffffff2c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff2c to Physical Address 1f2c
+----------
+Execute instruction: 0  access_stak     0xffffff2c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff2c to Physical Address 1f2c
+----------
+Execute instruction: 0  access_stak     0xffffff2c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff2c to Physical Address 1f2c
+----------
+Execute instruction: 0  access_stak     0xfffffebe
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffebe to Physical Address 1ebe
+----------
+Execute instruction: 0  access_code     0x3a19a4
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a19a4 to Physical Address 49a4
+----------
+Execute instruction: 0  access_code     0x3a19a5
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a19a5 to Physical Address 49a5
+----------
+Execute instruction: 0  access_stak     0xfffffeaf
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeaf to Physical Address 1eaf
+----------
+Execute instruction: 0  access_heap     0x400f2b
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400f2b to Physical Address f2b
+----------
+Execute instruction: 0  access_stak     0xfffffeaf
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeaf to Physical Address 1eaf
+----------
+Execute instruction: 0  access_code     0x3a19a6
+TLB hit for VPN 929, PFN: 4
+Translated Virtual Address 3a19a6 to Physical Address 49a6
+----------
+Execute instruction: 0  access_heap     0x400121
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400121 to Physical Address 121
+----------
+Execute instruction: 0  access_stak     0xfffffeaf
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeaf to Physical Address 1eaf
+----------
+Execute instruction: 0  access_heap     0x4015a9
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4015a9 to Physical Address 35a9
+----------
+Execute instruction: 0  access_stak     0xfffffeaf
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeaf to Physical Address 1eaf
+----------
+Execute instruction: 0  access_stak     0xffffff2b
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff2b to Physical Address 1f2b
+----------
+Execute instruction: 0  access_code     0x29
+Page table hit for VPN 0, PFN: 2
+Translated Virtual Address 29 to Physical Address 2029
+----------
+Execute instruction: 0  access_stak     0xffffff2b
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff2b to Physical Address 1f2b
+----------
+Execute instruction: 0  access_stak     0xffffff99
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff99 to Physical Address 1f99
+----------
+Execute instruction: 0  access_heap     0x4015a8
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4015a8 to Physical Address 35a8
+----------
+Execute instruction: 0  access_heap     0x4015a9
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4015a9 to Physical Address 35a9
+----------
+Execute instruction: 0  access_stak     0xffffff1c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff1c to Physical Address 1f1c
+----------
+Execute instruction: 0  access_code     0x2a
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 2a to Physical Address 202a
+----------
+Execute instruction: 0  access_heap     0x401fba
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401fba to Physical Address 3fba
+----------
+Execute instruction: 0  access_code     0x2b
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 2b to Physical Address 202b
+----------
+Execute instruction: 0  access_heap     0x401013
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401013 to Physical Address 3013
+----------
+Execute instruction: 0  access_heap     0x401030
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401030 to Physical Address 3030
+----------
+Execute instruction: 0  access_heap     0x400ddc
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400ddc to Physical Address ddc
+----------
+Execute instruction: 0  access_code     0x2c
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 2c to Physical Address 202c
+----------
+Execute instruction: 0  access_stak     0xffffff1c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff1c to Physical Address 1f1c
+----------
+Execute instruction: 0  access_code     0x2d
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 2d to Physical Address 202d
+----------
+Execute instruction: 0  access_stak     0xffffff1c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff1c to Physical Address 1f1c
+----------
+Execute instruction: 0  access_code     0x2e
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 2e to Physical Address 202e
+----------
+Execute instruction: 0  access_heap     0x400ddb
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400ddb to Physical Address ddb
+----------
+Execute instruction: 0  access_code     0x2f
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 2f to Physical Address 202f
+----------
+Execute instruction: 0  access_heap     0x401d62
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401d62 to Physical Address 3d62
+----------
+Execute instruction: 0  access_code     0x30
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 30 to Physical Address 2030
+----------
+Execute instruction: 0  access_heap     0x401d63
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401d63 to Physical Address 3d63
+----------
+Execute instruction: 0  access_code     0x31
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 31 to Physical Address 2031
+----------
+Execute instruction: 0  access_heap     0x4000b5
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4000b5 to Physical Address b5
+----------
+Execute instruction: 0  free            0x2000
+----------
+Execute instruction: 0  access_code     0x32
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 32 to Physical Address 2032
+----------
+Execute instruction: 0  access_code     0x33
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 33 to Physical Address 2033
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_code     0x34
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 34 to Physical Address 2034
+----------
+Execute instruction: 0  access_heap     0x400244
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400244 to Physical Address 244
+----------
+Execute instruction: 0  access_stak     0xffffff15
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff15 to Physical Address 1f15
+----------
+Execute instruction: 0  access_code     0x35
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 35 to Physical Address 2035
+----------
+Execute instruction: 0  access_code     0x36
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 36 to Physical Address 2036
+----------
+Execute instruction: 0  access_code     0x37
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 37 to Physical Address 2037
+----------
+Execute instruction: 0  access_heap     0x40006c
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 40006c to Physical Address 6c
+----------
+Execute instruction: 0  access_stak     0xfffffeaa
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeaa to Physical Address 1eaa
+----------
+Execute instruction: 0  access_heap     0x40006c
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 40006c to Physical Address 6c
+----------
+Execute instruction: 0  access_heap     0x400a04
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400a04 to Physical Address a04
+----------
+Execute instruction: 0  access_code     0x38
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 38 to Physical Address 2038
+----------
+Execute instruction: 0  access_stak     0xfffffeaa
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeaa to Physical Address 1eaa
+----------
+Execute instruction: 0  access_stak     0xffffff0a
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff0a to Physical Address 1f0a
+----------
+Execute instruction: 0  access_heap     0x4003a8
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4003a8 to Physical Address 3a8
+----------
+Execute instruction: 0  access_code     0x39
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 39 to Physical Address 2039
+----------
+Execute instruction: 0  access_heap     0x400993
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400993 to Physical Address 993
+----------
+Execute instruction: 0  access_stak     0xffffff0a
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff0a to Physical Address 1f0a
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_stak     0xfffffe96
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe96 to Physical Address 1e96
+----------
+Execute instruction: 0  access_code     0x3a
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 3a to Physical Address 203a
+----------
+Execute instruction: 0  access_heap     0x400992
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400992 to Physical Address 992
+----------
+Execute instruction: 0  access_stak     0xfffffe96
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe96 to Physical Address 1e96
+----------
+Execute instruction: 0  access_code     0x3b
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 3b to Physical Address 203b
+----------
+Execute instruction: 0  access_heap     0x400993
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400993 to Physical Address 993
+----------
+Execute instruction: 0  access_stak     0xfffffeb5
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeb5 to Physical Address 1eb5
+----------
+Execute instruction: 0  access_stak     0xfffffeb5
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeb5 to Physical Address 1eb5
+----------
+Execute instruction: 0  access_code     0x3c
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 3c to Physical Address 203c
+----------
+Execute instruction: 0  access_heap     0x400e98
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400e98 to Physical Address e98
+----------
+Execute instruction: 0  access_stak     0xfffffe36
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe36 to Physical Address 1e36
+----------
+Execute instruction: 0  access_code     0x3d
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 3d to Physical Address 203d
+----------
+Execute instruction: 0  access_code     0x3e
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 3e to Physical Address 203e
+----------
+Execute instruction: 0  access_code     0x3f
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 3f to Physical Address 203f
+----------
+Execute instruction: 0  access_heap     0x400e97
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400e97 to Physical Address e97
+----------
+Execute instruction: 0  access_heap     0x400e98
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400e98 to Physical Address e98
+----------
+Execute instruction: 0  access_heap     0x400e99
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400e99 to Physical Address e99
+----------
+Execute instruction: 0  access_heap     0x4014b0
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4014b0 to Physical Address 34b0
+----------
+Execute instruction: 0  access_stak     0xfffffe36
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe36 to Physical Address 1e36
+----------
+Execute instruction: 0  access_heap     0x400128
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400128 to Physical Address 128
+----------
+Execute instruction: 0  access_heap     0x400129
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400129 to Physical Address 129
+----------
+Execute instruction: 0  access_stak     0xfffffe36
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe36 to Physical Address 1e36
+----------
+Execute instruction: 0  access_code     0x40
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 40 to Physical Address 2040
+----------
+Execute instruction: 0  access_stak     0xfffffe36
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe36 to Physical Address 1e36
+----------
+Execute instruction: 0  access_stak     0xfffffe36
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe36 to Physical Address 1e36
+----------
+Execute instruction: 0  access_stak     0xfffffe36
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe36 to Physical Address 1e36
+----------
+Execute instruction: 0  access_stak     0xfffffe75
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe75 to Physical Address 1e75
+----------
+Execute instruction: 0  access_stak     0xfffffeb8
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeb8 to Physical Address 1eb8
+----------
+Execute instruction: 0  access_heap     0x401cf9
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401cf9 to Physical Address 3cf9
+----------
+Execute instruction: 0  access_code     0x41
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 41 to Physical Address 2041
+----------
+Execute instruction: 0  access_stak     0xfffffec0
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffec0 to Physical Address 1ec0
+----------
+Execute instruction: 0  access_stak     0xfffffe41
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe41 to Physical Address 1e41
+----------
+Execute instruction: 0  access_code     0x42
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 42 to Physical Address 2042
+----------
+Execute instruction: 0  access_stak     0xfffffe41
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe41 to Physical Address 1e41
+----------
+Execute instruction: 0  access_stak     0xfffffdde
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdde to Physical Address 1dde
+----------
+Execute instruction: 0  access_stak     0xfffffd75
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd75 to Physical Address 1d75
+----------
+Execute instruction: 0  access_stak     0xfffffd75
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd75 to Physical Address 1d75
+----------
+Execute instruction: 0  access_code     0x43
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 43 to Physical Address 2043
+----------
+Execute instruction: 0  access_stak     0xfffffd65
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd65 to Physical Address 1d65
+----------
+Execute instruction: 0  access_heap     0x400495
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400495 to Physical Address 495
+----------
+Execute instruction: 0  access_stak     0xfffffd2a
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd2a to Physical Address 1d2a
+----------
+Execute instruction: 0  access_heap     0x40020c
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 40020c to Physical Address 20c
+----------
+Execute instruction: 0  access_code     0x44
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 44 to Physical Address 2044
+----------
+Execute instruction: 0  access_stak     0xfffffd2a
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd2a to Physical Address 1d2a
+----------
+Execute instruction: 0  access_heap     0x40020d
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 40020d to Physical Address 20d
+----------
+Execute instruction: 0  access_code     0x45
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 45 to Physical Address 2045
+----------
+Execute instruction: 0  access_code     0x46
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 46 to Physical Address 2046
+----------
+Execute instruction: 0  access_code     0x47
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 47 to Physical Address 2047
+----------
+Execute instruction: 0  access_code     0x48
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 48 to Physical Address 2048
+----------
+Execute instruction: 0  access_stak     0xfffffd2a
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd2a to Physical Address 1d2a
+----------
+Execute instruction: 0  access_stak     0xfffffd2a
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd2a to Physical Address 1d2a
+----------
+Execute instruction: 0  access_code     0x49
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 49 to Physical Address 2049
+----------
+Execute instruction: 0  access_heap     0x40058e
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 40058e to Physical Address 58e
+----------
+Execute instruction: 0  access_stak     0xfffffdaa
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdaa to Physical Address 1daa
+----------
+Execute instruction: 0  access_code     0x4a
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 4a to Physical Address 204a
+----------
+Execute instruction: 0  access_heap     0x4016ff
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4016ff to Physical Address 36ff
+----------
+Execute instruction: 0  access_code     0x4b
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 4b to Physical Address 204b
+----------
+Execute instruction: 0  access_heap     0x4016ff
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4016ff to Physical Address 36ff
+----------
+Execute instruction: 0  access_code     0x4c
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 4c to Physical Address 204c
+----------
+Execute instruction: 0  access_heap     0x400616
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400616 to Physical Address 616
+----------
+Execute instruction: 0  access_code     0x4d
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 4d to Physical Address 204d
+----------
+Execute instruction: 0  access_heap     0x4001c6
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4001c6 to Physical Address 1c6
+----------
+Execute instruction: 0  access_code     0x4e
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 4e to Physical Address 204e
+----------
+Execute instruction: 0  access_stak     0xfffffdde
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdde to Physical Address 1dde
+----------
+Execute instruction: 0  access_code     0x4f
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 4f to Physical Address 204f
+----------
+Execute instruction: 0  access_code     0x50
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 50 to Physical Address 2050
+----------
+Execute instruction: 0  access_code     0x51
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 51 to Physical Address 2051
+----------
+Execute instruction: 0  access_code     0x52
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 52 to Physical Address 2052
+----------
+Execute instruction: 0  access_code     0x53
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 53 to Physical Address 2053
+----------
+Execute instruction: 0  access_code     0x54
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 54 to Physical Address 2054
+----------
+Execute instruction: 0  access_code     0x55
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 55 to Physical Address 2055
+----------
+Execute instruction: 0  access_stak     0xfffffdde
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdde to Physical Address 1dde
+----------
+Execute instruction: 0  access_stak     0xfffffdf9
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdf9 to Physical Address 1df9
+----------
+Execute instruction: 0  access_stak     0xfffffda8
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffda8 to Physical Address 1da8
+----------
+Execute instruction: 0  access_stak     0xfffffdb0
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdb0 to Physical Address 1db0
+----------
+Execute instruction: 0  access_heap     0x401255
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401255 to Physical Address 3255
+----------
+Execute instruction: 0  access_code     0x56
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 56 to Physical Address 2056
+----------
+Execute instruction: 0  access_stak     0xfffffde7
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffde7 to Physical Address 1de7
+----------
+Execute instruction: 0  access_heap     0x401857
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401857 to Physical Address 3857
+----------
+Execute instruction: 0  access_heap     0x401f46
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401f46 to Physical Address 3f46
+----------
+Execute instruction: 0  access_heap     0x400967
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400967 to Physical Address 967
+----------
+Execute instruction: 0  access_code     0x57
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 57 to Physical Address 2057
+----------
+Execute instruction: 0  access_code     0x58
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 58 to Physical Address 2058
+----------
+Execute instruction: 0  access_heap     0x4007af
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4007af to Physical Address 7af
+----------
+Execute instruction: 0  access_code     0x59
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 59 to Physical Address 2059
+----------
+Execute instruction: 0  access_heap     0x401a34
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401a34 to Physical Address 3a34
+----------
+Execute instruction: 0  access_code     0x5a
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 5a to Physical Address 205a
+----------
+Execute instruction: 0  access_heap     0x4001d5
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4001d5 to Physical Address 1d5
+----------
+Execute instruction: 0  access_code     0x5b
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 5b to Physical Address 205b
+----------
+Execute instruction: 0  access_code     0x5c
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 5c to Physical Address 205c
+----------
+Execute instruction: 0  access_stak     0xfffffe33
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe33 to Physical Address 1e33
+----------
+Execute instruction: 0  access_code     0x5d
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 5d to Physical Address 205d
+----------
+Execute instruction: 0  access_heap     0x400171
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400171 to Physical Address 171
+----------
+Execute instruction: 0  access_heap     0x400171
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400171 to Physical Address 171
+----------
+Execute instruction: 0  free            0x2000
+----------
+Execute instruction: 0  access_code     0x5e
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 5e to Physical Address 205e
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_code     0x5f
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 5f to Physical Address 205f
+----------
+Execute instruction: 0  access_code     0x60
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 60 to Physical Address 2060
+----------
+Execute instruction: 0  access_stak     0xfffffe33
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe33 to Physical Address 1e33
+----------
+Execute instruction: 0  access_stak     0xfffffe33
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe33 to Physical Address 1e33
+----------
+Execute instruction: 1  switch  
+Switched current process to 1
+----------
+Execute instruction: 1  access_heap     0x400001
+Page table hit for VPN 1024, PFN: 10
+Translated Virtual Address 400001 to Physical Address a001
+----------
+Execute instruction: 1  access_code     0x11
+Page table hit for VPN 0, PFN: 8
+Translated Virtual Address 11 to Physical Address 8011
+----------
+Execute instruction: 1  access_heap     0x400001
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400001 to Physical Address a001
+----------
+Execute instruction: 1  access_stak     0xffffff59
+Page table hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffff59 to Physical Address 9f59
+----------
+Execute instruction: 1  access_code     0x12
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 12 to Physical Address 8012
+----------
+Execute instruction: 1  access_heap     0x400001
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400001 to Physical Address a001
+----------
+Execute instruction: 1  access_stak     0xffffff18
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffff18 to Physical Address 9f18
+----------
+Execute instruction: 1  access_code     0x13
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 13 to Physical Address 8013
+----------
+Execute instruction: 1  access_code     0x14
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 14 to Physical Address 8014
+----------
+Execute instruction: 1  access_heap     0x400001
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400001 to Physical Address a001
+----------
+Execute instruction: 1  access_heap     0x400002
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400002 to Physical Address a002
+----------
+Execute instruction: 1  access_heap     0x400001
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400001 to Physical Address a001
+----------
+Execute instruction: 1  access_heap     0x4005e5
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 4005e5 to Physical Address a5e5
+----------
+Execute instruction: 1  access_heap     0x4005e5
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 4005e5 to Physical Address a5e5
+----------
+Execute instruction: 1  access_code     0x15
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 15 to Physical Address 8015
+----------
+Execute instruction: 1  access_stak     0xffffff18
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffff18 to Physical Address 9f18
+----------
+Execute instruction: 1  access_stak     0xfffffea4
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffea4 to Physical Address 9ea4
+----------
+Execute instruction: 0  switch  
+Switched current process to 0
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_code     0x61
+Page table hit for VPN 0, PFN: 2
+Translated Virtual Address 61 to Physical Address 2061
+----------
+Execute instruction: 0  access_stak     0xfffffe33
+Page table hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe33 to Physical Address 1e33
+----------
+Execute instruction: 0  access_heap     0x400001
+Page table hit for VPN 1024, PFN: 0
+Translated Virtual Address 400001 to Physical Address 1
+----------
+Execute instruction: 0  access_stak     0xfffffe33
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe33 to Physical Address 1e33
+----------
+Execute instruction: 0  access_code     0x62
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 62 to Physical Address 2062
+----------
+Execute instruction: 0  access_heap     0x400001
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400001 to Physical Address 1
+----------
+Execute instruction: 0  access_code     0x63
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 63 to Physical Address 2063
+----------
+Execute instruction: 0  access_stak     0xfffffdb5
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdb5 to Physical Address 1db5
+----------
+Execute instruction: 0  access_stak     0xfffffe11
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe11 to Physical Address 1e11
+----------
+Execute instruction: 0  access_heap     0x400002
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400002 to Physical Address 2
+----------
+Execute instruction: 0  access_code     0x64
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 64 to Physical Address 2064
+----------
+Execute instruction: 0  access_heap     0x4002b8
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4002b8 to Physical Address 2b8
+----------
+Execute instruction: 0  access_code     0x65
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 65 to Physical Address 2065
+----------
+Execute instruction: 0  access_heap     0x4002b7
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4002b7 to Physical Address 2b7
+----------
+Execute instruction: 0  access_code     0x66
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 66 to Physical Address 2066
+----------
+Execute instruction: 0  access_heap     0x400fb4
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400fb4 to Physical Address fb4
+----------
+Execute instruction: 0  access_code     0x67
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 67 to Physical Address 2067
+----------
+Execute instruction: 0  access_code     0x68
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 68 to Physical Address 2068
+----------
+Execute instruction: 0  access_code     0x69
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 69 to Physical Address 2069
+----------
+Execute instruction: 0  access_code     0x6a
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 6a to Physical Address 206a
+----------
+Execute instruction: 0  access_code     0x6b
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 6b to Physical Address 206b
+----------
+Execute instruction: 0  access_code     0x6c
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 6c to Physical Address 206c
+----------
+Execute instruction: 0  access_code     0x6d
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 6d to Physical Address 206d
+----------
+Execute instruction: 0  access_stak     0xfffffe11
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe11 to Physical Address 1e11
+----------
+Execute instruction: 0  access_stak     0xfffffe31
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe31 to Physical Address 1e31
+----------
+Execute instruction: 0  access_code     0x6e
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 6e to Physical Address 206e
+----------
+Execute instruction: 0  access_stak     0xfffffe31
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe31 to Physical Address 1e31
+----------
+Execute instruction: 0  access_heap     0x400fb3
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400fb3 to Physical Address fb3
+----------
+Execute instruction: 0  access_heap     0x400c90
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400c90 to Physical Address c90
+----------
+Execute instruction: 0  access_code     0x6f
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 6f to Physical Address 206f
+----------
+Execute instruction: 0  access_code     0x70
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 70 to Physical Address 2070
+----------
+Execute instruction: 0  access_heap     0x4004a4
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4004a4 to Physical Address 4a4
+----------
+Execute instruction: 0  access_heap     0x401a89
+Page table hit for VPN 1025, PFN: 3
+Translated Virtual Address 401a89 to Physical Address 3a89
+----------
+Execute instruction: 0  access_stak     0xfffffe31
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe31 to Physical Address 1e31
+----------
+Execute instruction: 0  access_code     0x71
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 71 to Physical Address 2071
+----------
+Execute instruction: 0  access_code     0x72
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 72 to Physical Address 2072
+----------
+Execute instruction: 0  access_heap     0x4018d3
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4018d3 to Physical Address 38d3
+----------
+Execute instruction: 0  access_heap     0x4018d4
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4018d4 to Physical Address 38d4
+----------
+Execute instruction: 0  access_code     0x73
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 73 to Physical Address 2073
+----------
+Execute instruction: 0  access_stak     0xfffffe2b
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe2b to Physical Address 1e2b
+----------
+Execute instruction: 0  access_heap     0x4018d5
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4018d5 to Physical Address 38d5
+----------
+Execute instruction: 0  access_code     0x74
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 74 to Physical Address 2074
+----------
+Execute instruction: 0  access_stak     0xfffffdcf
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdcf to Physical Address 1dcf
+----------
+Execute instruction: 0  access_heap     0x401bee
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401bee to Physical Address 3bee
+----------
+Execute instruction: 0  access_stak     0xfffffdcf
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdcf to Physical Address 1dcf
+----------
+Execute instruction: 0  access_code     0x75
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 75 to Physical Address 2075
+----------
+Execute instruction: 0  access_code     0x76
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 76 to Physical Address 2076
+----------
+Execute instruction: 0  access_heap     0x401f0c
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401f0c to Physical Address 3f0c
+----------
+Execute instruction: 0  access_stak     0xfffffdcf
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdcf to Physical Address 1dcf
+----------
+Execute instruction: 0  access_heap     0x401636
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401636 to Physical Address 3636
+----------
+Execute instruction: 0  access_stak     0xfffffdcf
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdcf to Physical Address 1dcf
+----------
+Execute instruction: 0  access_heap     0x401635
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401635 to Physical Address 3635
+----------
+Execute instruction: 0  access_heap     0x401636
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401636 to Physical Address 3636
+----------
+Execute instruction: 0  access_stak     0xfffffe26
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe26 to Physical Address 1e26
+----------
+Execute instruction: 0  access_code     0x77
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 77 to Physical Address 2077
+----------
+Execute instruction: 0  access_heap     0x401635
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401635 to Physical Address 3635
+----------
+Execute instruction: 0  access_heap     0x401634
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401634 to Physical Address 3634
+----------
+Execute instruction: 0  access_code     0x78
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 78 to Physical Address 2078
+----------
+Execute instruction: 0  access_code     0x79
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 79 to Physical Address 2079
+----------
+Execute instruction: 0  access_stak     0xfffffe26
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe26 to Physical Address 1e26
+----------
+Execute instruction: 0  access_stak     0xfffffe5c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe5c to Physical Address 1e5c
+----------
+Execute instruction: 0  access_code     0x7a
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 7a to Physical Address 207a
+----------
+Execute instruction: 0  access_stak     0xfffffe5c
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe5c to Physical Address 1e5c
+----------
+Execute instruction: 0  access_stak     0xfffffdfb
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdfb to Physical Address 1dfb
+----------
+Execute instruction: 0  access_code     0x7b
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 7b to Physical Address 207b
+----------
+Execute instruction: 0  access_stak     0xfffffdfb
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdfb to Physical Address 1dfb
+----------
+Execute instruction: 0  access_heap     0x401bbf
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401bbf to Physical Address 3bbf
+----------
+Execute instruction: 0  access_heap     0x401a85
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401a85 to Physical Address 3a85
+----------
+Execute instruction: 0  access_stak     0xfffffdfb
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdfb to Physical Address 1dfb
+----------
+Execute instruction: 0  access_stak     0xfffffdfb
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdfb to Physical Address 1dfb
+----------
+Execute instruction: 0  access_code     0x7c
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 7c to Physical Address 207c
+----------
+Execute instruction: 0  access_heap     0x401334
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401334 to Physical Address 3334
+----------
+Execute instruction: 0  access_heap     0x400a6a
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400a6a to Physical Address a6a
+----------
+Execute instruction: 0  access_stak     0xfffffdfb
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdfb to Physical Address 1dfb
+----------
+Execute instruction: 0  access_code     0x7d
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 7d to Physical Address 207d
+----------
+Execute instruction: 0  access_stak     0xfffffd86
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd86 to Physical Address 1d86
+----------
+Execute instruction: 0  access_heap     0x400783
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400783 to Physical Address 783
+----------
+Execute instruction: 0  access_code     0x7e
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 7e to Physical Address 207e
+----------
+Execute instruction: 0  access_heap     0x40151d
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 40151d to Physical Address 351d
+----------
+Execute instruction: 0  access_heap     0x401e39
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401e39 to Physical Address 3e39
+----------
+Execute instruction: 0  access_code     0x7f
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 7f to Physical Address 207f
+----------
+Execute instruction: 0  access_code     0x80
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 80 to Physical Address 2080
+----------
+Execute instruction: 0  access_code     0x81
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 81 to Physical Address 2081
+----------
+Execute instruction: 0  access_stak     0xfffffd86
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd86 to Physical Address 1d86
+----------
+Execute instruction: 0  access_code     0x82
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 82 to Physical Address 2082
+----------
+Execute instruction: 0  access_heap     0x401e38
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401e38 to Physical Address 3e38
+----------
+Execute instruction: 0  access_heap     0x4001e2
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4001e2 to Physical Address 1e2
+----------
+Execute instruction: 0  access_code     0x83
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 83 to Physical Address 2083
+----------
+Execute instruction: 1  switch  
+Switched current process to 1
+----------
+Execute instruction: 1  access_heap     0x4005e6
+Page table hit for VPN 1024, PFN: 10
+Translated Virtual Address 4005e6 to Physical Address a5e6
+----------
+Execute instruction: 1  access_code     0x16
+Page table hit for VPN 0, PFN: 8
+Translated Virtual Address 16 to Physical Address 8016
+----------
+Execute instruction: 1  access_code     0x17
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 17 to Physical Address 8017
+----------
+Execute instruction: 1  access_code     0x18
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 18 to Physical Address 8018
+----------
+Execute instruction: 1  access_stak     0xfffffece
+Page table hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffece to Physical Address 9ece
+----------
+Execute instruction: 1  access_stak     0xfffffece
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffece to Physical Address 9ece
+----------
+Execute instruction: 1  access_stak     0xfffffe99
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffe99 to Physical Address 9e99
+----------
+Execute instruction: 1  access_stak     0xffffff15
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffff15 to Physical Address 9f15
+----------
+Execute instruction: 1  access_heap     0x4005e5
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 4005e5 to Physical Address a5e5
+----------
+Execute instruction: 1  access_code     0x19
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 19 to Physical Address 8019
+----------
+Execute instruction: 1  access_stak     0xffffff15
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address ffffff15 to Physical Address 9f15
+----------
+Execute instruction: 1  access_code     0x1a
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 1a to Physical Address 801a
+----------
+Execute instruction: 1  access_code     0x1b
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 1b to Physical Address 801b
+----------
+Execute instruction: 1  access_stak     0xfffffeb7
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffeb7 to Physical Address 9eb7
+----------
+Execute instruction: 1  access_heap     0x4005e4
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 4005e4 to Physical Address a5e4
+----------
+Execute instruction: 1  access_stak     0xfffffeb7
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffeb7 to Physical Address 9eb7
+----------
+Execute instruction: 0  switch  
+Switched current process to 0
+----------
+Execute instruction: 0  access_code     0x84
+Page table hit for VPN 0, PFN: 2
+Translated Virtual Address 84 to Physical Address 2084
+----------
+Execute instruction: 0  access_code     0x85
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 85 to Physical Address 2085
+----------
+Execute instruction: 0  access_heap     0x400cb5
+Page table hit for VPN 1024, PFN: 0
+Translated Virtual Address 400cb5 to Physical Address cb5
+----------
+Execute instruction: 0  access_code     0x86
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 86 to Physical Address 2086
+----------
+Execute instruction: 0  access_stak     0xfffffd26
+Page table hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd26 to Physical Address 1d26
+----------
+Execute instruction: 0  access_stak     0xfffffd49
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd49 to Physical Address 1d49
+----------
+Execute instruction: 0  access_heap     0x4014f7
+Page table hit for VPN 1025, PFN: 3
+Translated Virtual Address 4014f7 to Physical Address 34f7
+----------
+Execute instruction: 0  access_stak     0xfffffd6d
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd6d to Physical Address 1d6d
+----------
+Execute instruction: 0  access_stak     0xfffffd6d
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd6d to Physical Address 1d6d
+----------
+Execute instruction: 0  access_code     0x87
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 87 to Physical Address 2087
+----------
+Execute instruction: 0  access_heap     0x4014f8
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4014f8 to Physical Address 34f8
+----------
+Execute instruction: 0  access_heap     0x401b79
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401b79 to Physical Address 3b79
+----------
+Execute instruction: 0  access_stak     0xfffffdc6
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdc6 to Physical Address 1dc6
+----------
+Execute instruction: 0  access_code     0x88
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 88 to Physical Address 2088
+----------
+Execute instruction: 0  access_code     0x89
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 89 to Physical Address 2089
+----------
+Execute instruction: 0  access_code     0x8a
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 8a to Physical Address 208a
+----------
+Execute instruction: 0  access_stak     0xfffffd96
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd96 to Physical Address 1d96
+----------
+Execute instruction: 0  access_code     0x8b
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 8b to Physical Address 208b
+----------
+Execute instruction: 0  access_stak     0xfffffd96
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd96 to Physical Address 1d96
+----------
+Execute instruction: 0  access_stak     0xfffffe09
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe09 to Physical Address 1e09
+----------
+Execute instruction: 0  access_heap     0x400c04
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400c04 to Physical Address c04
+----------
+Execute instruction: 0  access_stak     0xfffffe09
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe09 to Physical Address 1e09
+----------
+Execute instruction: 0  access_heap     0x4015b8
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4015b8 to Physical Address 35b8
+----------
+Execute instruction: 0  access_code     0x8c
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 8c to Physical Address 208c
+----------
+Execute instruction: 0  access_heap     0x4015b8
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4015b8 to Physical Address 35b8
+----------
+Execute instruction: 0  access_heap     0x400de0
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400de0 to Physical Address de0
+----------
+Execute instruction: 0  access_code     0x8d
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 8d to Physical Address 208d
+----------
+Execute instruction: 0  access_heap     0x400e87
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400e87 to Physical Address e87
+----------
+Execute instruction: 0  access_heap     0x400a43
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400a43 to Physical Address a43
+----------
+Execute instruction: 0  access_stak     0xfffffe57
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe57 to Physical Address 1e57
+----------
+Execute instruction: 0  access_code     0x8e
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 8e to Physical Address 208e
+----------
+Execute instruction: 0  access_heap     0x400b79
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400b79 to Physical Address b79
+----------
+Execute instruction: 0  access_heap     0x400d07
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400d07 to Physical Address d07
+----------
+Execute instruction: 0  access_heap     0x40012f
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 40012f to Physical Address 12f
+----------
+Execute instruction: 0  access_stak     0xfffffddc
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffddc to Physical Address 1ddc
+----------
+Execute instruction: 0  access_code     0x8f
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 8f to Physical Address 208f
+----------
+Execute instruction: 0  access_stak     0xfffffddc
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffddc to Physical Address 1ddc
+----------
+Execute instruction: 0  access_code     0x90
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 90 to Physical Address 2090
+----------
+Execute instruction: 0  access_heap     0x400d88
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400d88 to Physical Address d88
+----------
+Execute instruction: 0  access_stak     0xfffffd7a
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffd7a to Physical Address 1d7a
+----------
+Execute instruction: 0  access_code     0x91
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 91 to Physical Address 2091
+----------
+Execute instruction: 0  access_stak     0xfffffdfa
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdfa to Physical Address 1dfa
+----------
+Execute instruction: 0  access_code     0x92
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 92 to Physical Address 2092
+----------
+Execute instruction: 0  access_code     0x93
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 93 to Physical Address 2093
+----------
+Execute instruction: 0  access_stak     0xfffffe30
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe30 to Physical Address 1e30
+----------
+Execute instruction: 0  access_heap     0x401457
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401457 to Physical Address 3457
+----------
+Execute instruction: 0  access_stak     0xfffffe30
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe30 to Physical Address 1e30
+----------
+Execute instruction: 0  access_heap     0x4002a0
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4002a0 to Physical Address 2a0
+----------
+Execute instruction: 0  access_heap     0x4011df
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4011df to Physical Address 31df
+----------
+Execute instruction: 0  access_heap     0x4011e0
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4011e0 to Physical Address 31e0
+----------
+Execute instruction: 0  access_heap     0x4004b8
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4004b8 to Physical Address 4b8
+----------
+Execute instruction: 0  access_stak     0xfffffe30
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe30 to Physical Address 1e30
+----------
+Execute instruction: 0  access_code     0x94
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 94 to Physical Address 2094
+----------
+Execute instruction: 0  access_code     0x95
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 95 to Physical Address 2095
+----------
+Execute instruction: 0  access_code     0x96
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 96 to Physical Address 2096
+----------
+Execute instruction: 0  access_stak     0xfffffe96
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe96 to Physical Address 1e96
+----------
+Execute instruction: 0  access_code     0x97
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 97 to Physical Address 2097
+----------
+Execute instruction: 1  switch  
+Switched current process to 1
+----------
+Execute instruction: 1  access_code     0x1c
+Page table hit for VPN 0, PFN: 8
+Translated Virtual Address 1c to Physical Address 801c
+----------
+Execute instruction: 1  access_code     0x1d
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 1d to Physical Address 801d
+----------
+Execute instruction: 1  access_code     0x1e
+TLB hit for VPN 0, PFN: 8
+Translated Virtual Address 1e to Physical Address 801e
+----------
+Execute instruction: 0  switch  
+Switched current process to 0
+----------
+Execute instruction: 0  access_stak     0xfffffeed
+Page table hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeed to Physical Address 1eed
+----------
+Execute instruction: 0  access_heap     0x400ec7
+Page table hit for VPN 1024, PFN: 0
+Translated Virtual Address 400ec7 to Physical Address ec7
+----------
+Execute instruction: 0  access_stak     0xfffffeb1
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeb1 to Physical Address 1eb1
+----------
+Execute instruction: 0  access_heap     0x400ec7
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400ec7 to Physical Address ec7
+----------
+Execute instruction: 0  access_code     0x98
+Page table hit for VPN 0, PFN: 2
+Translated Virtual Address 98 to Physical Address 2098
+----------
+Execute instruction: 0  access_stak     0xfffffeb1
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeb1 to Physical Address 1eb1
+----------
+Execute instruction: 0  access_code     0x99
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 99 to Physical Address 2099
+----------
+Execute instruction: 0  access_code     0x9a
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 9a to Physical Address 209a
+----------
+Execute instruction: 0  access_code     0x9b
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 9b to Physical Address 209b
+----------
+Execute instruction: 0  access_code     0x9c
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 9c to Physical Address 209c
+----------
+Execute instruction: 0  access_heap     0x400c17
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400c17 to Physical Address c17
+----------
+Execute instruction: 0  access_stak     0xfffffeb1
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeb1 to Physical Address 1eb1
+----------
+Execute instruction: 0  access_stak     0xfffffe50
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe50 to Physical Address 1e50
+----------
+Execute instruction: 0  access_stak     0xfffffe50
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe50 to Physical Address 1e50
+----------
+Execute instruction: 0  access_heap     0x400c16
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400c16 to Physical Address c16
+----------
+Execute instruction: 0  access_code     0x9d
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 9d to Physical Address 209d
+----------
+Execute instruction: 0  access_heap     0x400c17
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400c17 to Physical Address c17
+----------
+Execute instruction: 0  access_code     0x9e
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 9e to Physical Address 209e
+----------
+Execute instruction: 0  access_stak     0xfffffdd7
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdd7 to Physical Address 1dd7
+----------
+Execute instruction: 0  access_code     0x9f
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address 9f to Physical Address 209f
+----------
+Execute instruction: 0  access_heap     0x400c18
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400c18 to Physical Address c18
+----------
+Execute instruction: 0  access_heap     0x400c18
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400c18 to Physical Address c18
+----------
+Execute instruction: 0  access_stak     0xfffffe43
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe43 to Physical Address 1e43
+----------
+Execute instruction: 0  access_code     0xa0
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address a0 to Physical Address 20a0
+----------
+Execute instruction: 0  access_code     0xa1
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address a1 to Physical Address 20a1
+----------
+Execute instruction: 0  access_code     0xa2
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address a2 to Physical Address 20a2
+----------
+Execute instruction: 0  access_code     0xa3
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address a3 to Physical Address 20a3
+----------
+Execute instruction: 0  access_heap     0x400c19
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400c19 to Physical Address c19
+----------
+Execute instruction: 0  access_stak     0xfffffe43
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe43 to Physical Address 1e43
+----------
+Execute instruction: 0  access_heap     0x4006f7
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 4006f7 to Physical Address 6f7
+----------
+Execute instruction: 0  access_code     0xa4
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address a4 to Physical Address 20a4
+----------
+Execute instruction: 0  access_stak     0xfffffdfa
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffdfa to Physical Address 1dfa
+----------
+Execute instruction: 0  access_heap     0x4014a9
+Page table hit for VPN 1025, PFN: 3
+Translated Virtual Address 4014a9 to Physical Address 34a9
+----------
+Execute instruction: 0  access_heap     0x401b66
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401b66 to Physical Address 3b66
+----------
+Execute instruction: 0  access_stak     0xfffffe72
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe72 to Physical Address 1e72
+----------
+Execute instruction: 0  access_stak     0xfffffe7a
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe7a to Physical Address 1e7a
+----------
+Execute instruction: 0  access_heap     0x401b67
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401b67 to Physical Address 3b67
+----------
+Execute instruction: 0  access_code     0xa5
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address a5 to Physical Address 20a5
+----------
+Execute instruction: 0  access_heap     0x401045
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401045 to Physical Address 3045
+----------
+Execute instruction: 0  access_code     0xa6
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address a6 to Physical Address 20a6
+----------
+Execute instruction: 0  access_stak     0xfffffe64
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe64 to Physical Address 1e64
+----------
+Execute instruction: 0  access_stak     0xfffffe60
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe60 to Physical Address 1e60
+----------
+Execute instruction: 0  access_stak     0xfffffec6
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffec6 to Physical Address 1ec6
+----------
+Execute instruction: 0  access_code     0xa7
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address a7 to Physical Address 20a7
+----------
+Execute instruction: 0  access_code     0xa8
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address a8 to Physical Address 20a8
+----------
+Execute instruction: 0  access_code     0xa9
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address a9 to Physical Address 20a9
+----------
+Execute instruction: 0  access_heap     0x401046
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401046 to Physical Address 3046
+----------
+Execute instruction: 0  free            0x1000
+----------
+Execute instruction: 0  access_code     0xaa
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address aa to Physical Address 20aa
+----------
+Execute instruction: 0  free            0x1000
+----------
+Execute instruction: 0  access_code     0xab
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address ab to Physical Address 20ab
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_heap     0x400bb6
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400bb6 to Physical Address bb6
+----------
+Execute instruction: 0  access_code     0xac
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address ac to Physical Address 20ac
+----------
+Execute instruction: 0  access_stak     0xfffffec6
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffec6 to Physical Address 1ec6
+----------
+Execute instruction: 0  access_code     0xad
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address ad to Physical Address 20ad
+----------
+Execute instruction: 0  access_heap     0x400bb6
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400bb6 to Physical Address bb6
+----------
+Execute instruction: 0  access_heap     0x400bb7
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400bb7 to Physical Address bb7
+----------
+Execute instruction: 0  access_stak     0xfffffec2
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffec2 to Physical Address 1ec2
+----------
+Execute instruction: 0  free            0x1000
+----------
+Execute instruction: 0  access_stak     0xfffffec5
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffec5 to Physical Address 1ec5
+----------
+Execute instruction: 0  access_stak     0xfffffebb
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffebb to Physical Address 1ebb
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_code     0xae
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address ae to Physical Address 20ae
+----------
+Execute instruction: 0  access_stak     0xffffff05
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff05 to Physical Address 1f05
+----------
+Execute instruction: 0  access_stak     0xfffffed8
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffed8 to Physical Address 1ed8
+----------
+Execute instruction: 0  access_stak     0xffffff08
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff08 to Physical Address 1f08
+----------
+Execute instruction: 0  access_heap     0x400000
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400000 to Physical Address 0
+----------
+Execute instruction: 0  access_code     0xaf
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address af to Physical Address 20af
+----------
+Execute instruction: 0  access_heap     0x400463
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400463 to Physical Address 463
+----------
+Execute instruction: 0  access_heap     0x400fff
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400fff to Physical Address fff
+----------
+Execute instruction: 0  access_stak     0xfffffe93
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffe93 to Physical Address 1e93
+----------
+Execute instruction: 0  alloc           0x1000
+Allocated 1 pages for process 0
+----------
+Execute instruction: 0  access_stak     0xfffffeb5
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeb5 to Physical Address 1eb5
+----------
+Execute instruction: 0  access_stak     0xfffffeb5
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address fffffeb5 to Physical Address 1eb5
+----------
+Execute instruction: 0  access_heap     0x401304
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401304 to Physical Address 3304
+----------
+Execute instruction: 0  access_code     0xb0
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address b0 to Physical Address 20b0
+----------
+Execute instruction: 0  access_stak     0xffffff26
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff26 to Physical Address 1f26
+----------
+Execute instruction: 0  access_heap     0x40043b
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 40043b to Physical Address 43b
+----------
+Execute instruction: 0  access_stak     0xffffff9b
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff9b to Physical Address 1f9b
+----------
+Execute instruction: 0  access_code     0xb1
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address b1 to Physical Address 20b1
+----------
+Execute instruction: 0  access_stak     0xffffff9b
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff9b to Physical Address 1f9b
+----------
+Execute instruction: 0  access_code     0xb2
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address b2 to Physical Address 20b2
+----------
+Execute instruction: 0  access_heap     0x40043c
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 40043c to Physical Address 43c
+----------
+Execute instruction: 0  access_heap     0x400614
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400614 to Physical Address 614
+----------
+Execute instruction: 0  access_stak     0xffffff9b
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff9b to Physical Address 1f9b
+----------
+Execute instruction: 0  access_stak     0xffffff5a
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff5a to Physical Address 1f5a
+----------
+Execute instruction: 0  access_heap     0x400614
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400614 to Physical Address 614
+----------
+Execute instruction: 0  access_code     0xb3
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address b3 to Physical Address 20b3
+----------
+Execute instruction: 0  access_code     0xb4
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address b4 to Physical Address 20b4
+----------
+Execute instruction: 0  access_code     0xb5
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address b5 to Physical Address 20b5
+----------
+Execute instruction: 0  access_code     0xb6
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address b6 to Physical Address 20b6
+----------
+Execute instruction: 0  access_stak     0xffffff60
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff60 to Physical Address 1f60
+----------
+Execute instruction: 0  access_heap     0x400d8e
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400d8e to Physical Address d8e
+----------
+Execute instruction: 0  access_heap     0x400d8f
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400d8f to Physical Address d8f
+----------
+Execute instruction: 0  access_code     0xb7
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address b7 to Physical Address 20b7
+----------
+Execute instruction: 0  access_heap     0x400d8e
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400d8e to Physical Address d8e
+----------
+Execute instruction: 0  access_heap     0x400d8f
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400d8f to Physical Address d8f
+----------
+Execute instruction: 0  access_code     0xb8
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address b8 to Physical Address 20b8
+----------
+Execute instruction: 0  access_heap     0x4013e2
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4013e2 to Physical Address 33e2
+----------
+Execute instruction: 0  access_heap     0x400df0
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400df0 to Physical Address df0
+----------
+Execute instruction: 0  access_code     0xb9
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address b9 to Physical Address 20b9
+----------
+Execute instruction: 0  access_code     0xba
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address ba to Physical Address 20ba
+----------
+Execute instruction: 0  access_heap     0x400def
+TLB hit for VPN 1024, PFN: 0
+Translated Virtual Address 400def to Physical Address def
+----------
+Execute instruction: 0  access_heap     0x401726
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401726 to Physical Address 3726
+----------
+Execute instruction: 0  access_code     0xbb
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address bb to Physical Address 20bb
+----------
+Execute instruction: 0  access_code     0xbc
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address bc to Physical Address 20bc
+----------
+Execute instruction: 0  access_code     0xbd
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address bd to Physical Address 20bd
+----------
+Execute instruction: 0  access_heap     0x4015ea
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4015ea to Physical Address 35ea
+----------
+Execute instruction: 0  access_code     0xbe
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address be to Physical Address 20be
+----------
+Execute instruction: 0  access_stak     0xffffff60
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff60 to Physical Address 1f60
+----------
+Execute instruction: 0  access_stak     0xffffff80
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff80 to Physical Address 1f80
+----------
+Execute instruction: 0  access_code     0xbf
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address bf to Physical Address 20bf
+----------
+Execute instruction: 0  access_code     0xc0
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address c0 to Physical Address 20c0
+----------
+Execute instruction: 0  access_code     0xc1
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address c1 to Physical Address 20c1
+----------
+Execute instruction: 0  access_heap     0x40128a
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 40128a to Physical Address 328a
+----------
+Execute instruction: 0  access_heap     0x40159b
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 40159b to Physical Address 359b
+----------
+Execute instruction: 0  access_heap     0x40159c
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 40159c to Physical Address 359c
+----------
+Execute instruction: 0  access_stak     0xffffff80
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff80 to Physical Address 1f80
+----------
+Execute instruction: 0  access_stak     0xffffff80
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff80 to Physical Address 1f80
+----------
+Execute instruction: 0  access_heap     0x40159c
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 40159c to Physical Address 359c
+----------
+Execute instruction: 0  access_code     0xc2
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address c2 to Physical Address 20c2
+----------
+Execute instruction: 0  access_code     0xc3
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address c3 to Physical Address 20c3
+----------
+Execute instruction: 0  access_code     0xc4
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address c4 to Physical Address 20c4
+----------
+Execute instruction: 0  access_code     0xc5
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address c5 to Physical Address 20c5
+----------
+Execute instruction: 0  access_code     0xc6
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address c6 to Physical Address 20c6
+----------
+Execute instruction: 0  access_heap     0x4013b9
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4013b9 to Physical Address 33b9
+----------
+Execute instruction: 0  access_heap     0x4013ba
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 4013ba to Physical Address 33ba
+----------
+Execute instruction: 0  access_code     0xc7
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address c7 to Physical Address 20c7
+----------
+Execute instruction: 0  access_code     0xc8
+TLB hit for VPN 0, PFN: 2
+Translated Virtual Address c8 to Physical Address 20c8
+----------
+Execute instruction: 0  access_heap     0x401bf6
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401bf6 to Physical Address 3bf6
+----------
+Execute instruction: 0  access_stak     0xffffff7f
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff7f to Physical Address 1f7f
+----------
+Execute instruction: 0  access_stak     0xffffff7e
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff7e to Physical Address 1f7e
+----------
+Execute instruction: 0  access_stak     0xffffff7d
+TLB hit for VPN 1048575, PFN: 1
+Translated Virtual Address ffffff7d to Physical Address 1f7d
+----------
+Execute instruction: 0  access_code     0x32fb57
+Page fault for VPN 815
+Selecting page to replace. Total active pages: 8
+Selected VPN to replace: 5
+Page fault handled by page replacement for VPN 815
+Translated Virtual Address 32fb57 to Physical Address 5b57
+----------
+Execute instruction: 0  access_code     0x32fb58
+TLB hit for VPN 815, PFN: 5
+Translated Virtual Address 32fb58 to Physical Address 5b58
+----------
+Execute instruction: 0  access_code     0x32fb59
+TLB hit for VPN 815, PFN: 5
+Translated Virtual Address 32fb59 to Physical Address 5b59
+----------
+Execute instruction: 0  access_heap     0x401c6c
+TLB hit for VPN 1025, PFN: 3
+Translated Virtual Address 401c6c to Physical Address 3c6c
+----------
+Execute instruction: 0  access_code     0x32fb5a
+TLB hit for VPN 815, PFN: 5
+Translated Virtual Address 32fb5a to Physical Address 5b5a
+----------
+Execute instruction: 0  access_code     0x32fb5b
+TLB hit for VPN 815, PFN: 5
+Translated Virtual Address 32fb5b to Physical Address 5b5b
+----------
+Execute instruction: 0  access_code     0x32fb5c
+TLB hit for VPN 815, PFN: 5
+Translated Virtual Address 32fb5c to Physical Address 5b5c
+----------
+Execute instruction: 1  switch  
+Switched current process to 1
+----------
+Execute instruction: 1  access_heap     0x4001d9
+Page table hit for VPN 1024, PFN: 10
+Translated Virtual Address 4001d9 to Physical Address a1d9
+----------
+Execute instruction: 1  access_stak     0xfffffeb6
+Page table hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffeb6 to Physical Address 9eb6
+----------
+Execute instruction: 1  access_stak     0xfffffeb5
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffeb5 to Physical Address 9eb5
+----------
+Execute instruction: 1  access_stak     0xfffffeb4
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffeb4 to Physical Address 9eb4
+----------
+Execute instruction: 1  free            0x1000
+----------
+Execute instruction: 1  access_stak     0xfffffdb4
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffdb4 to Physical Address 9db4
+----------
+Execute instruction: 1  access_code     0xb7dec
+Page fault for VPN 183
+Selecting page to replace. Total active pages: 8
+Selected VPN to replace: 3
+Page fault handled by page replacement for VPN 183
+Translated Virtual Address b7dec to Physical Address bdec
+----------
+Execute instruction: 1  access_code     0xb7ded
+TLB hit for VPN 183, PFN: 11
+Translated Virtual Address b7ded to Physical Address bded
+----------
+Execute instruction: 1  access_code     0xb7dee
+TLB hit for VPN 183, PFN: 11
+Translated Virtual Address b7dee to Physical Address bdee
+----------
+Execute instruction: 1  access_stak     0xfffffdb4
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffdb4 to Physical Address 9db4
+----------
+Execute instruction: 1  access_code     0xb7def
+TLB hit for VPN 183, PFN: 11
+Translated Virtual Address b7def to Physical Address bdef
+----------
+Execute instruction: 1  alloc           0x1000
+Allocated 1 pages for process 1
+----------
+Execute instruction: 1  access_stak     0xfffffdb4
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffdb4 to Physical Address 9db4
+----------
+Execute instruction: 1  access_code     0xb7df0
+TLB hit for VPN 183, PFN: 11
+Translated Virtual Address b7df0 to Physical Address bdf0
+----------
+Execute instruction: 1  access_heap     0x400000
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400000 to Physical Address a000
+----------
+Execute instruction: 1  access_code     0xb7df1
+TLB hit for VPN 183, PFN: 11
+Translated Virtual Address b7df1 to Physical Address bdf1
+----------
+Execute instruction: 1  access_stak     0xfffffe18
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffe18 to Physical Address 9e18
+----------
+Execute instruction: 1  access_heap     0x400000
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400000 to Physical Address a000
+----------
+Execute instruction: 1  access_stak     0xfffffe18
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffe18 to Physical Address 9e18
+----------
+Execute instruction: 1  access_heap     0x400000
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400000 to Physical Address a000
+----------
+Execute instruction: 1  access_stak     0xfffffd9d
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffd9d to Physical Address 9d9d
+----------
+Execute instruction: 1  access_code     0xb7df2
+TLB hit for VPN 183, PFN: 11
+Translated Virtual Address b7df2 to Physical Address bdf2
+----------
+Execute instruction: 1  access_heap     0x400929
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400929 to Physical Address a929
+----------
+Execute instruction: 1  access_stak     0xfffffd9d
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffd9d to Physical Address 9d9d
+----------
+Execute instruction: 1  access_heap     0x400929
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400929 to Physical Address a929
+----------
+Execute instruction: 1  access_heap     0x400556
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400556 to Physical Address a556
+----------
+Execute instruction: 1  access_heap     0x4006ed
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 4006ed to Physical Address a6ed
+----------
+Execute instruction: 1  access_code     0xb7df3
+TLB hit for VPN 183, PFN: 11
+Translated Virtual Address b7df3 to Physical Address bdf3
+----------
+Execute instruction: 1  access_stak     0xfffffd6b
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffd6b to Physical Address 9d6b
+----------
+Execute instruction: 1  access_heap     0x4006ec
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 4006ec to Physical Address a6ec
+----------
+Execute instruction: 1  access_code     0xb7df4
+TLB hit for VPN 183, PFN: 11
+Translated Virtual Address b7df4 to Physical Address bdf4
+----------
+Execute instruction: 1  access_heap     0x4006ed
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 4006ed to Physical Address a6ed
+----------
+Execute instruction: 1  access_stak     0xfffffda8
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffda8 to Physical Address 9da8
+----------
+Execute instruction: 1  access_code     0xb7df5
+TLB hit for VPN 183, PFN: 11
+Translated Virtual Address b7df5 to Physical Address bdf5
+----------
+Execute instruction: 1  access_stak     0xfffffdd4
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffdd4 to Physical Address 9dd4
+----------
+Execute instruction: 1  access_code     0xb7df6
+TLB hit for VPN 183, PFN: 11
+Translated Virtual Address b7df6 to Physical Address bdf6
+----------
+Execute instruction: 1  access_code     0xb7df7
+TLB hit for VPN 183, PFN: 11
+Translated Virtual Address b7df7 to Physical Address bdf7
+----------
+Execute instruction: 1  access_heap     0x400478
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400478 to Physical Address a478
+----------
+Execute instruction: 1  access_heap     0x400478
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400478 to Physical Address a478
+----------
+Execute instruction: 1  access_heap     0x400479
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400479 to Physical Address a479
+----------
+Execute instruction: 1  access_heap     0x400b48
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400b48 to Physical Address ab48
+----------
+Execute instruction: 1  access_stak     0xfffffdd4
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffdd4 to Physical Address 9dd4
+----------
+Execute instruction: 1  access_code     0xb7df8
+TLB hit for VPN 183, PFN: 11
+Translated Virtual Address b7df8 to Physical Address bdf8
+----------
+Execute instruction: 1  access_code     0xb7df9
+TLB hit for VPN 183, PFN: 11
+Translated Virtual Address b7df9 to Physical Address bdf9
+----------
+Execute instruction: 1  access_heap     0x400b49
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400b49 to Physical Address ab49
+----------
+Execute instruction: 1  access_heap     0x400907
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400907 to Physical Address a907
+----------
+Execute instruction: 1  access_code     0xb7dfa
+TLB hit for VPN 183, PFN: 11
+Translated Virtual Address b7dfa to Physical Address bdfa
+----------
+Execute instruction: 1  access_stak     0xfffffe38
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffe38 to Physical Address 9e38
+----------
+Execute instruction: 1  access_stak     0xfffffe12
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffe12 to Physical Address 9e12
+----------
+Execute instruction: 1  access_stak     0xfffffe11
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffe11 to Physical Address 9e11
+----------
+Execute instruction: 1  access_stak     0xfffffe10
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffe10 to Physical Address 9e10
+----------
+Execute instruction: 1  access_stak     0xfffffe0f
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffe0f to Physical Address 9e0f
+----------
+Execute instruction: 1  access_stak     0xfffffe0e
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffe0e to Physical Address 9e0e
+----------
+Execute instruction: 1  access_stak     0xfffffe0d
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffe0d to Physical Address 9e0d
+----------
+Execute instruction: 1  access_stak     0xfffffe0c
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffe0c to Physical Address 9e0c
+----------
+Execute instruction: 1  access_code     0x2337ad
+Page fault for VPN 563
+Selecting page to replace. Total active pages: 8
+Selected VPN to replace: 4
+Page fault handled by page replacement for VPN 563
+Translated Virtual Address 2337ad to Physical Address c7ad
+----------
+Execute instruction: 1  access_code     0x2337ae
+TLB hit for VPN 563, PFN: 12
+Translated Virtual Address 2337ae to Physical Address c7ae
+----------
+Execute instruction: 1  access_stak     0xfffffcbb
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffcbb to Physical Address 9cbb
+----------
+Execute instruction: 1  access_code     0x2337af
+TLB hit for VPN 563, PFN: 12
+Translated Virtual Address 2337af to Physical Address c7af
+----------
+Execute instruction: 1  access_code     0x2337b0
+TLB hit for VPN 563, PFN: 12
+Translated Virtual Address 2337b0 to Physical Address c7b0
+----------
+Execute instruction: 1  access_heap     0x400907
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400907 to Physical Address a907
+----------
+Execute instruction: 1  access_code     0x2337b1
+TLB hit for VPN 563, PFN: 12
+Translated Virtual Address 2337b1 to Physical Address c7b1
+----------
+Execute instruction: 1  access_stak     0xfffffcac
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffcac to Physical Address 9cac
+----------
+Execute instruction: 1  access_stak     0xfffffc67
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffc67 to Physical Address 9c67
+----------
+Execute instruction: 1  access_code     0x2337b2
+TLB hit for VPN 563, PFN: 12
+Translated Virtual Address 2337b2 to Physical Address c7b2
+----------
+Execute instruction: 1  access_heap     0x400906
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400906 to Physical Address a906
+----------
+Execute instruction: 1  access_heap     0x400075
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400075 to Physical Address a075
+----------
+Execute instruction: 1  access_code     0x2337b3
+TLB hit for VPN 563, PFN: 12
+Translated Virtual Address 2337b3 to Physical Address c7b3
+----------
+Execute instruction: 1  access_heap     0x400076
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400076 to Physical Address a076
+----------
+Execute instruction: 1  access_stak     0xfffffcc2
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffcc2 to Physical Address 9cc2
+----------
+Execute instruction: 1  access_heap     0x400077
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400077 to Physical Address a077
+----------
+Execute instruction: 1  access_stak     0xfffffcc2
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffcc2 to Physical Address 9cc2
+----------
+Execute instruction: 1  access_code     0x2337b4
+TLB hit for VPN 563, PFN: 12
+Translated Virtual Address 2337b4 to Physical Address c7b4
+----------
+Execute instruction: 1  access_stak     0xfffffc8c
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffc8c to Physical Address 9c8c
+----------
+Execute instruction: 1  access_heap     0x400076
+TLB hit for VPN 1024, PFN: 10
+Translated Virtual Address 400076 to Physical Address a076
+----------
+Execute instruction: 1  access_code     0x2337b5
+TLB hit for VPN 563, PFN: 12
+Translated Virtual Address 2337b5 to Physical Address c7b5
+----------
+Execute instruction: 1  access_stak     0xfffffca7
+TLB hit for VPN 1048575, PFN: 9
+Translated Virtual Address fffffca7 to Physical Address 9ca7
+----------
+
+--- Process Statistics ---
+Process 0 Statistics:
+  Memory Access Attempts: 747
+  TLB Hit Rate: 96.3855%
+  Page Table Hit Rate: 77.7778%
+
+Process 1 Statistics:
+  Memory Access Attempts: 153
+  TLB Hit Rate: 89.5425%
+  Page Table Hit Rate: 75%
+
+(base) tianyu@Tianyus-MacBook-Pro VirtualMemorySimulator % 
+
