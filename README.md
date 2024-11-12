@@ -64,6 +64,14 @@ All memory-related params are configurable:
   - If no frames are available, the clock algorithm is triggered to free up memory by replacing an existing page.
   - Check if any page has a reference bit of 0, if not decrement the reference bit for all entries and check again.
 
+### TLB and TLBEntry
+
+- Each TLBEntry is organized by unordered_maps in TLB with a limitation of TLB size.
+- Each Virtual Page Number (VPN) is mapped to a TLBEntry, which is also used as a parameter to look up, update, and delete a TLB Entry.
+- When TLB is full, the simulator would evict the Least Recent used (LRU) Entry according to the access time. 
+- TLBEntry includes `Virtual Page Number(VPN), Page Frame Number (PFN), validity and access permissions`.
+- If there is a TLB miss, the simulator will look up page table and then update the VPN and PFN in the TLB Entry.
+
 ### Initial page table warm-up
 
 For now every time a process is created, we will pre-assign **8** physical frames for it so that its page table can establish the first few pages. The goal is to reduce the initialization cost of page faults as a process starts to access its memory.
