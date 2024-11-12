@@ -107,7 +107,8 @@ double Process::getPageTableHitRate() const {
 
 void Process::displayStatistics() const {
     cout << "Process " << id << " Statistics:" << endl;
-    cout << "  Memory Access Attempts: " << memoryAccessAttempts << endl;
+    // cout << "  Memory Access Attempts: " << memoryAccessAttempts << endl;
+    cout << "  Memory Access Attempts: " << std::dec << memoryAccessAttempts << endl;
     cout << "  TLB Hit Rate: " << getTLBHitRate() * 100 << "%" << endl;
     cout << "  Page Table Hit Rate: " << getPageTableHitRate() * 100 << "%" << endl;
     cout << endl;

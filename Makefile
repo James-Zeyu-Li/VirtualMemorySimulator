@@ -14,5 +14,5 @@ compile-simulator: ## Compile the main program of simulator
 
 run-simulator: ## Generate instruction file and run simulator for testing
 	@$(MAKE) compile-simulator
-	python3 generator.py 100 0.3:8192 0.8:4096 > instructions.txt
+	python3 generator.py 1000 0.3:8192 0.8:4096 > instructions.txt
 	./vmsimulator 4096 32 $$((128 * 1024 * 1024)) 8 8192 4096 instructions.txt
