@@ -43,7 +43,7 @@ PageTable::PageTable(uint64_t addressSpaceSize, uint32_t pageSize)
       pageSize(pageSize),
       clockAlgo()
 {
-    if (addressSpaceSize % pageSize != 0)
+    if (2 ^ addressSpaceSize % pageSize != 0)
     {
         cerr << "Error: Address space size must be a multiple of page size" << endl;
         return;
@@ -124,6 +124,9 @@ void PageTable::updatePageTable(uint32_t VPN, uint32_t frameNumber, bool valid, 
 // handle page fault with ClockAlgorithm, page replacement
 bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
 {
+
+    cout << "Checking VPN: " << VPN << ", Max Valid VPN: " << (addressSpaceSize / pageSize - 1) << endl;
+
     if (!isValidRange(VPN))
     {
         cerr << "Invalid VPN: " << VPN << " Out of range" << endl;
@@ -154,8 +157,8 @@ bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
             }
 
             // remove the old page from the page table before replacing it
-            // FIXME: removed and reallocated memory within pagetable, no interaction with main ------- 
-            int removedFrame = removeAddressForOneEntry(targetVPN); 
+            // FIXME: removed and reallocated memory within pagetable, no interaction with main -------
+            int removedFrame = removeAddressForOneEntry(targetVPN);
             if (removedFrame == -1)
             {
                 cerr << "Error: Failed to remove victim VPN: " << targetVPN << endl;
@@ -167,7 +170,7 @@ bool PageTable::replacePageUsingClockAlgo(uint32_t VPN)
             cout << "Attempting to update page table with VPN: " << VPN << " and Frame: " << oldFrame << endl;
 
             updatePageTable(VPN, oldFrame, true, false, true, true, true, 0);
-            // --------------- 
+            // ---------------
 
             PageTableEntry *newEntry = getPageTableEntry(VPN);
             if (!newEntry || !newEntry->valid)
